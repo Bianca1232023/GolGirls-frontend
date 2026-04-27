@@ -1,0 +1,120 @@
+.acess-card-component {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 90%;
+  height: 90%;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  padding: 40px 0px 0px 0px;
+  margin-top: 30px;
+}
+
+.acess-card-component .card {
+  padding: 20px 0px 0px 0px;
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  height: 100%;
+  border-radius: 0.5rem;
+  color: #fff;
+}
+
+.acess-card-content {
+  width: 100%;
+}
+.acess-card-content .cap-icon {
+  margin-left: 20px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 65px;
+  height: 50px;
+  border-radius: 10px;
+  color: white;
+}
+.acess-card-content .cap-icon svg {
+  width: 28px; /* tamanho desejado */
+  height: 28px;
+}
+.acess-card-content .cap-icon-aluno {
+  background: linear-gradient(90deg, #cf75dd 0%, #f23ea4 100%);
+}
+.acess-card-content .cap-icon-professor {
+  background: linear-gradient(90deg, #f075c3 0%, #efc283 100%);
+}
+.acess-card-content .cap-icon-admin {
+  background: linear-gradient(90deg, #9a58f6 0%, #cf75dd 100%);
+}
+
+.information-card {
+  border-bottom: solid 0.5px rgba(186, 183, 183, 0.3);
+  display: flex;
+  gap: 1rem;
+}
+
+.entry-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 3rem;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.entry-buttons .login-button {
+  background: white;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 0px 0px 0px 10px;
+  border-top: 0;
+  border: none;
+  color: #ff1393;
+}
+.entry-buttons .login-button:hover {
+  background: rgb(248, 225, 236);
+}
+.entry-buttons .register-button {
+  background: white;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 0px 0px 10px 0px;
+  border-top: 0;
+  border: none;
+  color: #4a5565;
+  border-left: solid 0.5px rgba(186, 183, 183, 0.3);
+}
+.entry-buttons .register-button:hover {
+  background: rgb(235, 233, 233);
+}
+
+.role-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  height: 3rem;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  color: #000;
+  font-weight: bold;
+}
+.role-container .role-description {
+  font-size: small;
+  font-weight: lighter;
+  color: #4a5565;
+  opacity: 0.7;
+}/*# sourceMappingURL=styles.css.map */

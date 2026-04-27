@@ -1,0 +1,132 @@
+@use "../../styles/variables.scss" as *;
+
+.acess-card-component {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 90%;
+    height: 90%;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    padding: 40px 0px 0px 0px;
+    margin-top: 30px;
+}
+
+.acess-card-component .card {
+    padding: 20px 0px 0px 0px;
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+    height: 100%;
+    border-radius: 0.5rem;
+    color: #fff;
+}
+
+.acess-card-content{
+    width: 100%;
+    
+    .cap-icon{
+        margin-left: 20px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 65px;
+        height: 50px;
+        border-radius: 10px;
+        color: white;
+        
+        svg {
+            width: 28px;  /* tamanho desejado */
+            height: 28px;
+        }
+    }
+
+    .cap-icon-aluno {
+        background: $bg-primary;
+    }
+
+    .cap-icon-professor {
+        background: $bg-secondary;
+    }
+
+    .cap-icon-admin {
+        background: $bg-tertiary;
+    }
+}
+
+.information-card {
+    border-bottom: solid 0.5px rgba(186, 183, 183, 0.3);
+    display: flex;
+    gap: 1rem;
+}
+
+.entry-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 3rem;
+    border-radius: 0.5rem;
+    background-color: #fff;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    .login-button {
+        background: white;
+        z-index: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 0px 0px 0px 10px;
+        border-top: 0;
+        border: none;
+        color: $color-primary;
+    }
+    
+    .login-button:hover {
+        background: rgb(248, 225, 236);
+    }
+
+    .register-button {
+        background: white;
+        z-index: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 0px 0px 10px 0px;
+        border-top: 0;
+        border: none;
+        color: $color-secondary;
+        border-left: solid 0.5px rgba(186, 183, 183, 0.3);
+    }
+    
+    .register-button:hover {
+        background: rgb(235, 233, 233);
+    }
+}
+
+.role-container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    height: 3rem;
+    border-radius: 0.5rem;
+    background-color: #fff;
+    color: #000;
+    font-weight: bold;
+
+    .role-description {
+        font-size: small;
+        font-weight: lighter;
+        color: $color-secondary;
+        opacity: 0.7;
+    }
+}

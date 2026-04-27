@@ -1,0 +1,71 @@
+body {
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0 auto;
+  padding: 0.1rem;
+  text-align: center;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.subtitle {
+  font-size: small;
+  color: #4a5565;
+  opacity: 0.7;
+}
+
+.role-description {
+  font-size: small;
+  color: #4a5565;
+  opacity: 0.7;
+  margin-top: 0.5rem;
+}
+
+.title {
+  font-size: x-large;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 2em rgba(100, 108, 255, 0.6666666667));
+}
+
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em rgba(97, 218, 251, 0.6666666667));
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}/*# sourceMappingURL=App.css.map */
