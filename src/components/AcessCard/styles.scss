@@ -14,18 +14,19 @@
     margin-top: 30px;
 }
 
-.acess-card-component .card {
-    padding: 20px 0px 0px 0px;
-    margin-top: 50px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    width: 100%;
-    height: 100%;
-    border-radius: 0.5rem;
-    color: #fff;
+.acess-card-component {
+    animation: slideInRight 0.45s ease-out both;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(-40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .acess-card-content{

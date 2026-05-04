@@ -20,6 +20,10 @@ html, body, #root {
     min-height: 100vh;
     padding: 2rem 1rem;
     box-sizing: border-box;
+
+    > .acess-card-component:nth-child(4) { animation-delay: 0.05s; }
+    > .acess-card-component:nth-child(5) { animation-delay: 0.18s; }
+    > .acess-card-component:nth-child(6) { animation-delay: 0.31s; }
 }
 
 .subtitle {
@@ -44,6 +48,18 @@ html, body, #root {
     padding: 1.5em;
     will-change: filter;
     transition: filter 300ms;
+    animation: slideInDown 0.45s ease-out both;
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);

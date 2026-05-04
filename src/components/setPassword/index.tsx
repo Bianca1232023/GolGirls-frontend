@@ -1,12 +1,19 @@
 import React, { useState } from 'react'
 import './styles.scss'
 import UserCog from '../icons/user-cog'
+import Shield from '../icons/shield'
 import { Logo } from '../icons'
 import Buttons from '../button'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { api } from '../../services/api'
 
-const SetPasswordComponent: React.FC = () => {
+type Role = 'professor' | 'admin';
+
+interface SetPasswordProps {
+    role: Role;
+}
+
+const SetPasswordComponent: React.FC<SetPasswordProps> = ({ role }) => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const token = searchParams.get('token');
@@ -49,8 +56,9 @@ const SetPasswordComponent: React.FC = () => {
         setServerError(null);
 
         try {
-            await api.post('/professor/set-password', { token, name, password });
-            navigate('/login/professor');
+            const endpoint = role === 'admin' ? '/admin/set-password' : '/professor/set-password';
+            await api.post(endpoint, { token, name, password });
+            navigate(`/login/${role}`);
         } catch (err) {
             const message = err instanceof Error ? err.message : 'Erro ao definir senha';
             setServerError(message);
@@ -63,8 +71,8 @@ const SetPasswordComponent: React.FC = () => {
         <div className='all-setpassword-content'>
             <div className='setpassword-header'>
                 <Logo width="190" height="147" />
-                <div className='cap-icon-professor'>
-                    <UserCog width="28" height="28" />
+                <div className={`cap-icon-${role}`}>
+                    {role === 'professor' ? <UserCog width="28" height="28" /> : <Shield width="28" height="28" />}
                 </div>
                 <div className='setpassword-title'>
                     <h1>Complete seu cadastro</h1>
@@ -107,7 +115,7 @@ const SetPasswordComponent: React.FC = () => {
 
                     {serverError && <span className='setpassword-error-msg setpassword-error-server'>{serverError}</span>}
 
-                    <Buttons type="login" label={loading ? 'Definindo...' : 'Confirmar'} onClick={handleSetPassword} className='btn-login--professor' />
+                    <Buttons type="login" label={loading ? 'Definindo...' : 'Confirmar'} onClick={handleSetPassword} className={`btn-login--${role}`} />
                 </div>
             </div>
         </div>

@@ -60,11 +60,6 @@ const navigate = useNavigate();
                     <button className='login-button' onClick={handleLoginClick}>
                         Entrar
                     </button>
-                    {role === 'admin' && (
-                        <button className='register-button' onClick={() => {}}>
-                            Cadastrar
-                        </button>
-                    )}
                 </div>
             </div>
         </div>

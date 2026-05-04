@@ -109,7 +109,7 @@ const Inputs: React.FC<InputProps> = ( props: InputProps ) => {
             <br />
             <div className='input-content'>
                 <div className='input-container'>
-                    {props.role === 'aluno' && (
+                {props.role === 'aluno' && (
                         <span className='matricula'>MATRÍCULA</span>
                     )}
 
