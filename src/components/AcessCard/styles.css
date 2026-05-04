@@ -40,14 +40,14 @@
   color: white;
 }
 .acess-card-content .cap-icon svg {
-  width: 28px; /* tamanho desejado */
+  width: 28px;
   height: 28px;
 }
 .acess-card-content .cap-icon-aluno {
   background: linear-gradient(90deg, #cf75dd 0%, #f23ea4 100%);
 }
 .acess-card-content .cap-icon-professor {
-  background: linear-gradient(90deg, #f075c3 0%, #efc283 100%);
+  background: linear-gradient(90deg, #f93f95 0%, #ff5f82 100%);
 }
 .acess-card-content .cap-icon-admin {
   background: linear-gradient(90deg, #9a58f6 0%, #cf75dd 100%);
@@ -117,4 +117,13 @@
   font-weight: lighter;
   color: #4a5565;
   opacity: 0.7;
+}
+
+.entry-buttons-aluno .login-button,
+.entry-buttons-professor .login-button {
+  border-radius: 0px 0px 10px 10px;
+}
+
+.entry-buttons-admin .login-button {
+  border-radius: 0px 0px 0px 10px;
 }/*# sourceMappingURL=styles.css.map */

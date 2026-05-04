@@ -1,12 +1,27 @@
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.scss'
-import { InitialPage } from './pages/InitialPage.tsx'
+import { InitialPage } from './pages/initialpage'
+import { StudentLogin } from './pages/studentlogin'
+import { ProfessorLogin } from './pages/professorlogin'
+import { AdminLogin } from './pages/adminlogin'
+import { AdminRegister } from './pages/adminregister'
+import { ProfessorRegister } from './pages/professorregister'
+import { PortaldoAluno } from './pages/studentpage'
 
 function App() {
 
   return (
-    <>
-      <InitialPage/>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<InitialPage />} />
+        <Route path="/login/aluno" element={<StudentLogin />} />
+        <Route path="/login/professor" element={<ProfessorLogin />} />
+        <Route path="/login/admin" element={<AdminLogin />} />
+        <Route path="/register/professor" element={<ProfessorRegister />} />
+        <Route path="/register/admin" element={<AdminRegister />} />
+        <Route path="/app/aluno" element={<PortaldoAluno/>} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

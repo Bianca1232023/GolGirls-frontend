@@ -3,6 +3,7 @@ import './styles.scss'
 import GraduationCap from '../icons/graduation-cap'
 import UserCog from '../icons/user-cog'
 import Shield from '../icons/shield'
+import { useNavigate } from 'react-router-dom'
 
 type Role = 'aluno' | 'professor' | 'admin';
 
@@ -11,6 +12,8 @@ interface AcessCardProps {
 }
 
 const AcessCard: React.FC<AcessCardProps> = ({ role }) => {
+
+const navigate = useNavigate();
 
     const roleConfig = {
         aluno: { label: 'Aluna', description: 'Acesse seu portal do aluno' },
@@ -29,18 +32,32 @@ const AcessCard: React.FC<AcessCardProps> = ({ role }) => {
         }
     }
 
+    const handleLoginClick = () => {
+        switch(role) {
+            case 'aluno':
+                navigate('/login/aluno');
+                break;
+            case 'professor':
+                navigate('/login/professor');
+                break;
+            case 'admin':
+                navigate('/login/admin');
+                break;
+        }
+    }
+
     return (
         <div className='acess-card-component'>
             <div className='acess-card-content'>
                 <div className='information-card'>
-                    <div className={`cap-icon cap-icon-${role}`}>{renderIcon()}</div>
+                    <div className={`cap-icon-${role}`}>{renderIcon()}</div>
                     <div className='role-container'>
                         <div className='role-label'>{roleConfig[role].label}</div>
                         <div className='role-description'>{roleConfig[role].description}</div>
                     </div>
                 </div>
-                <div className='entry-buttons'>
-                    <button className='login-button' onClick={() => {}}>
+                <div className={`entry-buttons entry-buttons-${role}`}>
+                    <button className='login-button' onClick={handleLoginClick}>
                         Entrar
                     </button>
                     {role === 'admin' && (

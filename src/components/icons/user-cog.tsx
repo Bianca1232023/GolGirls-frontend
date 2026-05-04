@@ -7,7 +7,6 @@ interface UserCogProps extends SVGProps<SVGSVGElement> {
 
 const UserCog: React.FC<UserCogProps> = ({className, ...props}: UserCogProps) => {
   return (
-    <div className={className}>
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="24"
@@ -18,6 +17,7 @@ const UserCog: React.FC<UserCogProps> = ({className, ...props}: UserCogProps) =>
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
+      className={className}
       {...props}
     >
       <path d="M10 15H6a4 4 0 0 0-4 4v2" />
@@ -32,7 +32,6 @@ const UserCog: React.FC<UserCogProps> = ({className, ...props}: UserCogProps) =>
       <circle cx="18" cy="15" r="3" />
       <circle cx="9" cy="7" r="4" />
     </svg>
-    </div>
   )
 }
 

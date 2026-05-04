@@ -1,6 +1,6 @@
 import React from 'react'
 import Logo from '../components/icons/logo'
-import AcessCard from '../components/AcessCard'
+import AcessCard from '../components/acessCard'
 
 export function InitialPage() {
   return (
@@ -12,7 +12,6 @@ export function InitialPage() {
         <AcessCard role="aluno" />
         <AcessCard role="professor" />
         <AcessCard role="admin" />
-
     </div>
   )
 }

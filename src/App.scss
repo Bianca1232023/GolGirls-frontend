@@ -6,9 +6,9 @@ body{
 
 
 html, body, #root {
-  height: 100%;
-  margin: 0 auto;
-  padding: 0.1rem;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
   text-align: center;
 }
 
@@ -16,8 +16,10 @@ html, body, #root {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    height: 100%;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    box-sizing: border-box;
 }
 
 .subtitle {

@@ -1,4 +1,5 @@
 @use "../../styles/variables.scss" as *;
+@use "../../styles/mixins.scss" as *;
 
 .acess-card-component {
     display: flex;
@@ -29,34 +30,17 @@
 
 .acess-card-content{
     width: 100%;
-    
-    .cap-icon{
-        margin-left: 20px;
-        margin-bottom: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 65px;
-        height: 50px;
-        border-radius: 10px;
-        color: white;
-        
-        svg {
-            width: 28px;  /* tamanho desejado */
-            height: 28px;
-        }
-    }
 
     .cap-icon-aluno {
-        background: $bg-primary;
+        @include cap-icon($bg-primary);
     }
 
     .cap-icon-professor {
-        background: $bg-secondary;
+        @include cap-icon($bg-secondary);
     }
 
     .cap-icon-admin {
-        background: $bg-tertiary;
+        @include cap-icon($bg-tertiary);
     }
 }
 
@@ -129,4 +113,14 @@
         color: $color-secondary;
         opacity: 0.7;
     }
+}
+
+// Estilos específicos por role para o login-button
+.entry-buttons-aluno .login-button,
+.entry-buttons-professor .login-button {
+    border-radius: 0px 0px 10px 10px;
+}
+
+.entry-buttons-admin .login-button {
+    border-radius: 0px 0px 0px 10px;
 }
