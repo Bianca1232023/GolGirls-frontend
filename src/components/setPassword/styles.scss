@@ -1,0 +1,115 @@
+@use "../../styles/variables.scss" as *;
+@use "../../styles/mixins.scss" as *;
+
+.all-setpassword-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.setpassword-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .cap-icon-professor {
+        @include cap-icon($bg-secondary);
+        width: 50px;
+        margin-left: 0;
+        margin-bottom: 0;
+        margin-top: 10px;
+    }
+}
+
+.setpassword-title {
+    margin-top: 20px;
+    font-size: x-small;
+
+    h1 {
+        margin: 0;
+    }
+}
+
+.setpassword-description {
+    margin-top: 10px;
+    font-size: small;
+    color: $color-secondary;
+    opacity: 0.7;
+}
+
+.setpassword-form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.setpassword-container {
+    margin-left: 30px;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+
+    .field-label {
+        font-weight: 600;
+        font-size: small;
+        color: $color-tertiary;
+        opacity: 0.7;
+        margin-bottom: 5px;
+        margin-top: 10px;
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+
+    .setpassword-input {
+        width: 300px;
+        height: 2.5rem;
+        border-radius: 0.9rem;
+        border: solid 1px rgba(186, 183, 183, 0.3);
+        padding: 0.2rem;
+        padding-left: 12px;
+
+        &::placeholder {
+            color: $color-secondary;
+            opacity: 0.7;
+        }
+
+        &--error {
+            border: solid 1.5px #e53935;
+        }
+    }
+
+    .setpassword-error-msg {
+        font-size: 0.75rem;
+        color: #e53935;
+        margin-top: 4px;
+        margin-left: 4px;
+
+        &.setpassword-error-server {
+            margin-top: 10px;
+        }
+    }
+}
+
+.error-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+    padding: 20px;
+    border: 1px solid #e53935;
+    border-radius: 8px;
+    background-color: #ffebee;
+
+    span {
+        color: #e53935;
+        font-weight: 600;
+    }
+}

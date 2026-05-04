@@ -6,6 +6,7 @@ import Shield from '../icons/shield'
 import { Logo } from '../icons'
 import Buttons from '../button'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../hooks/useAuth'
 
 type InputType = 'text' | 'password' | 'email';
 type Role = 'aluno' | 'professor' | 'admin';
@@ -22,6 +23,7 @@ interface InputProps {
 const Inputs: React.FC<InputProps> = ( props: InputProps ) => {
 
     const navigate = useNavigate();
+    const { login, loading, serverError } = useAuth();
 
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState({ main: false, password: false });
@@ -54,7 +56,7 @@ const Inputs: React.FC<InputProps> = ( props: InputProps ) => {
         }
     }
 
-    const handleClickEnter = () => {
+    const handleClickEnter = async () => {
         const mainEmpty = !props.value.trim();
         const passwordEmpty = (props.role === 'professor' || props.role === 'admin') && !password.trim();
         const invalidEmail = (props.role === 'professor' || props.role === 'admin') && props.value.trim() && !props.value.includes('@gmail.com');
@@ -65,6 +67,9 @@ const Inputs: React.FC<InputProps> = ( props: InputProps ) => {
         }
 
         setErrors({ main: false, password: false });
+
+        const token = await login({ role: props.role, value: props.value, password });
+        if (!token) return;
 
         switch(props.role){
             case 'aluno':
@@ -135,7 +140,8 @@ const Inputs: React.FC<InputProps> = ( props: InputProps ) => {
                         </>
                     )}
 
-                    <Buttons type="login" label="Entrar" onClick={handleClickEnter} className={`btn-login--${props.role}`} />
+                    <Buttons type="login" label={loading ? 'Entrando...' : 'Entrar'} onClick={handleClickEnter} className={`btn-login--${props.role}`} />
+                    {serverError && <span className='input-error-msg'>{serverError}</span>}
                 </div>
             </div>
         </div>
