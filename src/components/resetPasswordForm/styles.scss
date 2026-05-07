@@ -1,22 +1,19 @@
 @use "../../styles/variables.scss" as *;
 @use "../../styles/mixins.scss" as *;
 
+.all-resetpwd-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+}
 
-.login-content {
-
+.resetpwd-header {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    
-    
-    .cap-icon-aluno {
-        @include cap-icon($bg-primary);
-        width: 50px;
-        margin-left: 0;
-        margin-bottom: 0;
-        margin-top: 10px;
-    }
 
     .cap-icon-professor {
         @include cap-icon($bg-secondary);
@@ -35,7 +32,7 @@
     }
 }
 
-.renderTitle {
+.resetpwd-title {
     margin-top: 20px;
     font-size: x-small;
 
@@ -44,39 +41,38 @@
     }
 }
 
-.description {
+.resetpwd-description {
     margin-top: 10px;
     font-size: small;
     color: $color-secondary;
     opacity: 0.7;
+    text-align: center;
+    max-width: 300px;
 }
 
-
-.input-content {
+.resetpwd-form {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
-    gap: 1rem;
     width: 100%;
     margin-top: 20px;
 }
 
-.input-container {
+.resetpwd-container {
     margin-left: 30px;
     display: flex;
     align-items: flex-start;
     flex-direction: column;
+    gap: 0.5rem;
 
-    .matricula,
-    .email,
-    .senha {
-        font-weight:600;
+    .label {
+        font-weight: 600;
         font-size: small;
         color: $color-tertiary;
         opacity: 0.7;
-        margin-bottom: 5px;
-        margin-top: 5px;
+        margin-bottom: 2px;
+        margin-top: 8px;
     }
 
     .input-box {
@@ -92,10 +88,6 @@
             opacity: 0.7;
         }
 
-        & + & {
-            margin-top: 0.75rem;
-        }
-
         &--error {
             border: solid 1.5px #e53935;
         }
@@ -104,24 +96,25 @@
     .input-error-msg {
         font-size: 0.75rem;
         color: #e53935;
-        margin-top: 4px;
-        margin-left: 4px;
+        margin-top: 2px;
     }
 
-    .forgot-password-link {
-        background: none;
-        border: none;
-        padding: 0;
-        margin-top: 0.25rem;
-        font-size: 0.8rem;
-        color: $color-secondary;
-        cursor: pointer;
-        text-decoration: underline;
-        opacity: 0.75;
-        align-self: flex-start;
+    .server-error-box {
+        font-size: 0.75rem;
+        color: #e53935;
+    }
+}
 
-        &:hover {
-            opacity: 1;
-        }
+.error-box {
+    margin-top: 2rem;
+    padding: 0.75rem 1rem;
+    background-color: #ffebee;
+    border-radius: 0.75rem;
+    border: 1px solid #ef9a9a;
+    max-width: 300px;
+
+    span {
+        font-size: 0.875rem;
+        color: #c62828;
     }
 }

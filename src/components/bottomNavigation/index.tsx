@@ -1,7 +1,7 @@
 import React from 'react'
 import './styless.scss'
 import Buttons from '../button'
-import { Briefcase, Home, Trophy, UserCircle, TrendingUp, School } from '../icons';
+import { Briefcase, Home, Trophy, UserCircle, TrendingUp, Star } from '../icons';
 
 type Role = 'aluno' | 'professor' | 'admin';
 
@@ -17,8 +17,8 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ role }) => {
                 return (
                     <>
                         <Buttons type="default" label="Home" icon={<Home width="24" height="24" />} />
-                        <Buttons type="default" label="Cursos" icon={<School width="24" height="24" />} />
-                        <Buttons type="default" label="Desempenho" icon={<TrendingUp width="24" height="24" />} />
+                        <Buttons type="default" label="Jornada" icon={<Star width="24" height="24" />} />
+                        <Buttons type="default" label="Legado" icon={<Trophy width="24" height="24" />} />
                         <Buttons type="default" label="Perfil" icon={<UserCircle width="24" height="24" />} />
                     </>
                 );
@@ -27,7 +27,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ role }) => {
                     <>
                         <Buttons type="default" label="Home" icon={<Home width="24" height="24" />} />
                         <Buttons type="default" label="Turmas" icon={<Briefcase width="24" height="24" />} />
-                        <Buttons type="default" label="Desempenho dos Alunos" icon={<Trophy width="24" height="24" />} />
+                        <Buttons type="default" label="Legado" icon={<Trophy width="24" height="24" />} />
                         <Buttons type="default" label="Perfil" icon={<UserCircle width="24" height="24" />} />
                     </>
                 );
@@ -35,8 +35,8 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ role }) => {
                 return (
                     <>
                         <Buttons type="default" label="Home" icon={<Home width="24" height="24" />} />
-                        <Buttons type="default" label="Gerenciar Professores" icon={<Briefcase width="24" height="24" />} />
-                        <Buttons type="default" label="Gerenciar Alunos" icon={<Trophy width="24" height="24" />} />
+                        <Buttons type="default" label="Painel" icon={<TrendingUp width="24" height="24" />} />
+                        <Buttons type="default" label="Legado" icon={<Trophy width="24" height="24" />} />
                         <Buttons type="default" label="Perfil" icon={<UserCircle width="24" height="24" />} />
                     </>
                 );

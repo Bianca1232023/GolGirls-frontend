@@ -123,7 +123,7 @@ const Inputs: React.FC<InputProps> = ( props: InputProps ) => {
                         placeholder={roleConfig[props.role].placeholder}
                         value={props.value}
                         onChange={props.onChange}
-                    />
+                        />
                     {errors.main && <span className='input-error-msg'>{mainErrorMsg}</span>}
 
                     {(props.role === 'professor' || props.role === 'admin') && (
@@ -135,13 +135,22 @@ const Inputs: React.FC<InputProps> = ( props: InputProps ) => {
                                 placeholder="Digite sua senha"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                            />
+                                />
                             {errors.password && <span className='input-error-msg'>Digite sua senha</span>}
+                            {(props.role === 'professor' || props.role === 'admin') && (
+                                <button
+                                    className='forgot-password-link'
+                                    onClick={() => navigate(`/${props.role}/esqueci-senha`)}
+                                >
+                                    Esqueci minha senha
+                                </button>
+                            )}
                         </>
                     )}
 
                     <Buttons type="login" label={loading ? 'Entrando...' : 'Entrar'} onClick={handleClickEnter} className={`btn-login--${props.role}`} />
                     {serverError && <span className='input-error-msg'>{serverError}</span>}
+
                 </div>
             </div>
         </div>
