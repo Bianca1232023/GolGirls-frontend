@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.scss'
-import { InitialPage } from './pages/initialpage'
+import { InitialPage } from './pages/InitialPage'
 import { StudentLogin } from './pages/studentlogin'
 import { ProfessorLogin } from './pages/professorlogin'
 import { AdminLogin } from './pages/adminlogin'

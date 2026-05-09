@@ -1,6 +1,5 @@
-import React from 'react'
 import Logo from '../components/icons/logo'
-import AcessCard from '../components/acessCard'
+import AcessCard from '../components/AcessCard'
 
 export function InitialPage() {
   return (

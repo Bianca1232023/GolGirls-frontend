@@ -1,4 +1,4 @@
-import Buttons from '../components/button'
+import Buttons from '../components/Button'
 import ForgotPasswordComponent from '../components/forgotPassword'
 import Footer from '../components/footer'
 import { useNavigate } from 'react-router-dom'

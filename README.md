@@ -1,73 +1,73 @@
-# React + TypeScript + Vite
+# ⚽ Gol Girls Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A iniciativa Gol Girls existe para promover o empoderamento de meninas negras, usando o esporte como uma ferramenta poderosa para abrir portas e realizar sonhos. Focamos em meninas negras e periféricas, pois queremos fortalecê-las em seu caminho de descoberta do mundo, construção da autoestima e ocupação de todos os espaços.
 
-Currently, two official plugins are available:
+Aplicação web do projeto Gol Girls desenvolvida com React, TypeScript e Vite. O frontend consome a API do backend do projeto para autenticação e demais fluxos da aplicação.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🧠 O que a API precisa
 
-## React Compiler
+- Node.js 20.x ou superior
+- npm 9+
+- Backend do projeto rodando em `http://localhost:3001`
+- Docker
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ⚙️ Passo a passo para rodar em desenvolvimento
 
-## Expanding the ESLint configuration
+1. Abra um terminal na pasta do frontend:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cd GolGirls-frontend
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Instale as dependências:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
+
+3. Verifique se o backend já está em execução em `http://localhost:3001`.
+
+4. Inicie o frontend:
+
+```bash
+npm run dev
+```
+
+## ☁️ Passo a passo rodar usando Docker
+
+1. Abra um terminal na pasta do frontend:
+
+```bash
+cd GolGirls-frontend
+```
+
+2. Suba a aplicação com Docker Compose:
+
+```bash
+docker compose up --build
+```
+
+4. Para parar os containers:
+
+```bash
+docker compose down
+```
+
+## 🌐 Como validar se esta funcionando:
+
+```bash
+http://localhost:8080
+```
+
+## Scripts disponíveis
+
+- `npm run dev`: inicia o ambiente de desenvolvimento com Vite.
+- `npm run build`: gera a build de produção.
+- `npm run lint`: executa o ESLint no código.
+- `npm run preview`: faz a pré-visualização da build gerada.
+
+## Fluxo recomendado para subir tudo
+
+1. Suba o backend primeiro, porque ele depende do MySQL e expõe a API em `3001`.
+2. Em seguida, suba o frontend com `npm run dev` ou com Docker.
+3. Acesse o frontend no navegador e faça login com os dados cadastrados na API.

@@ -1,6 +1,6 @@
 import React from 'react'
 import './styless.scss'
-import Buttons from '../button'
+import Buttons from '../Button'
 import { Briefcase, Home, Trophy, UserCircle, TrendingUp, Star } from '../icons';
 
 type Role = 'aluno' | 'professor' | 'admin';
