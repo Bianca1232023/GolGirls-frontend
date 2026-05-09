@@ -1,6 +1,5 @@
-import React from 'react'
 import InputRegister from '../components/inputRegister'
-import Buttons from '../components/button'
+import Buttons from '../components/Button'
 import Footer from '../components/footer'
 import { useNavigate } from 'react-router-dom'
 

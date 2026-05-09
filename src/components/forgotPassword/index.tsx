@@ -3,7 +3,7 @@ import './styles.scss'
 import UserCog from '../icons/user-cog'
 import Shield from '../icons/shield'
 import { Logo } from '../icons'
-import Buttons from '../button'
+import Buttons from '../Button'
 import { api } from '../../services/api'
 
 type Role = 'professor' | 'admin';
