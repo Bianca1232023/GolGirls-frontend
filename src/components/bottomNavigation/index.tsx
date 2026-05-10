@@ -1,4 +1,5 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import './styless.scss'
 import Buttons from '../button'
 import { Briefcase, Home, Trophy, UserCircle, TrendingUp, Star } from '../icons';
@@ -10,6 +11,7 @@ interface BottomNavigationProps {
 }
 
 const BottomNavigation: React.FC<BottomNavigationProps> = ({ role }) => {
+    const navigate = useNavigate()
 
     const renderNavigationItems = () => {
         switch (role) {
@@ -35,7 +37,12 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ role }) => {
                 return (
                     <>
                         <Buttons type="default" label="Home" icon={<Home width="24" height="24" />} />
-                        <Buttons type="default" label="Painel" icon={<TrendingUp width="24" height="24" />} />
+                        <Buttons
+                            type="default"
+                            label="Painel"
+                            icon={<TrendingUp width="24" height="24" />}
+                            onClick={() => navigate('/admin/painel')}
+                        />
                         <Buttons type="default" label="Legado" icon={<Trophy width="24" height="24" />} />
                         <Buttons type="default" label="Perfil" icon={<UserCircle width="24" height="24" />} />
                     </>
