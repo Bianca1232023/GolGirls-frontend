@@ -15,6 +15,8 @@ import { ProfessorForgotPassword } from './pages/professorforgotpassword'
 import { AdminForgotPassword } from './pages/adminforgotpassword'
 import { ProfessorResetPassword } from './pages/professorresetpassword'
 import { AdminResetPassword } from './pages/adminresetpassword'
+import { AdminPainel } from './pages/adminpainel'
+import { AdminGerenciarConvites } from './pages/admingerenciarconvites'
 
 function App() {
 
@@ -36,6 +38,8 @@ function App() {
         <Route path="/admin/esqueci-senha" element={<AdminForgotPassword/>} />
         <Route path="/professor/redefinir-senha" element={<ProfessorResetPassword/>} />
         <Route path="/admin/redefinir-senha" element={<AdminResetPassword/>} />
+        <Route path="/admin/painel" element={<AdminPainel/>} />
+        <Route path="/admin/convites" element={<AdminGerenciarConvites/>} />
       </Routes>
     </BrowserRouter>
   )

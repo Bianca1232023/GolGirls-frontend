@@ -7,10 +7,6 @@ export const AdminSetPassword = () => {
   const navigate = useNavigate()
 
   const handleBack = () => {
-    if (window.history.length > 1) {
-      navigate(-1)
-      return
-    }
     navigate('/login/admin')
   }
 
