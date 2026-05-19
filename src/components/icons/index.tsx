@@ -50,3 +50,4 @@ export { default as UserPlus } from './user-plus';
 export { default as UserSearch } from './user-search';
 export { default as User } from './user';
 export { default as Users } from './users';
+export { default as Trash } from './trash';
