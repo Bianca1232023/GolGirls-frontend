@@ -1,0 +1,69 @@
+@use '../../styles/variables.scss' as *;
+
+.filter-chips {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 0.25rem;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &__chip {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+    padding: 0.5rem 0.95rem;
+    border-radius: 2rem;
+    border: 1.5px solid #e0e0e0;
+    background: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.18s;
+
+    &:hover {
+      border-color: #c0b0e8;
+      color: #7c3aed;
+    }
+
+    &--active {
+      background: linear-gradient(135deg, #7c3aed, #c026d3);
+      border-color: transparent;
+      color: #fff;
+
+      .filter-chips__icon,
+      span {
+        color: #fff;
+      }
+
+      .filter-chips__count {
+        background: rgba(255, 255, 255, 0.25);
+        color: #fff;
+      }
+    }
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    line-height: 1;
+  }
+
+  &__count {
+    background: #f0eafa;
+    color: #7c3aed;
+    font-size: 0.72rem;
+    font-weight: 700;
+    border-radius: 1rem;
+    padding: 0.1rem 0.45rem;
+    min-width: 1.2rem;
+    text-align: center;
+    transition: all 0.18s;
+  }
+}

@@ -27,8 +27,8 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ role }) => {
             case 'professor':
                 return (
                     <>
-                        <Buttons type="default" label="Home" icon={<Home width="24" height="24" />} />
-                        <Buttons type="default" label="Turmas" icon={<Briefcase width="24" height="24" />} />
+                        <Buttons type="default" label="Mural" icon={<Home width="24" height="24" />} />
+                        <Buttons type="default" label="Gestão" icon={<Briefcase width="24" height="24" />} onClick={() => navigate('/professor/painel')} />
                         <Buttons type="default" label="Legado" icon={<Trophy width="24" height="24" />} />
                         <Buttons type="default" label="Perfil" icon={<UserCircle width="24" height="24" />} />
                     </>
