@@ -9,7 +9,7 @@ export const AdminRegister = () => {
   return (
     <div style={{ paddingBottom: '5rem' }}>
       <Buttons type="back" label="Voltar" onClick={() => navigate(-1)} />
-      <InputRegister role="admin" />
+      <InputRegister />
       <Footer text="Acesso restrito. Apenas administradores autorizados." />
     </div>
   )

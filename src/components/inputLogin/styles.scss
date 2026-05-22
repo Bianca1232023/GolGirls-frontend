@@ -1,6 +1,10 @@
 @use "../../styles/variables.scss" as *;
 @use "../../styles/mixins.scss" as *;
 
+.all-login-content {
+    padding-bottom: 1rem;
+    margin-bottom: 0.5rem;
+}
 
 .login-content {
 

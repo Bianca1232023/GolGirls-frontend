@@ -17,6 +17,11 @@ export const AdminPainel = () => {
   const navigate = useNavigate()
   const [members, setMembers] = useState<Member[]>([])
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
+  const [editAdmin, setEditAdmin] = useState<Member | null>(null)
+  const [editName, setEditName] = useState('')
+  const [editEmail, setEditEmail] = useState('')
+  const [editPassword, setEditPassword] = useState('')
+  const [stats, setStats] = useState({ alunos_ativos: 0, total_presentes: 0 })
   const fetchedRef = useRef(false)
 
   async function fetchTeam() {
@@ -28,11 +33,35 @@ export const AdminPainel = () => {
     }
   }
 
+  async function fetchStats() {
+    try {
+      const res = await api.get('/admin/relatorios') as { relatorio?: { alunos_ativos: number; total_presentes: number } }
+      if (res.relatorio) setStats(res.relatorio)
+    } catch {
+      /* ignore */
+    }
+  }
+
   useEffect(() => {
     if (fetchedRef.current) return
     fetchedRef.current = true
     void fetchTeam()
+    void fetchStats()
   }, [])
+
+  async function handleSaveAdmin() {
+    if (!editAdmin || editAdmin.role !== 'admin') return
+    try {
+      const body: Record<string, string> = { name: editName.trim(), email: editEmail.trim() }
+      if (editPassword.trim()) body.password = editPassword
+      await api.patch(`/admins/${editAdmin.id}`, body)
+      setEditAdmin(null)
+      setEditPassword('')
+      void fetchTeam()
+    } catch {
+      alert('Erro ao atualizar administrador.')
+    }
+  }
 
   async function handleDelete(member: Member) {
     const route = member.role === 'professor'
@@ -74,14 +103,14 @@ export const AdminPainel = () => {
             <Users width="20" height="20" />
           </div>
           <span className="stat-label">Total Alunas</span>
-          <span className="stat-value">0</span>
+          <span className="stat-value">{stats.alunos_ativos}</span>
         </div>
         <div className="stat-card">
           <div className="stat-icon-wrap green">
             <TrendingUp width="20" height="20" />
           </div>
-          <span className="stat-label">Frequência</span>
-          <span className="stat-value">0%</span>
+          <span className="stat-label">Presenças</span>
+          <span className="stat-value">{stats.total_presentes}</span>
         </div>
       </div>
 
@@ -145,7 +174,7 @@ export const AdminPainel = () => {
 
         {members.map((m) => (
           <div className="docente-item" key={menuKey(m)}>
-            <div className="docente-avatar">{m.name.charAt(0).toUpperCase()}</div>
+            <div className="docente-avatar">{(m.name || '?').charAt(0).toUpperCase()}</div>
             <div className="docente-info">
               <div className="docente-name-row">
                 <span className="docente-name">{m.name}</span>
@@ -164,6 +193,20 @@ export const AdminPainel = () => {
               </button>
               {openMenuId === menuKey(m) && (
                 <div className="docente-dropdown">
+                  {m.role === 'admin' && (
+                    <button
+                      className="docente-dropdown-item"
+                      onClick={() => {
+                        setEditAdmin(m)
+                        setEditName(m.name)
+                        setEditEmail(m.email)
+                        setEditPassword('')
+                        setOpenMenuId(null)
+                      }}
+                    >
+                      Editar
+                    </button>
+                  )}
                   <button
                     className="docente-dropdown-item danger"
                     onClick={() => handleDelete(m)}
@@ -176,6 +219,24 @@ export const AdminPainel = () => {
           </div>
         ))}
       </div>
+
+      {editAdmin && (
+        <div className="painel-modal-overlay" onClick={() => setEditAdmin(null)}>
+          <div className="painel-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Editar administrador</h3>
+            <label>Nome</label>
+            <input value={editName} onChange={(e) => setEditName(e.target.value)} />
+            <label>E-mail</label>
+            <input type="email" value={editEmail} onChange={(e) => setEditEmail(e.target.value)} />
+            <label>Nova senha (opcional)</label>
+            <input type="password" value={editPassword} onChange={(e) => setEditPassword(e.target.value)} placeholder="Mín. 8 caracteres" />
+            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
+              <button type="button" className="evasao-btn" onClick={handleSaveAdmin}>Salvar</button>
+              <button type="button" className="evasao-btn" style={{ background: '#999' }} onClick={() => setEditAdmin(null)}>Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <BottomNavigation role="admin" />
     </div>

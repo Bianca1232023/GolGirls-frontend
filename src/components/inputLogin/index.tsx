@@ -5,8 +5,10 @@ import UserCog from '../icons/user-cog'
 import Shield from '../icons/shield'
 import { Logo } from '../icons'
 import Buttons from '../Button'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+import { hasLgpdConsent } from '../../services/auth'
+import { isValidEmail } from '../../utils/validation'
 
 type InputType = 'text' | 'password' | 'email';
 type Role = 'aluno' | 'professor' | 'admin';
@@ -19,14 +21,12 @@ interface InputProps {
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-
 const Inputs: React.FC<InputProps> = ( props: InputProps ) => {
-
     const navigate = useNavigate();
     const { login, loading, serverError } = useAuth();
 
     const [password, setPassword] = useState('');
-    const [errors, setErrors] = useState({ main: false, password: false });
+    const [errors, setErrors] = useState({ main: false, password: false, lgpd: false });
 
     const roleConfig = {
         aluno: { label: 'Portal da Aluna', description: 'Faça login para acessar seu portal do aluna', placeholder: 'Digite sua matrícula' },
@@ -45,28 +45,20 @@ const Inputs: React.FC<InputProps> = ( props: InputProps ) => {
         }
     }
 
-    const renderTitle = () => {
-        switch(props.role) {
-            case 'aluno':
-                return roleConfig.aluno.label;
-            case 'professor':
-                return roleConfig.professor.label;
-            case 'admin':
-                return roleConfig.admin.label;
-        }
-    }
+    const renderTitle = () => roleConfig[props.role].label;
 
     const handleClickEnter = async () => {
         const mainEmpty = !props.value.trim();
         const passwordEmpty = (props.role === 'professor' || props.role === 'admin') && !password.trim();
-        const invalidEmail = (props.role === 'professor' || props.role === 'admin') && props.value.trim() && !props.value.includes('@gmail.com');
+        const invalidEmail = (props.role === 'professor' || props.role === 'admin') && props.value.trim() && !isValidEmail(props.value);
+        const lgpdMissing = !hasLgpdConsent();
 
-        if (mainEmpty || passwordEmpty || invalidEmail) {
-            setErrors({ main: !!(mainEmpty || invalidEmail), password: passwordEmpty });
+        if (mainEmpty || passwordEmpty || invalidEmail || lgpdMissing) {
+            setErrors({ main: !!(mainEmpty || invalidEmail), password: passwordEmpty, lgpd: lgpdMissing });
             return;
         }
 
-        setErrors({ main: false, password: false });
+        setErrors({ main: false, password: false, lgpd: false });
 
         const token = await login({ role: props.role, value: props.value, password });
         if (!token) return;
@@ -76,7 +68,7 @@ const Inputs: React.FC<InputProps> = ( props: InputProps ) => {
                 navigate('/app/aluno');
                 break;
             case 'professor':
-                navigate('/app/professor');
+                navigate('/professor/painel');
                 break;
             case 'admin':
                 navigate('/app/admin');
@@ -87,8 +79,8 @@ const Inputs: React.FC<InputProps> = ( props: InputProps ) => {
     const getMainErrorMsg = () => {
         if (props.role === 'aluno') return 'Digite sua matrícula';
         if (!props.value.trim()) return 'Digite seu email';
-        if (!props.value.includes('@gmail.com')) return 'O email deve conter @gmail.com';
-        return 'Digite seu email';
+        if (!isValidEmail(props.value)) return 'Digite um e-mail válido';
+        return '';
     }
 
     const mainErrorMsg = getMainErrorMsg();
@@ -103,7 +95,6 @@ const Inputs: React.FC<InputProps> = ( props: InputProps ) => {
                 <div className="renderTitle">
                     <h1>{renderTitle()}</h1>
                 </div>
-
                 <span className='description'>{roleConfig[props.role].description}</span>
             </div>
             <br />
@@ -123,6 +114,7 @@ const Inputs: React.FC<InputProps> = ( props: InputProps ) => {
                         placeholder={roleConfig[props.role].placeholder}
                         value={props.value}
                         onChange={props.onChange}
+                        autoComplete={props.role === 'aluno' ? 'username' : 'email'}
                         />
                     {errors.main && <span className='input-error-msg'>{mainErrorMsg}</span>}
 
@@ -135,22 +127,38 @@ const Inputs: React.FC<InputProps> = ( props: InputProps ) => {
                                 placeholder="Digite sua senha"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                autoComplete="current-password"
                                 />
                             {errors.password && <span className='input-error-msg'>Digite sua senha</span>}
-                            {(props.role === 'professor' || props.role === 'admin') && (
-                                <button
-                                    className='forgot-password-link'
-                                    onClick={() => navigate(`/${props.role}/esqueci-senha`)}
-                                >
-                                    Esqueci minha senha
-                                </button>
-                            )}
+                            <button
+                                type="button"
+                                className='forgot-password-link'
+                                onClick={() => navigate(`/${props.role}/esqueci-senha`)}
+                            >
+                                Esqueci minha senha
+                            </button>
                         </>
+                    )}
+
+                    {errors.lgpd && (
+                        <span className='input-error-msg'>
+                            Aceite a <Link to="/privacidade">Política de Privacidade</Link> para continuar.
+                        </span>
                     )}
 
                     <Buttons type="login" label={loading ? 'Entrando...' : 'Entrar'} onClick={handleClickEnter} className={`btn-login--${props.role}`} />
                     {serverError && <span className='input-error-msg'>{serverError}</span>}
 
+                    {props.role === 'admin' && (
+                        <button
+                            type="button"
+                            className='forgot-password-link'
+                            style={{ marginTop: '0.75rem' }}
+                            onClick={() => navigate('/register/admin')}
+                        >
+                            Primeiro acesso? Cadastrar administrador
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

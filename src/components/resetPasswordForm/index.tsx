@@ -6,6 +6,7 @@ import { Logo } from '../icons'
 import Buttons from '../Button'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { api } from '../../services/api'
+import { isValidPassword, passwordsMatch } from '../../utils/validation'
 
 type Role = 'professor' | 'admin';
 
@@ -42,8 +43,8 @@ const ResetPasswordFormComponent: React.FC<ResetPasswordFormProps> = ({ role }) 
 
     const handleReset = async () => {
         const newErrors = {
-            password: !password.trim(),
-            confirmPassword: !!getConfirmError(),
+            password: !isValidPassword(password),
+            confirmPassword: !!getConfirmError() || !passwordsMatch(password, confirmPassword),
         };
 
         setErrors(newErrors);
@@ -87,7 +88,11 @@ const ResetPasswordFormComponent: React.FC<ResetPasswordFormProps> = ({ role }) 
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    {errors.password && <span className='input-error-msg'>Digite sua nova senha</span>}
+                    {errors.password && (
+                        <span className='input-error-msg'>
+                            {!password.trim() ? 'Digite sua nova senha' : 'Mínimo 8 caracteres'}
+                        </span>
+                    )}
 
                     <span className='label'>CONFIRMAR SENHA</span>
                     <input

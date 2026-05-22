@@ -1,10 +1,4 @@
-import BottomNavigation from '../components/bottomNavigation'
+import { Navigate } from 'react-router-dom'
 
-export const AppProfessor = () => {
-  return (
-    <div>
-        <BottomNavigation role="professor" />
-    </div>
-  )
-}
-
+/** Após login, professor vai direto ao painel de gestão. */
+export const AppProfessor = () => <Navigate to="/professor/painel" replace />

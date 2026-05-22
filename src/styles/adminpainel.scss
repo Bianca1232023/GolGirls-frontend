@@ -449,3 +449,35 @@
     }
   }
 }
+
+.painel-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.painel-modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  h3 {
+    margin: 0 0 0.5rem;
+  }
+
+  input {
+    padding: 0.6rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+}

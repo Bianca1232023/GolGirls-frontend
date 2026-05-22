@@ -64,6 +64,12 @@ export const ProfessorPainel = () => {
   const [loading, setLoading] = useState(false)
   const [feedback, setFeedback] = useState<{ type: 'error' | 'success'; msg: string } | null>(null)
 
+  const [chamadaTurmaId, setChamadaTurmaId] = useState('')
+  const [chamadaData, setChamadaData] = useState(new Date().toISOString().slice(0, 10))
+  const [chamadaAlunos, setChamadaAlunos] = useState<Aluna[]>([])
+  const [presencaMap, setPresencaMap] = useState<Record<number, boolean>>({})
+  const [relatorio, setRelatorio] = useState<{ turmas?: Array<{ turma_nome: string; alunos_total: number; total_presentes: number }> } | null>(null)
+
   const localizacaoDisplay =
     turmas.find((t) => t.nucleo_localizacao)?.nucleo_localizacao ?? 'Localização'
 
@@ -101,7 +107,58 @@ export const ProfessorPainel = () => {
 
   useEffect(() => {
     if (tab === 'buscar') void fetchAlunos()
+    if (tab === 'relatorios') void fetchRelatorios()
   }, [tab]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  async function loadChamadaAlunos(turmaId: string) {
+    if (!turmaId) {
+      setChamadaAlunos([])
+      return
+    }
+    try {
+      const res = await api.get(`/alunos?turma_id=${turmaId}`) as { alunos?: Aluna[] }
+      const list = res.alunos ?? []
+      setChamadaAlunos(list)
+      const map: Record<number, boolean> = {}
+      list.forEach((a) => { map[a.id] = true })
+      setPresencaMap(map)
+    } catch {
+      setChamadaAlunos([])
+    }
+  }
+
+  async function fetchRelatorios() {
+    try {
+      const res = await api.get('/professor/relatorios') as { turmas?: Array<{ turma_nome: string; alunos_total: number; total_presentes: number; total_registros: number }> }
+      setRelatorio(res)
+    } catch {
+      setRelatorio(null)
+    }
+  }
+
+  async function handleSalvarChamada(e: React.FormEvent) {
+    e.preventDefault()
+    if (!chamadaTurmaId) {
+      showFeedback('error', 'Selecione uma turma')
+      return
+    }
+    setLoading(true)
+    try {
+      await api.post('/professor/chamada', {
+        turma_id: Number(chamadaTurmaId),
+        data_aula: chamadaData,
+        registros: chamadaAlunos.map((a) => ({
+          aluno_id: a.id,
+          presente: presencaMap[a.id] ?? false,
+        })),
+      })
+      showFeedback('success', 'Chamada salva com sucesso!')
+    } catch (err) {
+      showFeedback('error', err instanceof Error ? err.message : 'Erro ao salvar chamada')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   function showFeedback(type: 'error' | 'success', msg: string) {
     setFeedback({ type, msg })
@@ -122,17 +179,24 @@ export const ProfessorPainel = () => {
 
   async function handleCadastrar(e: React.FormEvent) {
     e.preventDefault()
+    const selectedTurma = turmas.find((t) => t.id === Number(turmaId))
+    if (!selectedTurma?.escola_id) {
+      showFeedback('error', 'Turma sem escola vinculada. Peça ao administrativo para configurar a turma.')
+      return
+    }
     setLoading(true)
     try {
-      const selectedTurma = turmas.find((t) => t.id === Number(turmaId))
       await api.post('/professor/createaluno', {
         nome: nome.trim(),
         matricula: matricula.trim(),
         nucleo_id: Number(nucleoId),
-        escola_id: selectedTurma?.escola_id ?? undefined,
+        escola_id: selectedTurma.escola_id,
         turma_id: Number(turmaId),
         bairro: bairro.trim(),
         idade: calcIdade(dataNasc),
+        telefone_aluna: telefoneAluna.trim() || undefined,
+        nome_responsavel: nomeResp.trim(),
+        telefone_responsavel: telefoneResp.trim(),
       })
       showFeedback('success', 'Aluna cadastrada com sucesso!')
       setNome(''); setMatricula(''); setDataNasc('')
@@ -291,6 +355,73 @@ export const ProfessorPainel = () => {
                       {[a.turma_nome, a.nucleo].filter(Boolean).join(' · ')}
                     </span>
                   )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {tab === 'chamada' && (
+        <div className="prof-content">
+          <form className="prof-form" onSubmit={handleSalvarChamada}>
+            <InputField
+              label="Turma *"
+              value={chamadaTurmaId}
+              onChange={(v) => {
+                setChamadaTurmaId(v)
+                void loadChamadaAlunos(v)
+              }}
+              placeholder="Selecione a turma"
+              options={turmas.map((t) => ({ value: t.id, label: t.nome }))}
+              required
+            />
+            <div className="input-field">
+              <label className="input-field__label">Data da aula *</label>
+              <input
+                className="input-field__control"
+                type="date"
+                value={chamadaData}
+                onChange={(e) => setChamadaData(e.target.value)}
+                required
+              />
+            </div>
+            {chamadaAlunos.length === 0 ? (
+              <p className="prof-empty">Selecione uma turma para listar alunas.</p>
+            ) : (
+              <div className="prof-aluna-list">
+                {chamadaAlunos.map((a) => (
+                  <label key={a.id} className="prof-aluna-card" style={{ cursor: 'pointer' }}>
+                    <input
+                      type="checkbox"
+                      checked={presencaMap[a.id] ?? false}
+                      onChange={(e) => setPresencaMap((m) => ({ ...m, [a.id]: e.target.checked }))}
+                    />
+                    <span className="prof-aluna-card__nome" style={{ marginLeft: '0.5rem' }}>{a.nome}</span>
+                  </label>
+                ))}
+              </div>
+            )}
+            <button className="prof-submit-btn" type="submit" disabled={loading || !chamadaAlunos.length}>
+              Salvar chamada
+            </button>
+          </form>
+        </div>
+      )}
+
+      {tab === 'relatorios' && (
+        <div className="prof-content">
+          <h3 style={{ marginBottom: '1rem' }}>Relatórios por turma</h3>
+          {!relatorio?.turmas?.length ? (
+            <p className="prof-empty">Nenhum dado disponível.</p>
+          ) : (
+            <div className="prof-aluna-list">
+              {relatorio.turmas.map((t, i) => (
+                <div key={i} className="prof-aluna-card">
+                  <span className="prof-aluna-card__nome">{t.turma_nome}</span>
+                  <span className="prof-aluna-card__sub">
+                    {t.alunos_total} alunas · {t.total_presentes} presenças registradas
+                  </span>
                 </div>
               ))}
             </div>

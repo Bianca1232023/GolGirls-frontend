@@ -5,6 +5,7 @@ import Shield from '../icons/shield'
 import { Logo } from '../icons'
 import Buttons from '../Button'
 import { api } from '../../services/api'
+import { isValidEmail } from '../../utils/validation'
 
 type Role = 'professor' | 'admin';
 
@@ -20,7 +21,7 @@ const ForgotPasswordComponent: React.FC<ForgotPasswordProps> = ({ role }) => {
     const [success, setSuccess] = useState(false);
 
     const handleSubmit = async () => {
-        const invalid = !email.trim() || !email.includes('@gmail.com');
+        const invalid = !isValidEmail(email);
         setEmailError(invalid);
         if (invalid) return;
 
@@ -71,7 +72,7 @@ const ForgotPasswordComponent: React.FC<ForgotPasswordProps> = ({ role }) => {
                         />
                         {emailError && (
                             <span className='input-error-msg'>
-                                {!email.trim() ? 'Digite seu e-mail' : 'O e-mail deve conter @gmail.com'}
+                                Digite um e-mail válido
                             </span>
                         )}
                         <Buttons

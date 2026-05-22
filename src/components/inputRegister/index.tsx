@@ -1,24 +1,21 @@
 import React, { useState } from 'react'
 import './styles.scss'
-import UserCog from '../icons/user-cog'
 import Shield from '../icons/shield'
 import { Logo } from '../icons'
 import Buttons from '../Button'
 import { useNavigate } from 'react-router-dom'
+import { api } from '../../services/api'
+import { isValidEmail, isValidPassword, passwordsMatch } from '../../utils/validation'
 
-type Role = 'professor' | 'admin';
-
-interface RegisterProps {
-    role: Role;
-}
-
-const InputRegister: React.FC<RegisterProps> = ({ role }) => {
+const InputRegister: React.FC = () => {
     const navigate = useNavigate();
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [serverError, setServerError] = useState<string | null>(null);
     const [errors, setErrors] = useState({
         name: false,
         email: false,
@@ -26,60 +23,53 @@ const InputRegister: React.FC<RegisterProps> = ({ role }) => {
         confirmPassword: false,
     });
 
-    const roleConfig = {
-        professor: {
-            label: 'Cadastro do Professor',
-            description: 'Preencha os dados para criar sua conta',
-        },
-        admin: {
-            label: 'Cadastro do Administrador',
-            description: 'Preencha os dados para criar sua conta',
-        },
-    };
-
-    const renderIcon = () => {
-        switch (role) {
-            case 'professor':
-                return <UserCog width="28" height="28" />;
-            case 'admin':
-                return <Shield width="28" height="28" />;
-        }
-    };
-
     const getEmailError = () => {
         if (!email.trim()) return 'Digite seu email';
-        if (!email.includes('@gmail.com')) return 'O email deve conter @gmail.com';
+        if (!isValidEmail(email)) return 'Digite um e-mail válido';
+        return '';
+    };
+
+    const getPasswordError = () => {
+        if (!password.trim()) return 'Digite sua senha';
+        if (!isValidPassword(password)) return 'A senha deve ter no mínimo 8 caracteres';
         return '';
     };
 
     const getConfirmPasswordError = () => {
         if (!confirmPassword.trim()) return 'Confirme sua senha';
-        if (confirmPassword !== password) return 'As senhas não coincidem';
+        if (!passwordsMatch(password, confirmPassword)) return 'As senhas não coincidem';
         return '';
     };
 
-    const handleRegister = () => {
+    const handleRegister = async () => {
         const emailError = getEmailError();
+        const passwordError = getPasswordError();
         const confirmPasswordError = getConfirmPasswordError();
 
         const newErrors = {
             name: !name.trim(),
             email: !!emailError,
-            password: !password.trim(),
+            password: !!passwordError,
             confirmPassword: !!confirmPasswordError,
         };
 
         setErrors(newErrors);
-
         if (Object.values(newErrors).some(Boolean)) return;
 
-        switch (role) {
-            case 'professor':
-                navigate('/app/professor');
-                break;
-            case 'admin':
-                navigate('/app/admin');
-                break;
+        setLoading(true);
+        setServerError(null);
+
+        try {
+            await api.post('/admin/register', {
+                name: name.trim(),
+                email: email.trim(),
+                password,
+            });
+            navigate('/login/admin');
+        } catch (err) {
+            setServerError(err instanceof Error ? err.message : 'Erro ao cadastrar');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -87,18 +77,19 @@ const InputRegister: React.FC<RegisterProps> = ({ role }) => {
         <div className='all-register-content'>
             <div className='register-header'>
                 <Logo width="190" height="147" />
-                <div className={`cap-icon-${role}`}>
-                    {renderIcon()}
+                <div className='cap-icon-admin'>
+                    <Shield width="28" height="28" />
                 </div>
                 <div className='register-title'>
-                    <h1>{roleConfig[role].label}</h1>
+                    <h1>Cadastro do Administrador</h1>
                 </div>
-                <span className='register-description'>{roleConfig[role].description}</span>
+                <span className='register-description'>
+                    Disponível apenas na primeira configuração do sistema (banco vazio).
+                </span>
             </div>
 
             <div className='register-form'>
                 <div className='register-container'>
-
                     <span className='field-label'>NOME</span>
                     <input
                         className={`register-input${errors.name ? ' register-input--error' : ''}`}
@@ -116,6 +107,7 @@ const InputRegister: React.FC<RegisterProps> = ({ role }) => {
                         placeholder='Digite seu email'
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        autoComplete="email"
                     />
                     {errors.email && <span className='register-error-msg'>{getEmailError()}</span>}
 
@@ -123,11 +115,12 @@ const InputRegister: React.FC<RegisterProps> = ({ role }) => {
                     <input
                         className={`register-input${errors.password ? ' register-input--error' : ''}`}
                         type='password'
-                        placeholder='Digite sua senha'
+                        placeholder='Mínimo 8 caracteres'
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        autoComplete="new-password"
                     />
-                    {errors.password && <span className='register-error-msg'>Digite sua senha</span>}
+                    {errors.password && <span className='register-error-msg'>{getPasswordError()}</span>}
 
                     <span className='field-label'>CONFIRMAR SENHA</span>
                     <input
@@ -136,10 +129,18 @@ const InputRegister: React.FC<RegisterProps> = ({ role }) => {
                         placeholder='Confirme sua senha'
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
+                        autoComplete="new-password"
                     />
                     {errors.confirmPassword && <span className='register-error-msg'>{getConfirmPasswordError()}</span>}
 
-                    <Buttons type="login" label="Cadastrar" onClick={handleRegister} className={`btn-login--${role}`} />
+                    {serverError && <span className='register-error-msg'>{serverError}</span>}
+
+                    <Buttons
+                        type="login"
+                        label={loading ? 'Cadastrando...' : 'Cadastrar'}
+                        onClick={handleRegister}
+                        className="btn-login--admin"
+                    />
                 </div>
             </div>
         </div>
