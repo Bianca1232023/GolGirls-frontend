@@ -1,66 +1,60 @@
-import { useNavigate } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
+import { AppShell } from '../components/layout/AppShell'
+import { MuralFeed } from '../components/mural/MuralFeed'
+import { MuralPageHeader } from '../components/mural/MuralPageHeader'
+import { ProfileMenu } from '../components/profile/ProfileMenu'
 import BottomNavigation from '../components/bottomNavigation'
-import { logout, getSessionLabel } from '../services/auth'
-import { Mail, School, TrendingUp } from '../components/icons'
+import { MURAL_POSTS } from '../data/mockData'
+import { logoutToLogin, getSessionLabel } from '../services/auth'
 import '../styles/apphub.scss'
+import '../styles/golgirls-design.scss'
+
+type AdminTab = 'home' | 'perfil'
 
 export const AppAdmin = () => {
-  const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const tabParam = searchParams.get('tab')
+  const tab: AdminTab = tabParam === 'perfil' ? 'perfil' : 'home'
   const sessionLabel = getSessionLabel()
 
+  function setActiveTab(t: string) {
+    const tab = t === 'perfil' ? 'perfil' : 'home'
+    if (tab === 'home') searchParams.delete('tab')
+    else searchParams.set('tab', tab)
+    setSearchParams(searchParams, { replace: true })
+  }
+
   function handleLogout() {
-    logout()
-    navigate('/login/admin', { replace: true })
+    logoutToLogin('/login/admin')
   }
 
   return (
-    <div className="app-hub">
-      <header className="app-hub__header">
-        <h1>Painel Administrativo</h1>
-        <p>Gestão do programa GoLGirls</p>
-      </header>
+    <AppShell role="admin">
+      <div className={`app-hub${tab === 'home' ? ' app-hub--mural' : ''}`} style={{ position: 'relative' }}>
+        {tab === 'perfil' && <ProfileMenu onLogout={handleLogout} />}
+        {tab === 'home' ? (
+          <MuralPageHeader subtitle="Novidades e conteúdo do instituto." />
+        ) : (
+          <header className="app-hub__header">
+            <h1>Meu Perfil</h1>
+            <p>Administrador(a)</p>
+          </header>
+        )}
 
-      <div className="app-hub__grid">
-        <button type="button" className="app-hub__card" onClick={() => navigate('/admin/painel')}>
-          <div className="app-hub__icon app-hub__icon--admin">
-            <TrendingUp width="22" height="22" />
-          </div>
-          <div>
-            <h2>Equipe</h2>
-            <span>Professores e administradores</span>
-          </div>
-        </button>
+        {tab === 'home' && <MuralFeed initialPosts={MURAL_POSTS.map((p) => ({ ...p }))} />}
 
-        <button type="button" className="app-hub__card" onClick={() => navigate('/admin/convites')}>
-          <div className="app-hub__icon app-hub__icon--admin">
-            <Mail width="22" height="22" />
+        {tab === 'perfil' && (
+          <div className="app-hub__session" style={{ marginTop: '2.5rem' }}>
+            {sessionLabel && <p><strong>E-mail:</strong> {sessionLabel}</p>}
+            <p><strong>Perfil:</strong> Administrador(a)</p>
+            <p style={{ fontSize: '0.85rem', marginTop: '1rem' }}>
+              Gestão de equipe, convites e sistema em <strong>Painel → Gestão</strong>.
+            </p>
           </div>
-          <div>
-            <h2>Convites</h2>
-            <span>Enviar e acompanhar convites</span>
-          </div>
-        </button>
+        )}
 
-        <button type="button" className="app-hub__card" onClick={() => navigate('/admin/sistema')}>
-          <div className="app-hub__icon app-hub__icon--admin">
-            <School width="22" height="22" />
-          </div>
-          <div>
-            <h2>Sistema</h2>
-            <span>Escolas, núcleos e turmas</span>
-          </div>
-        </button>
+        <BottomNavigation role="admin" activeTab={tab} onTabChange={setActiveTab} />
       </div>
-
-      {sessionLabel && (
-        <p className="app-hub__session">Sessão: {sessionLabel}</p>
-      )}
-
-      <button type="button" className="app-hub__logout" onClick={handleLogout}>
-        Sair da conta
-      </button>
-
-      <BottomNavigation role="admin" />
-    </div>
+    </AppShell>
   )
 }

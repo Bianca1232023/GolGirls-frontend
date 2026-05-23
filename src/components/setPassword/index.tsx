@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import './styles.scss'
 import UserCog from '../icons/user-cog'
 import Shield from '../icons/shield'
-import { Logo } from '../icons'
 import Buttons from '../Button'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { api } from '../../services/api'
@@ -71,7 +70,7 @@ const SetPasswordComponent: React.FC<SetPasswordProps> = ({ role }) => {
     return (
         <div className='all-setpassword-content'>
             <div className='setpassword-header'>
-                <Logo width="190" height="147" />
+                <img src="/logo-golgirls.svg" alt="Gol Girls" className="gg-logo gg-logo--login" />
                 <div className={`cap-icon-${role}`}>
                     {role === 'professor' ? <UserCog width="28" height="28" /> : <Shield width="28" height="28" />}
                 </div>

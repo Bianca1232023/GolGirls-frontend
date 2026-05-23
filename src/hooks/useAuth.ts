@@ -27,7 +27,10 @@ export function useAuth(): UseAuthReturn {
       let label: string | undefined;
 
       if (role === 'aluno') {
-        const res = await api.post<{ token?: string }>('/aluno/login', { matricula: value.trim() });
+        const res = await api.post<{ token?: string; message?: string }>('/aluno/login', {
+          matricula: value.trim(),
+          password,
+        });
         token = res.token ?? null;
         label = value.trim();
       } else if (role === 'professor') {

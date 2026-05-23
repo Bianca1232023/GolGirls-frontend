@@ -2,126 +2,118 @@
 @use "../../styles/mixins.scss" as *;
 
 .acess-card-component {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    width: 90%;
-    height: 90%;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
-    border-radius: 20px;
-    padding: 40px 0px 0px 0px;
-    margin-top: 30px;
-}
-
-.acess-card-component {
-    animation: slideInRight 0.45s ease-out both;
+  width: 100%;
+  max-width: 340px;
+  background: #fff;
+  border: 1px solid rgba(186, 183, 183, 0.35);
+  border-radius: 1rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  animation: slideInRight 0.45s ease-out both;
 }
 
 @keyframes slideInRight {
-    from {
-        opacity: 0;
-        transform: translateX(-40px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
-.acess-card-content{
-    width: 100%;
+.acess-card-content {
+  width: 100%;
 
-    .cap-icon-aluno {
-        @include cap-icon($bg-primary);
-    }
+  .cap-icon-aluno {
+    @include cap-icon($bg-primary);
+  }
 
-    .cap-icon-professor {
-        @include cap-icon($bg-secondary);
-    }
+  .cap-icon-professor {
+    @include cap-icon($bg-secondary);
+  }
 
-    .cap-icon-admin {
-        @include cap-icon($bg-tertiary);
-    }
+  .cap-icon-admin {
+    @include cap-icon($bg-tertiary);
+  }
 }
 
 .information-card {
-    border-bottom: solid 0.5px rgba(186, 183, 183, 0.3);
-    display: flex;
-    gap: 1rem;
+  border-bottom: 1px solid rgba(186, 183, 183, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1rem 1rem 0.85rem;
+  text-align: left;
 }
 
 .entry-buttons {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 3rem;
-    border-radius: 0.5rem;
-    background-color: #fff;
-    color: #000;
-    font-weight: bold;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-height: 2.75rem;
+
+  .login-button,
+  .register-button {
+    flex: 1;
+    border: none;
+    background: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.2s ease;
+  }
 
-    .login-button {
-        background: white;
-        z-index: 0;
-        width: 100%;
-        height: 100%;
-        border-radius: 0px 0px 0px 10px;
-        border-top: 0;
-        border: none;
-        color: $color-primary;
-    }
-    
-    .login-button:hover {
-        background: rgb(248, 225, 236);
-    }
+  .login-button {
+    color: $color-primary;
+    border-radius: 0 0 0 0.95rem;
 
-    .register-button {
-        background: white;
-        z-index: 0;
-        width: 100%;
-        height: 100%;
-        border-radius: 0px 0px 10px 0px;
-        border-top: 0;
-        border: none;
-        color: $color-secondary;
-        border-left: solid 0.5px rgba(186, 183, 183, 0.3);
+    &:hover {
+      background: rgb(248, 225, 236);
     }
-    
-    .register-button:hover {
-        background: rgb(235, 233, 233);
+  }
+
+  .register-button {
+    color: $color-secondary;
+    border-left: 1px solid rgba(186, 183, 183, 0.3);
+    border-radius: 0 0 0.95rem 0;
+
+    &:hover {
+      background: rgb(245, 245, 245);
     }
+  }
+
+  &--split .login-button {
+    border-radius: 0;
+  }
+}
+
+.entry-buttons-aluno .login-button,
+.entry-buttons-admin .login-button {
+  border-radius: 0 0 0.95rem 0.95rem;
 }
 
 .role-container {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    flex-direction: column;
-    width: 100%;
-    height: 3rem;
-    border-radius: 0.5rem;
-    background-color: #fff;
-    color: #000;
-    font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
 
-    .role-description {
-        font-size: small;
-        font-weight: lighter;
-        color: $color-secondary;
-        opacity: 0.7;
-    }
-}
+  .role-label {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #111827;
+  }
 
-// Estilos específicos por role para o login-button
-.entry-buttons-aluno .login-button,
-.entry-buttons-professor .login-button {
-    border-radius: 0px 0px 10px 10px;
-}
-
-.entry-buttons-admin .login-button {
-    border-radius: 0px 0px 0px 10px;
+  .role-description {
+    margin-top: 0.15rem;
+    font-size: 0.82rem;
+    font-weight: 400;
+    color: $color-secondary;
+    opacity: 0.85;
+    line-height: 1.35;
+  }
 }

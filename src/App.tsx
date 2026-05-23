@@ -7,7 +7,7 @@ import { InitialPage } from './pages/InitialPage'
 import { StudentLogin } from './pages/studentlogin'
 import { ProfessorLogin } from './pages/professorlogin'
 import { AdminLogin } from './pages/adminlogin'
-import { AdminRegister } from './pages/adminregister'
+import { AlunoSetPasswordPage, AlunoForgotPassword, AlunoResetPassword, AdminRegisterRedirect } from './pages/alunoAuthPages'
 import { ProfessorRegister } from './pages/professorregister'
 import { ProfessorSetPassword } from './pages/professorsetpassword'
 import { AdminSetPassword } from './pages/adminsetpassword'
@@ -22,7 +22,8 @@ import { AdminPainel } from './pages/adminpainel'
 import { AdminGerenciarConvites } from './pages/admingerenciarconvites'
 import { AdminGerenciarSistema } from './pages/admingerenciarsistema'
 import { ProfessorPainel } from './pages/professorpainel'
-import { ProfessorMural } from './pages/professormural'
+import { ProfessorMural, ProfessorPerfil } from './pages/professormural'
+import { LegadoPage } from './pages/LegadoPage'
 import { PrivacidadePage } from './pages/privacidade'
 
 function App() {
@@ -38,10 +39,14 @@ function App() {
         <Route path="/login/professor" element={<ProfessorLogin />} />
         <Route path="/login/admin" element={<AdminLogin />} />
 
+        <Route path="/aluno/definir-senha" element={<AlunoSetPasswordPage />} />
+        <Route path="/aluno/esqueci-senha" element={<AlunoForgotPassword />} />
+        <Route path="/aluno/redefinir-senha" element={<AlunoResetPassword />} />
+
         <Route path="/professor/definir-senha" element={<ProfessorSetPassword />} />
         <Route path="/admin/definir-senha" element={<AdminSetPassword />} />
         <Route path="/register/professor" element={<ProfessorRegister />} />
-        <Route path="/register/admin" element={<AdminRegister />} />
+        <Route path="/register/admin" element={<AdminRegisterRedirect />} />
 
         <Route path="/professor/esqueci-senha" element={<ProfessorForgotPassword />} />
         <Route path="/admin/esqueci-senha" element={<AdminForgotPassword />} />
@@ -81,6 +86,14 @@ function App() {
           }
         />
         <Route
+          path="/professor/perfil"
+          element={
+            <ProtectedRoute allowedRoles={['professor']}>
+              <ProfessorPerfil />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/professor/mural"
           element={
             <ProtectedRoute allowedRoles={['professor']}>
@@ -104,6 +117,9 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/legado/aluno" element={<ProtectedRoute allowedRoles={['aluno']}><LegadoPage role="aluno" /></ProtectedRoute>} />
+        <Route path="/legado/professor" element={<ProtectedRoute allowedRoles={['professor']}><LegadoPage role="professor" /></ProtectedRoute>} />
+        <Route path="/legado/admin" element={<ProtectedRoute allowedRoles={['admin']}><LegadoPage role="admin" /></ProtectedRoute>} />
         <Route
           path="/admin/sistema"
           element={

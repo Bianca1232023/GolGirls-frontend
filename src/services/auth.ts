@@ -54,3 +54,9 @@ export function setLgpdConsent(): void {
 export function logout(): void {
   clearSession();
 }
+
+/** Redireciona ao login sem empilhar histórico (evita Voltar voltar ao app logado). */
+export function logoutToLogin(loginPath: string): void {
+  clearSession();
+  window.location.replace(loginPath);
+}

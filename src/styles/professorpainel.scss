@@ -80,6 +80,58 @@
   gap: 1rem;
 }
 
+/* ── CHAMADA (botão fixo no rodapé da aba) ── */
+.prof-chamada {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.prof-chamada__body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-bottom: 0.5rem;
+}
+
+.prof-chamada__list {
+  padding-bottom: 1rem;
+}
+
+.prof-chamada:has(.prof-chamada__footer) .prof-chamada__body {
+  padding-bottom: 4.5rem;
+}
+
+.prof-chamada__footer {
+  position: sticky;
+  bottom: 4.75rem;
+  z-index: 20;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.75rem 1rem 0.25rem;
+  background: linear-gradient(
+    180deg,
+    rgba(245, 246, 250, 0) 0%,
+    rgba(245, 246, 250, 0.95) 40%,
+    #f5f6fa 100%
+  );
+
+  @media (min-width: 1024px) {
+    bottom: 0;
+    padding: 1rem 0;
+  }
+}
+
+.prof-chamada__submit {
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto;
+  display: block;
+}
+
 /* ── SECTION HEADER ── */
 .prof-section-header {
   display: flex;
@@ -200,7 +252,7 @@
 }
 
 .prof-filtros-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
@@ -214,6 +266,12 @@
   color: $color-primary;
   cursor: pointer;
   transition: background 0.2s;
+  line-height: 1;
+
+  svg {
+    flex-shrink: 0;
+    display: block;
+  }
 
   &:hover { background: #fce4f0; }
 }

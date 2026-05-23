@@ -7,6 +7,8 @@
     align-items: center;
     justify-content: flex-start;
     width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
 }
 
 .forgot-header {
@@ -14,6 +16,14 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    width: 100%;
+    text-align: center;
+
+    .cap-icon-aluno {
+        @include cap-icon($bg-primary);
+        width: 50px;
+        margin: 10px 0 0;
+    }
 
     .cap-icon-professor {
         @include cap-icon($bg-secondary);
@@ -52,17 +62,17 @@
 
 .forgot-form {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     width: 100%;
-    margin-top: 20px;
+    margin-top: 1.25rem;
 }
 
 .forgot-container {
-    margin-left: 30px;
+    width: 100%;
     display: flex;
-    align-items: flex-start;
+    align-items: stretch;
     flex-direction: column;
     gap: 0.5rem;
 
@@ -75,12 +85,13 @@
     }
 
     .input-box {
-        width: 300px;
+        width: 100%;
         height: 2.5rem;
         border-radius: 0.9rem;
         border: solid 1px rgba(186, 183, 183, 0.3);
         padding: 0.2rem;
         padding-left: 12px;
+        box-sizing: border-box;
 
         &::placeholder {
             color: $color-secondary;

@@ -3,8 +3,11 @@ import { api } from '../services/api'
 import BottomNavigation from '../components/bottomNavigation'
 import FilterChips from '../components/filterChips'
 import InputField from '../components/inputField'
+import { AppShell } from '../components/layout/AppShell'
 import { MapPin, UserPlus, Search, Filter } from '../components/icons'
+import { MOCK_FALTAS_CONSECUTIVAS, type ChamadaStatus } from '../data/mockData'
 import '../styles/professorpainel.scss'
+import '../styles/golgirls-design.scss'
 
 type ProfessorTab = 'chamada' | 'buscar' | 'cadastrar' | 'relatorios'
 
@@ -37,7 +40,7 @@ interface Aluna {
 }
 
 export const ProfessorPainel = () => {
-  const [tab, setTab] = useState<ProfessorTab>('cadastrar')
+  const [tab, setTab] = useState<ProfessorTab>('chamada')
   const [turmas, setTurmas] = useState<Turma[]>([])
   const [nucleos, setNucleos] = useState<Nucleo[]>([])
 
@@ -53,6 +56,7 @@ export const ProfessorPainel = () => {
   // Cadastrar form state
   const [nome, setNome] = useState('')
   const [matricula, setMatricula] = useState('')
+  const [email, setEmail] = useState('')
   const [dataNasc, setDataNasc] = useState('')
   const [nucleoId, setNucleoId] = useState('')
   const [turmaId, setTurmaId] = useState('')
@@ -67,7 +71,9 @@ export const ProfessorPainel = () => {
   const [chamadaTurmaId, setChamadaTurmaId] = useState('')
   const [chamadaData, setChamadaData] = useState(new Date().toISOString().slice(0, 10))
   const [chamadaAlunos, setChamadaAlunos] = useState<Aluna[]>([])
-  const [presencaMap, setPresencaMap] = useState<Record<number, boolean>>({})
+  const [statusMap, setStatusMap] = useState<Record<number, ChamadaStatus>>({})
+  const [nucleoChamada, setNucleoChamada] = useState<'meier' | 'seropedica'>('meier')
+  const [showChamadaModal, setShowChamadaModal] = useState(false)
   const [relatorio, setRelatorio] = useState<{ turmas?: Array<{ turma_nome: string; alunos_total: number; total_presentes: number }> } | null>(null)
 
   const localizacaoDisplay =
@@ -119,9 +125,9 @@ export const ProfessorPainel = () => {
       const res = await api.get(`/alunos?turma_id=${turmaId}`) as { alunos?: Aluna[] }
       const list = res.alunos ?? []
       setChamadaAlunos(list)
-      const map: Record<number, boolean> = {}
-      list.forEach((a) => { map[a.id] = true })
-      setPresencaMap(map)
+      const map: Record<number, ChamadaStatus> = {}
+      list.forEach((a) => { map[a.id] = null })
+      setStatusMap(map)
     } catch {
       setChamadaAlunos([])
     }
@@ -136,10 +142,14 @@ export const ProfessorPainel = () => {
     }
   }
 
-  async function handleSalvarChamada(e: React.FormEvent) {
-    e.preventDefault()
+  async function handleSalvarChamada() {
     if (!chamadaTurmaId) {
       showFeedback('error', 'Selecione uma turma')
+      return
+    }
+    const pendentes = chamadaAlunos.filter((a) => !statusMap[a.id])
+    if (pendentes.length) {
+      showFeedback('error', `Marque P, F ou T para ${pendentes.length} aluna(s)`)
       return
     }
     setLoading(true)
@@ -149,15 +159,31 @@ export const ProfessorPainel = () => {
         data_aula: chamadaData,
         registros: chamadaAlunos.map((a) => ({
           aluno_id: a.id,
-          presente: presencaMap[a.id] ?? false,
+          presente: statusMap[a.id] === 'P',
         })),
       })
-      showFeedback('success', 'Chamada salva com sucesso!')
+      setShowChamadaModal(false)
+      showFeedback('success', 'Chamada finalizada com sucesso!')
     } catch (err) {
       showFeedback('error', err instanceof Error ? err.message : 'Erro ao salvar chamada')
     } finally {
       setLoading(false)
     }
+  }
+
+  const chamadaResumo = {
+    p: chamadaAlunos.filter((a) => statusMap[a.id] === 'P').length,
+    f: chamadaAlunos.filter((a) => statusMap[a.id] === 'F').length,
+    t: chamadaAlunos.filter((a) => statusMap[a.id] === 'T').length,
+    pendentes: chamadaAlunos.filter((a) => !statusMap[a.id]).length,
+  }
+
+  function setStatus(alunoId: number, s: ChamadaStatus) {
+    setStatusMap((m) => ({ ...m, [alunoId]: s }))
+  }
+
+  function hasEvasionRisk(alunoId: number) {
+    return (MOCK_FALTAS_CONSECUTIVAS[alunoId] ?? 0) >= 3
   }
 
   function showFeedback(type: 'error' | 'success', msg: string) {
@@ -189,6 +215,7 @@ export const ProfessorPainel = () => {
       await api.post('/professor/createaluno', {
         nome: nome.trim(),
         matricula: matricula.trim(),
+        email: email.trim(),
         nucleo_id: Number(nucleoId),
         escola_id: selectedTurma.escola_id,
         turma_id: Number(turmaId),
@@ -198,8 +225,8 @@ export const ProfessorPainel = () => {
         nome_responsavel: nomeResp.trim(),
         telefone_responsavel: telefoneResp.trim(),
       })
-      showFeedback('success', 'Aluna cadastrada com sucesso!')
-      setNome(''); setMatricula(''); setDataNasc('')
+      showFeedback('success', 'Aluna cadastrada! E-mail enviado para definir a senha.')
+      setNome(''); setMatricula(''); setEmail(''); setDataNasc('')
       setNucleoId(''); setTurmaId(''); setBairro('')
       setTelefoneAluna(''); setNomeResp(''); setTelefoneResp('')
     } catch (err) {
@@ -232,6 +259,7 @@ export const ProfessorPainel = () => {
   })
 
   return (
+    <AppShell role="professor">
     <div className="prof-page">
 
       {/* Header */}
@@ -363,49 +391,60 @@ export const ProfessorPainel = () => {
       )}
 
       {tab === 'chamada' && (
-        <div className="prof-content">
-          <form className="prof-form" onSubmit={handleSalvarChamada}>
-            <InputField
-              label="Turma *"
-              value={chamadaTurmaId}
-              onChange={(v) => {
-                setChamadaTurmaId(v)
-                void loadChamadaAlunos(v)
-              }}
-              placeholder="Selecione a turma"
-              options={turmas.map((t) => ({ value: t.id, label: t.nome }))}
-              required
-            />
-            <div className="input-field">
+        <div className="prof-chamada">
+          <div className="prof-chamada__body">
+            <div className="gg-card" style={{ marginBottom: '1rem' }}>
+              <label className="input-field__label">Núcleo</label>
+              <select className="input-field__control" value={nucleoChamada} onChange={(e) => setNucleoChamada(e.target.value as 'meier' | 'seropedica')}>
+                <option value="meier">Méier</option>
+                <option value="seropedica">Seropédica</option>
+              </select>
+            </div>
+            <InputField label="Turma *" value={chamadaTurmaId} onChange={(v) => { setChamadaTurmaId(v); void loadChamadaAlunos(v) }} placeholder="Selecione a turma" options={turmas.map((t) => ({ value: t.id, label: t.nome }))} />
+            <div className="input-field" style={{ marginTop: '0.75rem' }}>
               <label className="input-field__label">Data da aula *</label>
-              <input
-                className="input-field__control"
-                type="date"
-                value={chamadaData}
-                onChange={(e) => setChamadaData(e.target.value)}
-                required
-              />
+              <input className="input-field__control" type="date" value={chamadaData} onChange={(e) => setChamadaData(e.target.value)} />
             </div>
             {chamadaAlunos.length === 0 ? (
               <p className="prof-empty">Selecione uma turma para listar alunas.</p>
             ) : (
-              <div className="prof-aluna-list">
+              <div className="prof-aluna-list prof-chamada__list">
                 {chamadaAlunos.map((a) => (
-                  <label key={a.id} className="prof-aluna-card" style={{ cursor: 'pointer' }}>
-                    <input
-                      type="checkbox"
-                      checked={presencaMap[a.id] ?? false}
-                      onChange={(e) => setPresencaMap((m) => ({ ...m, [a.id]: e.target.checked }))}
-                    />
-                    <span className="prof-aluna-card__nome" style={{ marginLeft: '0.5rem' }}>{a.nome}</span>
-                  </label>
+                  <div key={a.id} className={`prof-aluna-card gg-card ${hasEvasionRisk(a.id) ? 'gg-evasion' : ''}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                    <span className="prof-aluna-card__nome">{a.nome}{hasEvasionRisk(a.id) && <span className="gg-evasion-tag">Risco de Evasão</span>}</span>
+                    <div className="gg-toggle-group">
+                      <button type="button" className={`--p ${statusMap[a.id] === 'P' ? 'active' : ''}`} onClick={() => setStatus(a.id, 'P')}>P</button>
+                      <button type="button" className={`--f ${statusMap[a.id] === 'F' ? 'active' : ''}`} onClick={() => setStatus(a.id, 'F')}>F</button>
+                      <button type="button" className={`--t ${statusMap[a.id] === 'T' ? 'active' : ''}`} onClick={() => setStatus(a.id, 'T')}>T</button>
+                    </div>
+                  </div>
                 ))}
               </div>
             )}
-            <button className="prof-submit-btn" type="submit" disabled={loading || !chamadaAlunos.length}>
-              Salvar chamada
-            </button>
-          </form>
+          </div>
+          {chamadaAlunos.length > 0 && (
+            <div className="prof-chamada__footer">
+              <button
+                type="button"
+                className="gg-btn-primary prof-chamada__submit"
+                onClick={() => setShowChamadaModal(true)}
+              >
+                {chamadaResumo.pendentes > 0 ? `Finalizar Chamada (${chamadaResumo.pendentes} pendente(s))` : 'Finalizar Chamada'}
+              </button>
+            </div>
+          )}
+          {showChamadaModal && (
+            <div className="gg-modal-overlay" role="presentation" onClick={() => setShowChamadaModal(false)}>
+              <div className="gg-modal" role="dialog" onClick={(e) => e.stopPropagation()}>
+                <h3>Confirmar chamada</h3>
+                <p>Presentes: {chamadaResumo.p} · Faltas: {chamadaResumo.f} · Trancamentos: {chamadaResumo.t}</p>
+                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
+                  <button type="button" className="gg-btn-primary" disabled={loading} onClick={() => void handleSalvarChamada()}>Confirmar</button>
+                  <button type="button" onClick={() => setShowChamadaModal(false)}>Cancelar</button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -448,6 +487,14 @@ export const ProfessorPainel = () => {
               value={nome}
               onChange={setNome}
               placeholder="Nome completo da aluna"
+              required
+            />
+
+            <InputField
+              label="E-mail *"
+              value={email}
+              onChange={setEmail}
+              placeholder="e-mail da aluna"
               required
             />
 
@@ -535,5 +582,6 @@ export const ProfessorPainel = () => {
 
       <BottomNavigation role="professor" />
     </div>
+    </AppShell>
   )
 }

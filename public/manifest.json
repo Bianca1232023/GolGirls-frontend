@@ -1,0 +1,24 @@
+{
+  "name": "Gol Girls",
+  "short_name": "Gol Girls",
+  "description": "Instituto Gol Girls — empoderamento de meninas negras periféricas",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ff1493",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/logo-golgirls.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo-golgirls.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

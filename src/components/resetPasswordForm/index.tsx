@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import './styles.scss'
+import GraduationCap from '../icons/graduation-cap'
 import UserCog from '../icons/user-cog'
 import Shield from '../icons/shield'
-import { Logo } from '../icons'
 import Buttons from '../Button'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { api } from '../../services/api'
 import { isValidPassword, passwordsMatch } from '../../utils/validation'
 
-type Role = 'professor' | 'admin';
+type Role = 'professor' | 'admin' | 'aluno';
 
 interface ResetPasswordFormProps {
     role: Role;
@@ -54,7 +54,10 @@ const ResetPasswordFormComponent: React.FC<ResetPasswordFormProps> = ({ role }) 
         setServerError(null);
 
         try {
-            const endpoint = role === 'admin' ? '/admin/reset-password' : '/professor/reset-password';
+            const endpoint =
+              role === 'admin' ? '/admin/reset-password'
+              : role === 'aluno' ? '/aluno/reset-password'
+              : '/professor/reset-password';
             await api.post(endpoint, { token, password });
             navigate(`/login/${role}`);
         } catch (err) {
@@ -68,9 +71,11 @@ const ResetPasswordFormComponent: React.FC<ResetPasswordFormProps> = ({ role }) 
     return (
         <div className='all-resetpwd-content'>
             <div className='resetpwd-header'>
-                <Logo width="190" height="147" />
+                <img src="/logo-golgirls.svg" alt="Gol Girls" className="gg-logo gg-logo--login" />
                 <div className={`cap-icon-${role}`}>
-                    {role === 'professor' ? <UserCog width="28" height="28" /> : <Shield width="28" height="28" />}
+                    {role === 'professor' ? <UserCog width="28" height="28" />
+                      : role === 'aluno' ? <GraduationCap width="28" height="28" />
+                      : <Shield width="28" height="28" />}
                 </div>
                 <div className='resetpwd-title'>
                     <h1>Nova senha</h1>
