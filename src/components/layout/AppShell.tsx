@@ -26,11 +26,13 @@ const SIDEBAR_NAV: Record<Role, { label: string; path: string }[]> = {
   professor: [
     { label: 'Início / Mural', path: '/professor/mural' },
     { label: 'Gestão', path: '/professor/painel' },
+    { label: 'Legado', path: '/legado/professor' },
     { label: 'Perfil', path: '/professor/perfil' },
   ],
   admin: [
     { label: 'Início / Mural', path: '/app/admin' },
     { label: 'Gestão', path: '/admin/painel' },
+    { label: 'Legado', path: '/legado/admin' },
     { label: 'Perfil', path: '/app/admin?tab=perfil' },
   ],
 }

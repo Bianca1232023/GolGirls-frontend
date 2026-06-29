@@ -3,7 +3,6 @@ import { ProfileMenu } from '../components/profile/ProfileMenu'
 import BottomNavigation from '../components/bottomNavigation'
 import { MuralFeed } from '../components/mural/MuralFeed'
 import { MuralPageHeader } from '../components/mural/MuralPageHeader'
-import { MURAL_POSTS } from '../data/mockData'
 import { logoutToLogin, getSessionLabel } from '../services/auth'
 import '../styles/apphub.scss'
 import '../styles/golgirls-design.scss'
@@ -12,7 +11,7 @@ export const ProfessorMural = () => (
   <AppShell role="professor">
     <div className="app-hub app-hub--mural">
       <MuralPageHeader subtitle="Avisos e novidades do programa GoLGirls." />
-      <MuralFeed initialPosts={MURAL_POSTS.map((p) => ({ ...p }))} />
+      <MuralFeed role="professor" />
       <BottomNavigation role="professor" activeTab="home" />
     </div>
   </AppShell>

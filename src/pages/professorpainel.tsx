@@ -157,7 +157,7 @@ export const ProfessorPainel = () => {
     try {
       await api.post('/professor/chamada', {
         turma_id: Number(chamadaTurmaId),
-        data_aula: chamadaData,
+        data: chamadaData,
         registros: chamadaAlunos.map((a) => ({
           aluno_id: a.id,
           presente: statusMap[a.id] === 'P',

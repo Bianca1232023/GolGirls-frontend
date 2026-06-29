@@ -8,7 +8,6 @@ import { JornadaQuestionnaire } from '../components/jornada/JornadaQuestionnaire
 import { PageTransition } from '../components/ui/PageTransition'
 import { api } from '../services/api'
 import { logoutToLogin } from '../services/auth'
-import { MURAL_POSTS } from '../data/mockData'
 import { AppShell } from '../components/layout/AppShell'
 import { Heart, Trophy } from '../components/icons'
 import '../styles/apphub.scss'
@@ -82,10 +81,11 @@ export const AppAluno = () => {
       <div className={`app-hub${tab === 'home' ? ' app-hub--mural' : ' gg-aluno-page'}`}>
         {tab === 'home' ? (
           <MuralPageHeader
+            title="Mural da Aluna"
             subtitle={
               perfil?.nome
-                ? `Olá, ${perfil.nome.split(' ')[0]}! Avisos e novidades do programa.`
-                : 'Bem-vinda ao GoLGirls — avisos e novidades do programa.'
+                ? `Olá, ${perfil.nome.split(' ')[0]}! Fique por dentro das novidades.`
+                : 'Fique por dentro das novidades.'
             }
           />
         ) : (
@@ -106,7 +106,12 @@ export const AppAluno = () => {
         {loading && <p className="app-hub__session">Carregando...</p>}
 
         <PageTransition>
-          {tab === 'home' && !loading && <MuralFeed initialPosts={MURAL_POSTS.map((p) => ({ ...p }))} />}
+          {tab === 'home' && !loading && (
+            <MuralFeed
+              role="aluno"
+              onJornadaClick={() => setActiveTab('jornada')}
+            />
+          )}
 
           {tab === 'jornada' && !loading && (
             <div>

@@ -1,116 +1,150 @@
 import { useState } from 'react'
-import { Heart, MessageCircle } from 'lucide-react'
-import { motion } from 'framer-motion'
-import type { MuralPost } from '../../data/mockData'
-import { MURAL_HIGHLIGHTS } from '../../data/mockData'
+import { useMural } from '../../contexts/MuralContext'
 
 interface MuralFeedProps {
-  initialPosts: MuralPost[]
+  role?: 'aluno' | 'professor' | 'admin'
+  onJornadaClick?: () => void
 }
 
-export function MuralFeed({ initialPosts }: MuralFeedProps) {
-  const [posts, setPosts] = useState(initialPosts)
+const DESTAQUES = [
+  { id: 'd1', color: 'linear-gradient(135deg, #3b82f6, #6366f1)', title: 'Torneio Regional', subtitle: 'Inscrições abertas!' },
+  { id: 'd2', color: 'linear-gradient(135deg, #7c3aed, #a020f0)', title: 'Bolsa Atleta', subtitle: 'Documentos necessários' },
+  { id: 'd3', color: 'linear-gradient(135deg, #f97316, #ef4444)', title: 'Destaque da Semana', subtitle: 'Maria (Seropédica)' },
+]
+
+export function MuralFeed({ role = 'aluno', onJornadaClick }: MuralFeedProps) {
+  const { posts, toggleLike, addComment } = useMural()
   const [commentOpen, setCommentOpen] = useState<string | null>(null)
   const [commentText, setCommentText] = useState('')
 
-  function toggleLike(id: string) {
-    setPosts((prev) =>
-      prev.map((p) => {
-        if (p.id !== id) return p
-        const liked = !p.liked
-        return { ...p, liked, likes: p.likes + (liked ? 1 : -1) }
-      }),
-    )
-  }
-
-  function addComment(id: string) {
+  function handleAddComment(postId: string) {
     if (!commentText.trim()) return
-    setPosts((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, comments: p.comments + 1 } : p)),
-    )
+    addComment(postId, commentText)
     setCommentText('')
-    setCommentOpen(null)
   }
 
   return (
-    <motion.div
-      className="gg-mural"
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25 }}
-    >
-      <section className="gg-mural-highlights" aria-label="Destaques da semana">
+    <div className="gg-mural">
+      {/* Jornada card — aluno only */}
+      {role === 'aluno' && (
+        <button
+          type="button"
+          className="gg-jornada-card"
+          onClick={onJornadaClick}
+          aria-label="Acessar Jornada de Autoconhecimento"
+        >
+          <span className="gg-jornada-card__badge">NOVA ETAPA</span>
+          <span className="gg-jornada-card__icon" aria-hidden="true">✨</span>
+          <h3 className="gg-jornada-card__title">Jornada de Autoconhecimento</h3>
+          <p className="gg-jornada-card__subtitle">Responda ao questionário de saúde psicossocial (EAR).</p>
+          <span className="gg-jornada-card__link">Começar agora →</span>
+        </button>
+      )}
+
+      {/* Destaques da semana */}
+      <section>
         <h2 className="gg-mural-highlights__heading">Destaques da Semana</h2>
-        <motion.div className="gg-mural-highlights__list">
-          {MURAL_HIGHLIGHTS.map((h) => (
-            <article key={h.id} className="gg-mural-highlight">
-              <span className="gg-mural-highlight__dot" aria-hidden />
+        <div className="gg-destaques-list">
+          {DESTAQUES.map((d) => (
+            <div key={d.id} className="gg-destaque-card" style={{ background: d.color }}>
+              <span className="gg-destaque-card__icon" aria-hidden="true">⭐</span>
               <div>
-                <strong className="gg-mural-highlight__title">{h.title}</strong>
-                <p className="gg-mural-highlight__subtitle">{h.subtitle}</p>
+                <strong className="gg-destaque-card__title">{d.title}</strong>
+                <p className="gg-destaque-card__subtitle">{d.subtitle}</p>
               </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Publicações recentes */}
+      <section>
+        <h2 className="gg-mural-highlights__heading">Publicações Recentes</h2>
+        <div className="gg-mural-feed">
+          {posts.map((post) => (
+            <article key={post.id} className="gg-mural-post">
+              <header className="gg-mural-post__header">
+                {post.authorAvatar ? (
+                  <img src={post.authorAvatar} alt="" className="gg-mural-post__avatar" />
+                ) : (
+                  <div className="gg-mural-post__avatar-initial">{post.initial}</div>
+                )}
+                <div>
+                  <strong className="gg-mural-post__author">{post.authorName}</strong>
+                  {post.authorRole && (
+                    <span className="gg-mural-post__role">{post.authorRole}</span>
+                  )}
+                  <span className="gg-mural-post__time">{post.timeAgo}</span>
+                </div>
+              </header>
+
+              <p className="gg-mural-post__text">{post.text}</p>
+
+              {post.imageUrl && (
+                <img src={post.imageUrl} alt="" className="gg-mural-post__image" loading="lazy" />
+              )}
+
+              <div className="gg-mural-post__actions">
+                <button
+                  type="button"
+                  className={`gg-mural-post__action${post.liked ? ' gg-mural-post__action--liked' : ''}`}
+                  onClick={() => toggleLike(post.id)}
+                >
+                  {post.liked ? '❤️' : '🤍'} {post.likes}
+                </button>
+                <button
+                  type="button"
+                  className="gg-mural-post__action"
+                  onClick={() => setCommentOpen(commentOpen === post.id ? null : post.id)}
+                >
+                  💬 {post.comments.length}
+                </button>
+                <button
+                  type="button"
+                  className="gg-mural-post__action"
+                  style={{ marginLeft: 'auto' }}
+                  aria-label="Compartilhar"
+                >↗</button>
+              </div>
+
+              {/* Inline comments */}
+              {commentOpen === post.id && (
+                <div className="gg-mural-post__comments">
+                  {post.comments.map((c) => (
+                    <div key={c.id} className="gg-mural-post__comment-item">
+                      <div
+                        className="gg-mural-post__comment-avatar"
+                        style={{ background: c.color }}
+                      >{c.initial}</div>
+                      <div style={{ flex: 1 }}>
+                        <p className="gg-mural-post__comment-name">{c.authorName}</p>
+                        <p className="gg-mural-post__comment-text">{c.text}</p>
+                        <span className="gg-mural-post__comment-time">{c.timeAgo}</span>
+                      </div>
+                    </div>
+                  ))}
+                  <div className="gg-mural-post__comment-input-row">
+                    <input
+                      type="text"
+                      className="gg-mural-post__comment-input"
+                      placeholder="Escreva um comentário..."
+                      value={commentText}
+                      onChange={(e) => setCommentText(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleAddComment(post.id)}
+                    />
+                    <button
+                      type="button"
+                      className="gg-mural-post__comment-send"
+                      onClick={() => handleAddComment(post.id)}
+                    >→</button>
+                  </div>
+                </div>
+              )}
             </article>
           ))}
-        </motion.div>
+        </div>
       </section>
-
-      <section className="gg-mural-feed" aria-label="Publicações do mural">
-        {posts.map((post) => (
-          <motion.article
-            key={post.id}
-            className="gg-mural-post"
-            layout
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <header className="gg-mural-post__header">
-              <img src={post.authorAvatar} alt="" className="gg-mural-post__avatar" />
-              <div>
-                <strong className="gg-mural-post__author">{post.authorName}</strong>
-                <span className="gg-mural-post__time">{post.timeAgo}</span>
-              </div>
-            </header>
-
-            <p className="gg-mural-post__text">{post.text}</p>
-
-            <img src={post.imageUrl} alt="" className="gg-mural-post__image" loading="lazy" />
-
-            <div className="gg-mural-post__actions">
-              <button
-                type="button"
-                className={`gg-mural-post__action${post.liked ? ' gg-mural-post__action--liked' : ''}`}
-                onClick={() => toggleLike(post.id)}
-              >
-                <Heart size={18} fill={post.liked ? 'currentColor' : 'none'} />
-                {post.likes}
-              </button>
-              <button
-                type="button"
-                className="gg-mural-post__action"
-                onClick={() => setCommentOpen(commentOpen === post.id ? null : post.id)}
-              >
-                <MessageCircle size={18} />
-                {post.comments}
-              </button>
-            </div>
-
-            {commentOpen === post.id && (
-              <div className="gg-mural-post__comment">
-                <input
-                  className="gg-mural-post__comment-input"
-                  placeholder="Escreva um comentário..."
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && addComment(post.id)}
-                />
-                <button type="button" className="gg-btn-primary gg-mural-post__comment-btn" onClick={() => addComment(post.id)}>
-                  Enviar
-                </button>
-              </div>
-            )}
-          </motion.article>
-        ))}
-      </section>
-    </motion.div>
+    </div>
   )
 }
+
