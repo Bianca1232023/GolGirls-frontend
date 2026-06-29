@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		},
+		{
+			"path": "../../../GoGirls-Backend"
+		}
+	],
+	"settings": {
+		"prisma.pinToPrisma6": true
+	}
+}

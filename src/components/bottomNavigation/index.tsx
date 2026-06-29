@@ -1,85 +1,61 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Briefcase, Home, UserCircle } from 'lucide-react'
 import './styless.scss'
+import Buttons from '../Button'
+import { Briefcase, Home, Trophy, UserCircle, TrendingUp, Star } from '../icons';
 
-type Role = 'aluno' | 'professor' | 'admin'
-type AlunoTab = 'home' | 'jornada' | 'legado' | 'perfil'
-type AdminTab = 'home' | 'perfil'
-type ProfTab = 'home' | 'chamada' | 'perfil'
+type Role = 'aluno' | 'professor' | 'admin';
 
 interface BottomNavigationProps {
-  role: Role
-  activeTab?: AlunoTab | AdminTab | ProfTab
-  onTabChange?: (tab: string) => void
+    role: Role
 }
 
-const BottomNavigation: React.FC<BottomNavigationProps> = ({ role, activeTab, onTabChange }) => {
-  const navigate = useNavigate()
+const BottomNavigation: React.FC<BottomNavigationProps> = ({ role }) => {
+    const navigate = useNavigate()
 
-  const itemClass = (active: boolean) =>
-    `bottom-nav__item${active ? ' bottom-nav__item--active' : ''}`
+    const renderNavigationItems = () => {
+        switch (role) {
+            case 'aluno':
+                return (
+                    <>
+                        <Buttons type="default" label="Home" icon={<Home width="24" height="24" />} />
+                        <Buttons type="default" label="Jornada" icon={<Star width="24" height="24" />} />
+                        <Buttons type="default" label="Legado" icon={<Trophy width="24" height="24" />} />
+                        <Buttons type="default" label="Perfil" icon={<UserCircle width="24" height="24" />} />
+                    </>
+                );
+            case 'professor':
+                return (
+                    <>
+                        <Buttons type="default" label="Mural" icon={<Home width="24" height="24" />} />
+                        <Buttons type="default" label="Gestão" icon={<Briefcase width="24" height="24" />} onClick={() => navigate('/professor/painel')} />
+                        <Buttons type="default" label="Legado" icon={<Trophy width="24" height="24" />} />
+                        <Buttons type="default" label="Perfil" icon={<UserCircle width="24" height="24" />} />
+                    </>
+                );
+            case 'admin':
+                return (
+                    <>
+                        <Buttons type="default" label="Home" icon={<Home width="24" height="24" />} />
+                        <Buttons
+                            type="default"
+                            label="Painel"
+                            icon={<TrendingUp width="24" height="24" />}
+                            onClick={() => navigate('/admin/painel')}
+                        />
+                        <Buttons type="default" label="Legado" icon={<Trophy width="24" height="24" />} />
+                        <Buttons type="default" label="Perfil" icon={<UserCircle width="24" height="24" />} />
+                    </>
+                );
+            default:
+                return null;
+        }
+    };
 
-  const muralLabel = (
-    <span className="bottom-nav__label bottom-nav__label--mural">
-      <span>Início</span>
-      <span className="bottom-nav__label-sub">/ Mural</span>
-    </span>
-  )
-
-  if (role === 'aluno') {
-    const tab = (activeTab as AlunoTab) ?? 'home'
-    return (
-      <nav className="bottom-nav">
-        <button type="button" className={itemClass(tab === 'home')} onClick={() => onTabChange?.('home')}>
-          <Home size={22} />
-          {muralLabel}
-        </button>
-        <button type="button" className={itemClass(tab === 'jornada')} onClick={() => onTabChange?.('jornada')}>
-          <Briefcase size={22} /><span>Jornada</span>
-        </button>
-        <button type="button" className={itemClass(tab === 'legado')} onClick={() => navigate('/legado/aluno')}>
-          <UserCircle size={22} /><span>Legado</span>
-        </button>
-        <button type="button" className={itemClass(tab === 'perfil')} onClick={() => onTabChange?.('perfil')}>
-          <UserCircle size={22} /><span>Perfil</span>
-        </button>
-      </nav>
-    )
-  }
-
-  if (role === 'professor') {
-    const tab = (activeTab as ProfTab) ?? 'home'
-    return (
-      <nav className="bottom-nav">
-        <button type="button" className={itemClass(tab === 'home')} onClick={() => navigate('/professor/mural')}>
-          <Home size={22} />
-          {muralLabel}
-        </button>
-        <button type="button" className={itemClass(tab === 'chamada')} onClick={() => navigate('/professor/painel')}>
-          <Briefcase size={22} /><span>Chamada</span>
-        </button>
-        <button type="button" className={itemClass(tab === 'perfil')} onClick={() => navigate('/professor/perfil')}>
-          <UserCircle size={22} /><span>Perfil</span>
-        </button>
-      </nav>
-    )
-  }
-
-  const tab = (activeTab as AdminTab) ?? 'home'
   return (
-    <nav className="bottom-nav">
-      <button type="button" className={itemClass(tab === 'home')} onClick={() => onTabChange?.('home')}>
-        <Home size={22} />
-        {muralLabel}
-      </button>
-      <button type="button" className={itemClass(false)} onClick={() => navigate('/admin/painel')}>
-        <Briefcase size={22} /><span>Gestão</span>
-      </button>
-      <button type="button" className={itemClass(tab === 'perfil')} onClick={() => onTabChange?.('perfil')}>
-        <UserCircle size={22} /><span>Perfil</span>
-      </button>
-    </nav>
+    <div className='bottom-nav'>
+        {renderNavigationItems()}
+    </div>
   )
 }
 

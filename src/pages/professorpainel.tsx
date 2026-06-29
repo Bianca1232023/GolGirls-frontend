@@ -4,7 +4,7 @@ import BottomNavigation from '../components/bottomNavigation'
 import FilterChips from '../components/filterChips'
 import InputField from '../components/inputField'
 import { AppShell } from '../components/layout/AppShell'
-import { MapPin, UserPlus, Search, Filter } from '../components/icons'
+import { MapPin, UserPlus, Search, Filter, AlertCircle } from '../components/icons'
 import { MOCK_FALTAS_CONSECUTIVAS, type ChamadaStatus } from '../data/mockData'
 import '../styles/professorpainel.scss'
 import '../styles/golgirls-design.scss'
@@ -71,6 +71,7 @@ export const ProfessorPainel = () => {
   const [chamadaTurmaId, setChamadaTurmaId] = useState('')
   const [chamadaData, setChamadaData] = useState(new Date().toISOString().slice(0, 10))
   const [chamadaAlunos, setChamadaAlunos] = useState<Aluna[]>([])
+  const [chamadaBusca, setChamadaBusca] = useState('')
   const [statusMap, setStatusMap] = useState<Record<number, ChamadaStatus>>({})
   const [nucleoChamada, setNucleoChamada] = useState<'meier' | 'seropedica'>('meier')
   const [showChamadaModal, setShowChamadaModal] = useState(false)
@@ -184,6 +185,10 @@ export const ProfessorPainel = () => {
 
   function hasEvasionRisk(alunoId: number) {
     return (MOCK_FALTAS_CONSECUTIVAS[alunoId] ?? 0) >= 3
+  }
+
+  function faltasConsecutivas(alunoId: number) {
+    return MOCK_FALTAS_CONSECUTIVAS[alunoId] ?? 0
   }
 
   function showFeedback(type: 'error' | 'success', msg: string) {
@@ -408,18 +413,41 @@ export const ProfessorPainel = () => {
             {chamadaAlunos.length === 0 ? (
               <p className="prof-empty">Selecione uma turma para listar alunas.</p>
             ) : (
-              <div className="prof-aluna-list prof-chamada__list">
-                {chamadaAlunos.map((a) => (
-                  <div key={a.id} className={`prof-aluna-card gg-card ${hasEvasionRisk(a.id) ? 'gg-evasion' : ''}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                    <span className="prof-aluna-card__nome">{a.nome}{hasEvasionRisk(a.id) && <span className="gg-evasion-tag">Risco de Evasão</span>}</span>
-                    <div className="gg-toggle-group">
-                      <button type="button" className={`--p ${statusMap[a.id] === 'P' ? 'active' : ''}`} onClick={() => setStatus(a.id, 'P')}>P</button>
-                      <button type="button" className={`--f ${statusMap[a.id] === 'F' ? 'active' : ''}`} onClick={() => setStatus(a.id, 'F')}>F</button>
-                      <button type="button" className={`--t ${statusMap[a.id] === 'T' ? 'active' : ''}`} onClick={() => setStatus(a.id, 'T')}>T</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <>
+                <div className="prof-search-wrap prof-chamada__search">
+                  <Search width="18" height="18" />
+                  <input
+                    type="text"
+                    placeholder="Buscar aluna na lista..."
+                    value={chamadaBusca}
+                    onChange={(e) => setChamadaBusca(e.target.value)}
+                  />
+                </div>
+                <div className="prof-chamada__list">
+                  {chamadaAlunos
+                    .filter((a) => a.nome.toLowerCase().includes(chamadaBusca.trim().toLowerCase()))
+                    .map((a) => (
+                      <div key={a.id} className={`prof-chamada-card ${hasEvasionRisk(a.id) ? 'prof-chamada-card--risk' : ''}`}>
+                        <div className="prof-chamada-card__info">
+                          <span className="prof-chamada-card__nome">
+                            {a.nome}
+                            {hasEvasionRisk(a.id) && <AlertCircle width="16" height="16" />}
+                          </span>
+                          {hasEvasionRisk(a.id) && (
+                            <span className="prof-chamada-card__risk">
+                              Risco de Evasão ({faltasConsecutivas(a.id)} faltas)
+                            </span>
+                          )}
+                        </div>
+                        <div className="prof-chamada-toggle">
+                          <button type="button" className={`prof-chamada-toggle__btn --p ${statusMap[a.id] === 'P' ? 'active' : ''}`} onClick={() => setStatus(a.id, 'P')}>P</button>
+                          <button type="button" className={`prof-chamada-toggle__btn --f ${statusMap[a.id] === 'F' ? 'active' : ''}`} onClick={() => setStatus(a.id, 'F')}>F</button>
+                          <button type="button" className={`prof-chamada-toggle__btn --t ${statusMap[a.id] === 'T' ? 'active' : ''}`} onClick={() => setStatus(a.id, 'T')}>T</button>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </>
             )}
           </div>
           {chamadaAlunos.length > 0 && (
@@ -580,7 +608,7 @@ export const ProfessorPainel = () => {
         </div>
       )}
 
-      <BottomNavigation role="professor" />
+      <BottomNavigation role="professor" activeTab="gestao" />
     </div>
     </AppShell>
   )

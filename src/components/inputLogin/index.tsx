@@ -176,21 +176,6 @@ const Inputs: React.FC<InputProps> = (props: InputProps) => {
 
         {serverError && <span className="gg-login-error" style={{ textAlign: 'center', marginTop: '0.75rem' }}>{serverError}</span>}
 
-        {props.role === 'professor' && (
-          <p className="gg-login-footnote">
-            Primeiro acesso?{' '}
-            <Link to="/register/professor" className="gg-login-footnote__link">
-              Cadastre-se aqui
-            </Link>
-          </p>
-        )}
-
-        {props.role === 'admin' && (
-          <p className="gg-login-footnote">
-            Solicitar acesso?{' '}
-            <span className="gg-login-footnote__link">Cadastro apenas por convite</span>
-          </p>
-        )}
       </div>
     </div>
   )

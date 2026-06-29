@@ -401,3 +401,101 @@
     color: #1d4ed8;
   }
 }
+
+/* ── CHAMADA: busca + cards ── */
+.prof-chamada__search {
+  margin-bottom: 0.25rem;
+}
+
+.prof-chamada__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-bottom: 1rem;
+}
+
+.prof-chamada-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background: #fff;
+  border: 1.5px solid transparent;
+  border-radius: 1rem;
+  padding: 1rem 1.1rem;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.06);
+
+  &--risk {
+    border-color: #f5c84b;
+    background: #fffdf5;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+  }
+
+  &__nome {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    line-height: 1.2;
+
+    svg {
+      color: #e0a008;
+      flex-shrink: 0;
+    }
+  }
+
+  &--risk &__nome {
+    color: #b87503;
+  }
+
+  &__risk {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: #c9881a;
+  }
+}
+
+.prof-chamada-toggle {
+  display: flex;
+  gap: 0.25rem;
+  background: #f3f4f6;
+  border-radius: 0.85rem;
+  padding: 0.3rem;
+  flex-shrink: 0;
+
+  &__btn {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: none;
+    border-radius: 0.6rem;
+    background: transparent;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #6b7280;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+
+    &.--p.active {
+      background: #16a34a;
+      color: #fff;
+    }
+    &.--f.active {
+      background: #dc2626;
+      color: #fff;
+    }
+    &.--t.active {
+      background: #6b7280;
+      color: #fff;
+    }
+  }
+}

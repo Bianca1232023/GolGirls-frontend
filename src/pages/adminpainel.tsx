@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Brain, UserPlus } from 'lucide-react'
+import { Brain } from 'lucide-react'
 import BottomNavigation from '../components/bottomNavigation'
 import { EngagementLineChart } from '../components/charts/EngagementLineChart'
-import { Users, TrendingUp, AlertTriangle, MoreVertical } from '../components/icons'
+import { Users, TrendingUp, AlertTriangle, MoreVertical, Filter, Mail, Plus, ShieldAlert } from '../components/icons'
 import { api } from '../services/api'
 import { mediaAutoestimaPorNucleo } from '../services/jornadaStorage'
 import { ADMIN_KPI, CHART_MENSAL } from '../data/mockData'
@@ -90,16 +90,20 @@ export const AdminPainel = () => {
 
   const indiceAutoestima = mediaAutoestimaPorNucleo(nucleoFilter)
   const totalAlunas = nucleoFilter === 'todos' ? ADMIN_KPI.totalAlunas : nucleoFilter === 'meier' ? 35 : 25
+  const valorEar = Math.round(indiceAutoestima * 10)
+  const classificacaoEar = valorEar < 25 ? 'Baixa' : valorEar <= 32 ? 'Média' : 'Alta'
 
   return (
     <AppShell role="admin">
       <div className="admin-panel">
-        <div className="admin-panel__box">
-          <header className="admin-panel__header">
-            <div className="admin-panel__title">
-              <h1>Gestão</h1>
-              <p>Visão geral de impacto</p>
-            </div>
+        {/* Header */}
+        <header className="admin-panel__header">
+          <div className="admin-panel__title">
+            <h1>Gestão</h1>
+            <p>Visão Geral de Impacto</p>
+          </div>
+          <div className="admin-panel__filter-wrap">
+            <Filter width="15" height="15" />
             <select
               className="admin-panel__filter"
               value={nucleoFilter}
@@ -110,153 +114,168 @@ export const AdminPainel = () => {
               <option value="meier">Méier</option>
               <option value="seropedica">Seropédica</option>
             </select>
-          </header>
-
-          <div className="admin-panel__grid">
-            <section className="admin-panel__stats" aria-label="Indicadores">
-              <article className="stat-card">
-                <div className="stat-icon-wrap pink">
-                  <Users width="20" height="20" />
-                </div>
-                <span className="stat-label">Total Alunas</span>
-                <span className="stat-value">{totalAlunas}</span>
-              </article>
-              <article className="stat-card">
-                <div className="stat-icon-wrap green">
-                  <TrendingUp width="20" height="20" />
-                </div>
-                <span className="stat-label">Taxa de Frequência</span>
-                <span className="stat-value">{ADMIN_KPI.taxaFrequencia}%</span>
-              </article>
-              <article className="stat-card">
-                <div className="stat-icon-wrap orange">
-                  <AlertTriangle width="20" height="20" />
-                </div>
-                <span className="stat-label">Alertas de Evasão</span>
-                <span className="stat-value">{ADMIN_KPI.alertasEvasao}</span>
-              </article>
-            </section>
-
-            <aside className="admin-panel__aside">
-              <section className="admin-panel__card admin-panel__ear">
-                <div className="admin-panel__ear-head">
-                  <Brain size={20} color="#a020f0" aria-hidden />
-                  <h2 className="admin-panel__card-title">Índice de Autoestima (EAR)</h2>
-                </div>
-                <p className="admin-panel__ear-value">
-                  {indiceAutoestima} <span>/ 4</span>
-                </p>
-                <p className="admin-panel__ear-note">
-                  Dados sensíveis agregados por núcleo — apenas Master Admin (Renata).
-                </p>
-              </section>
-            </aside>
-
-            <section className="admin-panel__card admin-panel__chart">
-              <h2 className="admin-panel__card-title">Engajamento mensal</h2>
-              <div className="admin-panel__chart-inner">
-                <EngagementLineChart data={CHART_MENSAL} filterKey={nucleoFilter} />
-              </div>
-            </section>
           </div>
+        </header>
 
-          <hr className="admin-panel__divider" />
+        {/* KPIs principais */}
+        <section className="admin-panel__stats" aria-label="Indicadores">
+          <article className="stat-card">
+            <div className="stat-icon-wrap pink">
+              <Users width="20" height="20" />
+            </div>
+            <span className="stat-label">Total Alunas</span>
+            <span className="stat-value">{totalAlunas}</span>
+          </article>
+          <article className="stat-card">
+            <div className="stat-icon-wrap green">
+              <TrendingUp width="20" height="20" />
+            </div>
+            <span className="stat-label">Frequência</span>
+            <span className="stat-value">{ADMIN_KPI.taxaFrequencia}%</span>
+          </article>
+        </section>
 
-          <section className="admin-panel__actions" aria-label="Gestão de equipe e sistema">
-            <div className="admin-panel__actions-row">
-              <section className="admin-panel__action-box admin-panel__action-box--team">
-                <div className="admin-panel__action-box-inner admin-panel__team admin-panel__team--footer">
-              <div className="docente-header">
-                <h2 className="docente-title">Corpo Docente</h2>
+        {/* Risco de Evasão */}
+        <section className="admin-evasao-card">
+          <div className="admin-evasao-card__icon">
+            <AlertTriangle width="22" height="22" />
+          </div>
+          <div className="admin-evasao-card__info">
+            <span className="admin-evasao-card__label">Risco de Evasão</span>
+            <span className="admin-evasao-card__value">{ADMIN_KPI.alertasEvasao}</span>
+          </div>
+          <button type="button" className="evasao-btn">Ver Meninas</button>
+        </section>
+
+        {/* Frequência Mensal */}
+        <section className="admin-panel__card admin-chart-card">
+          <h2 className="admin-panel__card-title">Frequência Mensal (%)</h2>
+          <div className="admin-chart-card__inner">
+            <EngagementLineChart data={CHART_MENSAL} filterKey={nucleoFilter} />
+          </div>
+        </section>
+
+        {/* Convites */}
+        <section className="admin-action-card admin-action-card--convites">
+          <div className="admin-action-card__icon convites">
+            <Mail width="22" height="22" />
+          </div>
+          <div className="admin-action-card__info">
+            <span className="admin-action-card__title">Convites</span>
+            <span className="admin-action-card__desc">Gerencie convites de acesso</span>
+          </div>
+          <button type="button" className="admin-action-card__btn convites" onClick={() => navigate('/admin/convites')}>
+            <Plus width="15" height="15" />
+            Gerenciar
+          </button>
+        </section>
+
+        {/* Sistema */}
+        <section className="admin-action-card admin-action-card--sistema">
+          <div className="admin-action-card__icon sistema">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+          </div>
+          <div className="admin-action-card__info">
+            <span className="admin-action-card__title">Sistema</span>
+            <span className="admin-action-card__desc">Escolas, núcleos e turmas</span>
+          </div>
+          <button type="button" className="admin-action-card__btn sistema" onClick={() => navigate('/admin/sistema')}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14" />
+            </svg>
+            Configurar
+          </button>
+        </section>
+
+        {/* Bem-estar Psicossocial */}
+        <div className="admin-section-head">
+          <h2 className="admin-section-head__title">Bem-estar Psicossocial</h2>
+          <span className="admin-master-badge">
+            <ShieldAlert width="13" height="13" />
+            Apenas Master Admin
+          </span>
+        </div>
+
+        <section className="admin-ear-card">
+          <div className="admin-ear-card__icon">
+            <Brain size={22} aria-hidden />
+          </div>
+          <div className="admin-ear-card__info">
+            <span className="admin-ear-card__label">Índice de Autoestima (EAR)</span>
+            <p className="admin-ear-card__value">
+              {valorEar} <span>/40</span> <em>({classificacaoEar})</em>
+            </p>
+          </div>
+          <button type="button" className="admin-ear-card__menu" aria-label="Opções do índice">
+            <MoreVertical width="18" height="18" />
+          </button>
+        </section>
+
+        {/* Corpo Docente */}
+        <div className="admin-section-head">
+          <h2 className="admin-section-head__title">Corpo Docente</h2>
+          <button type="button" className="docente-add-btn" onClick={() => navigate('/admin/convites')}>
+            <Plus width="14" height="14" aria-hidden />
+            Adicionar
+          </button>
+        </div>
+
+        {members.length === 0 && (
+          <p className="admin-panel__empty">Nenhum membro cadastrado.</p>
+        )}
+
+        <ul className="docente-list">
+          {members.map((m) => (
+            <li className="docente-item" key={menuKey(m)}>
+              <div className="docente-avatar">{(m.name || '?').charAt(0).toUpperCase()}</div>
+              <div className="docente-info">
+                <span className="docente-name">{m.name}</span>
+                <span className="docente-nucleo">
+                  {m.role === 'professor' ? 'Professor(a)' : 'Admin'} · {m.email}
+                </span>
+              </div>
+              <span className={`badge ${m.ativo ? 'ativa' : 'afastada'}`}>
+                {m.ativo ? 'ATIVA' : 'INATIVA'}
+              </span>
+              <div className="docente-menu-wrap">
                 <button
                   type="button"
-                  className="docente-add-btn"
-                  onClick={() => navigate('/admin/convites')}
+                  className="docente-menu-btn"
+                  aria-label={`Opções de ${m.name}`}
+                  onClick={() => setOpenMenuId(openMenuId === menuKey(m) ? null : menuKey(m))}
                 >
-                  <UserPlus size={14} aria-hidden />
-                  Adicionar Professor
+                  <MoreVertical width="18" height="18" />
                 </button>
-              </div>
-
-              {members.length === 0 && (
-                <p className="admin-panel__empty">Nenhum membro cadastrado.</p>
-              )}
-
-              <ul className="docente-list">
-                {members.map((m) => (
-                  <li className="docente-item" key={menuKey(m)}>
-                    <div className="docente-avatar">{(m.name || '?').charAt(0).toUpperCase()}</div>
-                    <div className="docente-info">
-                      <div className="docente-name-row">
-                        <span className="docente-name">{m.name}</span>
-                        <span className={`badge ${m.ativo ? 'ativa' : 'afastada'}`}>
-                          {m.ativo ? 'ATIVO' : 'INATIVO'}
-                        </span>
-                      </div>
-                      <span className="docente-nucleo">
-                        {m.role === 'professor' ? 'Professor(a)' : 'Admin'} · {m.email}
-                      </span>
-                    </div>
-                    <div className="docente-menu-wrap">
+                {openMenuId === menuKey(m) && (
+                  <div className="docente-dropdown">
+                    {m.role === 'admin' && (
                       <button
                         type="button"
-                        className="docente-menu-btn"
-                        aria-label={`Opções de ${m.name}`}
-                        onClick={() => setOpenMenuId(openMenuId === menuKey(m) ? null : menuKey(m))}
+                        className="docente-dropdown-item"
+                        onClick={() => {
+                          setEditAdmin(m)
+                          setEditName(m.name)
+                          setEditEmail(m.email)
+                          setEditPassword('')
+                          setOpenMenuId(null)
+                        }}
                       >
-                        <MoreVertical width="18" height="18" />
+                        Editar
                       </button>
-                      {openMenuId === menuKey(m) && (
-                        <div className="docente-dropdown">
-                          {m.role === 'admin' && (
-                            <button
-                              type="button"
-                              className="docente-dropdown-item"
-                              onClick={() => {
-                                setEditAdmin(m)
-                                setEditName(m.name)
-                                setEditEmail(m.email)
-                                setEditPassword('')
-                                setOpenMenuId(null)
-                              }}
-                            >
-                              Editar
-                            </button>
-                          )}
-                          <button type="button" className="docente-dropdown-item danger" onClick={() => handleDelete(m)}>
-                            Deletar
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-                </div>
-              </section>
-
-              <div className="admin-panel__actions-vbar" role="separator" aria-orientation="vertical" />
-
-              <article className="admin-panel__action-box admin-panel__action-box--sistema">
-                <div className="admin-panel__action-box-inner sistema-card">
-              <div className="sistema-icon-wrap">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                  <circle cx="12" cy="12" r="3" />
-                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14" />
-                </svg>
+                    )}
+                    <button type="button" className="docente-dropdown-item danger" onClick={() => handleDelete(m)}>
+                      Deletar
+                    </button>
+                  </div>
+                )}
               </div>
-              <div className="sistema-info">
-                <span className="sistema-title">Sistema</span>
-                <span className="sistema-desc">Escolas, núcleos e turmas</span>
-              </div>
-              <button type="button" className="sistema-btn" onClick={() => navigate('/admin/sistema')}>
-                Configurar
-              </button>
-                </div>
-            </article>
-            </div>
-          </section>
-        </div>
+            </li>
+          ))}
+        </ul>
 
         {editAdmin && (
           <div className="painel-modal-overlay" onClick={() => setEditAdmin(null)}>

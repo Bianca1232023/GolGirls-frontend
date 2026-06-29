@@ -35,12 +35,6 @@ const AcessCard: React.FC<AcessCardProps> = ({ role }) => {
     navigate(`/login/${role === 'admin' ? 'admin' : role}`)
   }
 
-  const handleRegisterClick = () => {
-    if (role === 'professor') navigate('/register/professor')
-  }
-
-  const showRegister = role === 'professor'
-
   return (
     <div className="acess-card-component">
       <div className="acess-card-content">
@@ -51,15 +45,10 @@ const AcessCard: React.FC<AcessCardProps> = ({ role }) => {
             <div className="role-description">{roleConfig[role].description}</div>
           </div>
         </div>
-        <div className={`entry-buttons entry-buttons-${role}${showRegister ? ' entry-buttons--split' : ''}`}>
+        <div className={`entry-buttons entry-buttons-${role}`}>
           <button type="button" className="login-button" onClick={handleLoginClick}>
             Entrar
           </button>
-          {showRegister && (
-            <button type="button" className="register-button" onClick={handleRegisterClick}>
-              Cadastrar
-            </button>
-          )}
         </div>
       </div>
     </div>
