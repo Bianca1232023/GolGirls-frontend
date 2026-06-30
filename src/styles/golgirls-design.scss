@@ -452,10 +452,11 @@ $gg-yellow: #facc15;
 
   &__image {
     width: 100%;
-    max-height: 12rem;
+    aspect-ratio: 16 / 9;
     object-fit: cover;
     border-radius: 0.75rem;
     display: block;
+    margin: 0.25rem 0 0.5rem;
   }
 
   &__actions {

@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { ProfileMenu } from '../components/profile/ProfileMenu'
 import BottomNavigation from '../components/bottomNavigation'
 import { MuralFeed } from '../components/mural/MuralFeed'
 import { MuralPageHeader } from '../components/mural/MuralPageHeader'
 import { JornadaQuestionnaire } from '../components/jornada/JornadaQuestionnaire'
 import { PageTransition } from '../components/ui/PageTransition'
 import { api } from '../services/api'
-import { logoutToLogin } from '../services/auth'
+import { logoutToLogin, getSessionLabel } from '../services/auth'
+import { getDisplayName } from '../contexts/MuralContext'
+import { ProfilePublicationsSection } from '../components/profile/ProfilePublicationsSection'
+import { EditProfileModal } from '../components/profile/EditProfileModal'
 import { AppShell } from '../components/layout/AppShell'
 import { Heart, Trophy } from '../components/icons'
 import '../styles/apphub.scss'
@@ -46,6 +48,9 @@ export const AppAluno = () => {
   const [perfil, setPerfil] = useState<AlunoProfile | null>(null)
   const [jornada, setJornada] = useState<JornadaData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [editOpen, setEditOpen] = useState(false)
+  const [nameOverride, setNameOverride] = useState<string | null>(null)
+  const [bairroOverride, setBairroOverride] = useState<string | null>(null)
 
   function setActiveTab(t: string) {
     const next = (['home', 'jornada', 'legado', 'perfil'].includes(t) ? t : 'home') as AlunoTab
@@ -167,18 +172,99 @@ export const AppAluno = () => {
             </div>
           )}
 
-          {tab === 'perfil' && !loading && perfil && (
-            <div className="app-hub__session" style={{ position: 'relative', marginTop: '2rem' }}>
-              <ProfileMenu onLogout={handleLogout} />
-              <p><strong>Nome:</strong> {perfil.nome}</p>
-              <p><strong>Matrícula:</strong> {perfil.matricula}</p>
-              <p><strong>Bairro:</strong> {perfil.bairro}</p>
-              {perfil.nucleo && <p><strong>Núcleo:</strong> {perfil.nucleo}</p>}
-              {perfil.telefone_aluna && <p><strong>Telefone:</strong> {perfil.telefone_aluna}</p>}
-              {perfil.nome_responsavel && <p><strong>Responsável:</strong> {perfil.nome_responsavel}</p>}
-              <p style={{ marginTop: '1rem', fontSize: '0.85rem' }}>
-                Dados tratados conforme <Link to="/privacidade">LGPD</Link>.
-              </p>
+          {tab === 'perfil' && !loading && (
+            <div style={{ paddingBottom: '1rem' }}>
+              {/* Hero verde */}
+              <div style={{
+                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                height: 120,
+                position: 'relative',
+                borderRadius: '0 0 1.5rem 1.5rem',
+              }}>
+                <div style={{
+                  position: 'absolute', bottom: -40, left: '50%', transform: 'translateX(-50%)',
+                  width: 80, height: 80, borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #10b981, #059669)',
+                  border: '4px solid #fff',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: '#fff', fontWeight: 700, fontSize: '2rem',
+                  boxShadow: '0 4px 16px rgba(16,185,129,0.3)',
+                }}>
+                  {(nameOverride ?? perfil?.nome ?? getDisplayName(getSessionLabel())).charAt(0).toUpperCase()}
+                </div>
+                {/* Editar */}
+                <button type="button" onClick={() => setEditOpen(true)} style={{
+                  position: 'absolute', top: 12, right: 16,
+                  background: '#fff', border: 'none', borderRadius: 20,
+                  padding: '0.35rem 0.85rem', color: '#10b981',
+                  fontWeight: 600, fontSize: '0.8rem', cursor: 'pointer',
+                  display: 'inline-flex', alignItems: 'center', gap: 4,
+                }}>✏️ Editar</button>
+              </div>
+
+              <div style={{ textAlign: 'center', marginTop: 52, padding: '0 1rem' }}>
+                <h1 style={{ fontSize: '1.35rem', fontWeight: 700, margin: '0 0 0.2rem', color: '#111' }}>
+                  {nameOverride ?? perfil?.nome ?? getDisplayName(getSessionLabel())}
+                </h1>
+                {perfil?.matricula && (
+                  <p style={{ fontSize: '0.78rem', color: '#888', margin: '0 0 0.75rem' }}>
+                    Matrícula: {perfil.matricula}
+                  </p>
+                )}
+                <span style={{ background: '#d1fae5', color: '#065f46', borderRadius: 20, padding: '0.2rem 0.75rem', fontSize: '0.75rem', fontWeight: 600 }}>
+                  Aluna
+                </span>
+              </div>
+
+              <div style={{ padding: '1.25rem 1rem 0' }}>
+                <p style={{ fontSize: '0.65rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 0.65rem' }}>
+                  Informações
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  {[
+                    { icon: '📧', label: 'E-mail', value: getSessionLabel() },
+                    ...(perfil ? [
+                      { icon: '📍', label: 'Bairro', value: perfil.bairro },
+                      ...(perfil.nucleo ? [{ icon: '🏡', label: 'Núcleo', value: perfil.nucleo }] : []),
+                      ...(perfil.turma_nome ? [{ icon: '👥', label: 'Turma', value: perfil.turma_nome }] : []),
+                      ...(perfil.telefone_aluna ? [{ icon: '📱', label: 'Telefone', value: perfil.telefone_aluna }] : []),
+                      ...(perfil.nome_responsavel ? [{ icon: '👤', label: 'Responsável', value: perfil.nome_responsavel }] : []),
+                    ] : []),
+                  ].filter((item) => item.value).map(({ icon, label, value }) => (
+                    <div key={label} style={{
+                      background: '#f9fafb', border: '1px solid #f0f0f0',
+                      borderRadius: '0.75rem', padding: '0.7rem 1rem',
+                      display: 'flex', alignItems: 'center', gap: '0.75rem',
+                    }}>
+                      <span style={{ fontSize: '1.1rem', flexShrink: 0 }}>{icon}</span>
+                      <div>
+                        <p style={{ fontSize: '0.62rem', fontWeight: 700, color: '#9ca3af', margin: '0 0 0.1rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</p>
+                        <p style={{ fontSize: '0.87rem', fontWeight: 600, color: '#1f2937', margin: 0 }}>{value}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <ProfilePublicationsSection
+                  displayName={nameOverride ?? perfil?.nome ?? getDisplayName(getSessionLabel())}
+                  initial={(nameOverride ?? perfil?.nome ?? getDisplayName(getSessionLabel())).charAt(0).toUpperCase()}
+                  accentColor="#10b981"
+                  accentColorEnd="#059669"
+                  onLogout={handleLogout}
+                />
+                {editOpen && (
+                  <EditProfileModal
+                    role="aluno"
+                    currentName={nameOverride ?? perfil?.nome ?? getDisplayName(getSessionLabel())}
+                    currentBairro={bairroOverride ?? perfil?.bairro ?? ''}
+                    accentColor="#10b981"
+                    onClose={() => setEditOpen(false)}
+                    onSaved={(updates) => {
+                      if (updates.name) setNameOverride(updates.name)
+                      if (updates.bairro) setBairroOverride(updates.bairro)
+                    }}
+                  />
+                )}
+              </div>
             </div>
           )}
         </PageTransition>

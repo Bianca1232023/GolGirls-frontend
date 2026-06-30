@@ -6,7 +6,7 @@ import { EngagementLineChart } from '../components/charts/EngagementLineChart'
 import { Users, TrendingUp, AlertTriangle, MoreVertical, Filter, Mail, Plus, ShieldAlert } from '../components/icons'
 import { api } from '../services/api'
 import { mediaAutoestimaPorNucleo } from '../services/jornadaStorage'
-import { ADMIN_KPI, CHART_MENSAL } from '../data/mockData'
+import { CHART_MENSAL } from '../data/mockData'
 import { AppShell } from '../components/layout/AppShell'
 import '../styles/golgirls-design.scss'
 import '../styles/adminpainel.scss'
@@ -27,8 +27,10 @@ export const AdminPainel = () => {
   const [editName, setEditName] = useState('')
   const [editEmail, setEditEmail] = useState('')
   const [editPassword, setEditPassword] = useState('')
-  const [, setStats] = useState({ alunos_ativos: 0, total_presentes: 0 })
-  const [nucleoFilter, setNucleoFilter] = useState<'todos' | 'meier' | 'seropedica'>('todos')
+  const [nucleos, setNucleos] = useState<Array<{ id: number; nome: string }>>([]
+  )
+  const [nucleoFilter, setNucleoFilter] = useState<number | 'todos'>('todos')
+  const [kpi, setKpi] = useState({ totalAlunas: 0, taxaFrequencia: 0, alertasEvasao: 0, chartMensal: CHART_MENSAL })
   const fetchedRef = useRef(false)
 
   async function fetchTeam() {
@@ -40,21 +42,41 @@ export const AdminPainel = () => {
     }
   }
 
-  async function fetchStats() {
+  async function fetchNucleos() {
     try {
-      const res = await api.get('/admin/relatorios') as { relatorio?: { alunos_ativos: number; total_presentes: number } }
-      if (res.relatorio) setStats(res.relatorio)
-    } catch {
-      /* ignore */
-    }
+      const res = await api.get('/nucleos') as { nucleos?: Array<{ id: number; nome: string }> }
+      setNucleos(res.nucleos ?? [])
+    } catch { /* ignore */ }
+  }
+
+  async function fetchStats(nucleoId?: number) {
+    try {
+      const query = nucleoId ? `?nucleo_id=${nucleoId}` : ''
+      const res = await api.get(`/admin/relatorios${query}`) as {
+        relatorio?: { totalAlunas: number; taxaFrequencia: number; alertasEvasao: number; chartMensal: Array<{ mes: string; pct: number }> }
+      }
+      if (res.relatorio) {
+        setKpi({
+          totalAlunas: res.relatorio.totalAlunas,
+          taxaFrequencia: res.relatorio.taxaFrequencia,
+          alertasEvasao: res.relatorio.alertasEvasao,
+          chartMensal: res.relatorio.chartMensal.length ? res.relatorio.chartMensal : CHART_MENSAL,
+        })
+      }
+    } catch { /* ignore */ }
   }
 
   useEffect(() => {
     if (fetchedRef.current) return
     fetchedRef.current = true
     void fetchTeam()
+    void fetchNucleos()
     void fetchStats()
   }, [])
+
+  useEffect(() => {
+    void fetchStats(nucleoFilter === 'todos' ? undefined : nucleoFilter)
+  }, [nucleoFilter]) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleSaveAdmin() {
     if (!editAdmin || editAdmin.role !== 'admin') return
@@ -88,8 +110,7 @@ export const AdminPainel = () => {
     return `${m.role}-${m.id}`
   }
 
-  const indiceAutoestima = mediaAutoestimaPorNucleo(nucleoFilter)
-  const totalAlunas = nucleoFilter === 'todos' ? ADMIN_KPI.totalAlunas : nucleoFilter === 'meier' ? 35 : 25
+  const indiceAutoestima = mediaAutoestimaPorNucleo('todos')
   const valorEar = Math.round(indiceAutoestima * 10)
   const classificacaoEar = valorEar < 25 ? 'Baixa' : valorEar <= 32 ? 'Média' : 'Alta'
 
@@ -107,12 +128,13 @@ export const AdminPainel = () => {
             <select
               className="admin-panel__filter"
               value={nucleoFilter}
-              onChange={(e) => setNucleoFilter(e.target.value as typeof nucleoFilter)}
+              onChange={(e) => setNucleoFilter(e.target.value === 'todos' ? 'todos' : Number(e.target.value))}
               aria-label="Filtrar por núcleo"
             >
               <option value="todos">Todos os Núcleos</option>
-              <option value="meier">Méier</option>
-              <option value="seropedica">Seropédica</option>
+              {nucleos.map((n) => (
+                <option key={n.id} value={n.id}>{n.nome}</option>
+              ))}
             </select>
           </div>
         </header>
@@ -124,14 +146,14 @@ export const AdminPainel = () => {
               <Users width="20" height="20" />
             </div>
             <span className="stat-label">Total Alunas</span>
-            <span className="stat-value">{totalAlunas}</span>
+            <span className="stat-value">{kpi.totalAlunas}</span>
           </article>
           <article className="stat-card">
             <div className="stat-icon-wrap green">
               <TrendingUp width="20" height="20" />
             </div>
             <span className="stat-label">Frequência</span>
-            <span className="stat-value">{ADMIN_KPI.taxaFrequencia}%</span>
+            <span className="stat-value">{kpi.taxaFrequencia}%</span>
           </article>
         </section>
 
@@ -142,7 +164,7 @@ export const AdminPainel = () => {
           </div>
           <div className="admin-evasao-card__info">
             <span className="admin-evasao-card__label">Risco de Evasão</span>
-            <span className="admin-evasao-card__value">{ADMIN_KPI.alertasEvasao}</span>
+            <span className="admin-evasao-card__value">{kpi.alertasEvasao}</span>
           </div>
           <button type="button" className="evasao-btn">Ver Meninas</button>
         </section>
@@ -151,7 +173,7 @@ export const AdminPainel = () => {
         <section className="admin-panel__card admin-chart-card">
           <h2 className="admin-panel__card-title">Frequência Mensal (%)</h2>
           <div className="admin-chart-card__inner">
-            <EngagementLineChart data={CHART_MENSAL} filterKey={nucleoFilter} />
+            <EngagementLineChart data={kpi.chartMensal} filterKey="todos" />
           </div>
         </section>
 

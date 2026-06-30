@@ -24,6 +24,10 @@ export function getSessionLabel(): string | null {
   return storage().getItem(SESSION_LABEL_KEY);
 }
 
+export function setSessionLabel(label: string): void {
+  storage().setItem(SESSION_LABEL_KEY, label);
+}
+
 export function setSession(token: string, role: UserRole, label?: string): void {
   storage().setItem(TOKEN_KEY, token);
   storage().setItem(ROLE_KEY, role);

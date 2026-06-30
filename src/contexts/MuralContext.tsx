@@ -14,6 +14,7 @@ export interface MuralPost {
   id: string
   authorName: string
   authorRole?: string
+  authorRoleKey?: string
   initial: string
   authorAvatar?: string
   timeAgo: string
@@ -26,39 +27,12 @@ export interface MuralPost {
 
 interface MuralContextValue {
   posts: MuralPost[]
-  addPost: (text: string) => void
+  addPost: (text: string, imageUrl?: string, authorName?: string) => void
   toggleLike: (postId: string) => void
   addComment: (postId: string, text: string) => void
 }
 
-const STORAGE_KEY = 'gg_mural_posts_v2'
-
-const SEED: MuralPost[] = [
-  {
-    id: 'seed1',
-    authorName: 'Profa. Juliana Silva',
-    authorRole: 'Treinadora · Núcleo Méier',
-    initial: 'J',
-    authorAvatar: 'https://images.unsplash.com/photo-1531123897727-8f129e168dce?w=80&h=80&fit=crop',
-    timeAgo: '2 horas atrás',
-    text: 'Hoje o treino foi focado em finalização e posicionamento tático. Muito orgulho da evolução das meninas nesta semana! Vamos com tudo para o próximo campeonato. 💕❤️',
-    imageUrl: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=240&fit=crop',
-    likes: 24,
-    liked: false,
-    comments: [],
-  },
-  {
-    id: 'seed2',
-    authorName: 'Coordenação',
-    authorRole: 'Instituto Gol Girls',
-    initial: 'C',
-    timeAgo: '5 horas atrás',
-    text: 'Avisos importantes: A entrega dos novos uniformes será realizada nesta sexta-feira às 14h. Não faltem!',
-    likes: 56,
-    liked: false,
-    comments: [],
-  },
-]
+const STORAGE_KEY = 'gg_mural_posts_v3'
 
 export function getDisplayName(email: string | null): string {
   if (!email) return 'Usuário'
@@ -90,25 +64,27 @@ export function MuralProvider({ children }: { children: ReactNode }) {
       const saved = localStorage.getItem(STORAGE_KEY)
       if (saved) return JSON.parse(saved) as MuralPost[]
     } catch { /* ignore */ }
-    return SEED
+    return []
   })
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(posts))
   }, [posts])
 
-  function addPost(text: string) {
+  function addPost(text: string, imageUrl?: string, authorName?: string) {
     const email = getSessionLabel()
     const role = getRole()
-    const name = getDisplayName(email)
+    const name = authorName ?? getDisplayName(email)
     setPosts((prev) => [
       {
         id: `u${Date.now()}`,
         authorName: name,
         authorRole: getRoleLabel(role),
+        authorRoleKey: role ?? 'aluno',
         initial: getInitial(name),
         timeAgo: 'Agora',
         text,
+        imageUrl,
         likes: 0,
         liked: false,
         comments: [],

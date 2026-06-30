@@ -14,8 +14,13 @@ const DESTAQUES = [
 
 export function MuralFeed({ role = 'aluno', onJornadaClick }: MuralFeedProps) {
   const { posts, toggleLike, addComment } = useMural()
+  // Mostrar apenas posts do mesmo role ou sem role definido (posts antigos)
+  const visiblePosts = posts.filter(
+    (p) => !p.authorRoleKey || p.authorRoleKey === role
+  )
   const [commentOpen, setCommentOpen] = useState<string | null>(null)
   const [commentText, setCommentText] = useState('')
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null)
 
   function handleAddComment(postId: string) {
     if (!commentText.trim()) return
@@ -24,6 +29,7 @@ export function MuralFeed({ role = 'aluno', onJornadaClick }: MuralFeedProps) {
   }
 
   return (
+    <>
     <div className="gg-mural">
       {/* Jornada card — aluno only */}
       {role === 'aluno' && (
@@ -61,7 +67,7 @@ export function MuralFeed({ role = 'aluno', onJornadaClick }: MuralFeedProps) {
       <section>
         <h2 className="gg-mural-highlights__heading">Publicações Recentes</h2>
         <div className="gg-mural-feed">
-          {posts.map((post) => (
+          {visiblePosts.map((post) => (
             <article key={post.id} className="gg-mural-post">
               <header className="gg-mural-post__header">
                 {post.authorAvatar ? (
@@ -81,7 +87,14 @@ export function MuralFeed({ role = 'aluno', onJornadaClick }: MuralFeedProps) {
               <p className="gg-mural-post__text">{post.text}</p>
 
               {post.imageUrl && (
-                <img src={post.imageUrl} alt="" className="gg-mural-post__image" loading="lazy" />
+                <img
+                  src={post.imageUrl}
+                  alt=""
+                  className="gg-mural-post__image"
+                  loading="lazy"
+                  onClick={() => setLightboxSrc(post.imageUrl!)}
+                  style={{ cursor: 'zoom-in' }}
+                />
               )}
 
               <div className="gg-mural-post__actions">
@@ -145,6 +158,57 @@ export function MuralFeed({ role = 'aluno', onJornadaClick }: MuralFeedProps) {
         </div>
       </section>
     </div>
+
+    {/* Lightbox */}
+    {lightboxSrc && (
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Imagem ampliada"
+        onClick={() => setLightboxSrc(null)}
+        onKeyDown={(e) => e.key === 'Escape' && setLightboxSrc(null)}
+        tabIndex={0}
+        style={{
+          position: 'fixed', inset: 0,
+          background: 'rgba(0,0,0,0.92)',
+          zIndex: 9999,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: '1rem',
+          cursor: 'zoom-out',
+        }}
+      >
+        <button
+          type="button"
+          onClick={() => setLightboxSrc(null)}
+          aria-label="Fechar"
+          style={{
+            position: 'absolute', top: 16, right: 16,
+            background: 'rgba(255,255,255,0.18)',
+            border: 'none', borderRadius: '50%',
+            width: 44, height: 44,
+            color: '#fff', fontSize: '1.5rem', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            zIndex: 1,
+          }}
+        >×</button>
+        <img
+          src={lightboxSrc}
+          alt="Imagem em tamanho completo"
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            display: 'block',
+            maxWidth: '95vw',
+            maxHeight: '90vh',
+            width: 'auto',
+            height: 'auto',
+            borderRadius: '0.75rem',
+            boxShadow: '0 8px 48px rgba(0,0,0,0.6)',
+            cursor: 'default',
+          }}
+        />
+      </div>
+    )}
+  </>
   )
 }
 

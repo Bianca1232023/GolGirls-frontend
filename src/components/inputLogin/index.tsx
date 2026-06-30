@@ -149,11 +149,13 @@ const Inputs: React.FC<InputProps> = (props: InputProps) => {
           {errors.password && <span className="gg-login-error">Digite sua senha</span>}
         </div>
 
-        {(props.role === 'professor' || props.role === 'admin') && (
+        {(props.role === 'professor' || props.role === 'admin' || props.role === 'aluno') && (
           <button
             type="button"
             className="gg-login-forgot"
-            onClick={() => navigate(`/${props.role}/esqueci-senha`)}
+            onClick={() => navigate(
+              props.role === 'aluno' ? '/aluno/esqueci-senha' : `/${props.role}/esqueci-senha`
+            )}
           >
             Esqueci minha senha
           </button>

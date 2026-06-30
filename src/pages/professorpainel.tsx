@@ -67,15 +67,19 @@ export const ProfessorPainel = () => {
 
   const [loading, setLoading] = useState(false)
   const [feedback, setFeedback] = useState<{ type: 'error' | 'success'; msg: string } | null>(null)
+  const [deletingId, setDeletingId] = useState<number | null>(null)
 
   const [chamadaTurmaId, setChamadaTurmaId] = useState('')
   const [chamadaData, setChamadaData] = useState(new Date().toISOString().slice(0, 10))
   const [chamadaAlunos, setChamadaAlunos] = useState<Aluna[]>([])
   const [chamadaBusca, setChamadaBusca] = useState('')
   const [statusMap, setStatusMap] = useState<Record<number, ChamadaStatus>>({})
-  const [nucleoChamada, setNucleoChamada] = useState<'meier' | 'seropedica'>('meier')
+  const [nucleoChamada, setNucleoChamada] = useState<string>('')
   const [showChamadaModal, setShowChamadaModal] = useState(false)
-  const [relatorio, setRelatorio] = useState<{ turmas?: Array<{ turma_nome: string; alunos_total: number; total_presentes: number }> } | null>(null)
+  const [relatorio, setRelatorio] = useState<Array<{
+    aluno_id: number; nome: string; matricula: string; turma_nome: string;
+    total_aulas: number; presentes: number; faltas: number; percentual: number;
+  }> | null>(null)
 
   const localizacaoDisplay =
     turmas.find((t) => t.nucleo_localizacao)?.nucleo_localizacao ?? 'Localização'
@@ -136,8 +140,11 @@ export const ProfessorPainel = () => {
 
   async function fetchRelatorios() {
     try {
-      const res = await api.get('/professor/relatorios') as { turmas?: Array<{ turma_nome: string; alunos_total: number; total_presentes: number; total_registros: number }> }
-      setRelatorio(res)
+      const res = await api.get('/professor/relatorios') as { data?: Array<{
+        aluno_id: number; nome: string; matricula: string; turma_nome: string;
+        total_aulas: number; presentes: number; faltas: number; percentual: number;
+      }> }
+      setRelatorio(res.data ?? [])
     } catch {
       setRelatorio(null)
     }
@@ -194,6 +201,20 @@ export const ProfessorPainel = () => {
   function showFeedback(type: 'error' | 'success', msg: string) {
     setFeedback({ type, msg })
     setTimeout(() => setFeedback(null), 3500)
+  }
+
+  async function handleDeleteAluna(a: Aluna) {
+    if (!window.confirm(`Excluir a aluna "${a.nome}" (Mat. ${a.matricula})? Esta ação não pode ser desfeita.`)) return
+    setDeletingId(a.id)
+    try {
+      await api.delete(`/aluno/${a.id}`)
+      setAlunos((prev) => prev.filter((x) => x.id !== a.id))
+      showFeedback('success', `Aluna "${a.nome}" removida com sucesso.`)
+    } catch (err) {
+      showFeedback('error', err instanceof Error ? err.message : 'Erro ao excluir aluna')
+    } finally {
+      setDeletingId(null)
+    }
   }
 
   function calcIdade(data: string): number | undefined {
@@ -388,6 +409,24 @@ export const ProfessorPainel = () => {
                       {[a.turma_nome, a.nucleo].filter(Boolean).join(' · ')}
                     </span>
                   )}
+                  <button
+                    type="button"
+                    disabled={deletingId === a.id}
+                    onClick={() => void handleDeleteAluna(a)}
+                    style={{
+                      marginTop: '0.6rem',
+                      background: 'none',
+                      border: '1px solid #e55',
+                      borderRadius: '0.4rem',
+                      color: '#e55',
+                      padding: '0.25rem 0.65rem',
+                      fontSize: '0.78rem',
+                      cursor: 'pointer',
+                      alignSelf: 'flex-start',
+                    }}
+                  >
+                    {deletingId === a.id ? 'Excluindo...' : 'Excluir'}
+                  </button>
                 </div>
               ))}
             </div>
@@ -400,12 +439,30 @@ export const ProfessorPainel = () => {
           <div className="prof-chamada__body">
             <div className="gg-card" style={{ marginBottom: '1rem' }}>
               <label className="input-field__label">Núcleo</label>
-              <select className="input-field__control" value={nucleoChamada} onChange={(e) => setNucleoChamada(e.target.value as 'meier' | 'seropedica')}>
-                <option value="meier">Méier</option>
-                <option value="seropedica">Seropédica</option>
+              <select
+                className="input-field__control"
+                value={nucleoChamada}
+                onChange={(e) => {
+                  setNucleoChamada(e.target.value)
+                  setChamadaTurmaId('')
+                  setChamadaAlunos([])
+                }}
+              >
+                <option value="">Todos os núcleos</option>
+                {nucleos.map((n) => (
+                  <option key={n.id} value={String(n.id)}>{n.nome}</option>
+                ))}
               </select>
             </div>
-            <InputField label="Turma *" value={chamadaTurmaId} onChange={(v) => { setChamadaTurmaId(v); void loadChamadaAlunos(v) }} placeholder="Selecione a turma" options={turmas.map((t) => ({ value: t.id, label: t.nome }))} />
+            <InputField
+              label="Turma *"
+              value={chamadaTurmaId}
+              onChange={(v) => { setChamadaTurmaId(v); void loadChamadaAlunos(v) }}
+              placeholder="Selecione a turma"
+              options={turmas
+                .filter((t) => !nucleoChamada || String(t.nucleo_id) === nucleoChamada)
+                .map((t) => ({ value: t.id, label: t.nome }))}
+            />
             <div className="input-field" style={{ marginTop: '0.75rem' }}>
               <label className="input-field__label">Data da aula *</label>
               <input className="input-field__control" type="date" value={chamadaData} onChange={(e) => setChamadaData(e.target.value)} />
@@ -478,17 +535,31 @@ export const ProfessorPainel = () => {
 
       {tab === 'relatorios' && (
         <div className="prof-content">
-          <h3 style={{ marginBottom: '1rem' }}>Relatórios por turma</h3>
-          {!relatorio?.turmas?.length ? (
-            <p className="prof-empty">Nenhum dado disponível.</p>
+          <h3 style={{ marginBottom: '1rem' }}>Relatório de Presença por Aluna</h3>
+          {!relatorio?.length ? (
+            <p className="prof-empty">Nenhum dado disponível. Registre chamadas para ver o relatório.</p>
           ) : (
             <div className="prof-aluna-list">
-              {relatorio.turmas.map((t, i) => (
-                <div key={i} className="prof-aluna-card">
-                  <span className="prof-aluna-card__nome">{t.turma_nome}</span>
-                  <span className="prof-aluna-card__sub">
-                    {t.alunos_total} alunas · {t.total_presentes} presenças registradas
+              {relatorio.map((a) => (
+                <div key={a.aluno_id} className="prof-aluna-card" style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                  <span className="prof-aluna-card__nome">{a.nome}</span>
+                  <span className="prof-aluna-card__sub" style={{ opacity: 0.7, fontSize: '0.82rem' }}>
+                    Matrícula: {a.matricula} · {a.turma_nome}
                   </span>
+                  <div style={{ display: 'flex', gap: '1rem', marginTop: '0.25rem', flexWrap: 'wrap' }}>
+                    <span style={{ color: '#2ecc71', fontWeight: 600 }}>✓ {a.presentes} presenças</span>
+                    <span style={{ color: '#e74c3c', fontWeight: 600 }}>✗ {a.faltas} faltas</span>
+                    <span style={{ fontWeight: 700, color: a.percentual >= 75 ? '#2ecc71' : '#e74c3c' }}>
+                      {a.percentual}% frequência
+                    </span>
+                  </div>
+                  <div style={{ background: '#eee', borderRadius: '4px', height: '6px', marginTop: '0.25rem', overflow: 'hidden' }}>
+                    <div style={{
+                      width: `${a.percentual}%`, height: '100%',
+                      background: a.percentual >= 75 ? '#2ecc71' : '#e74c3c',
+                      borderRadius: '4px', transition: 'width 0.4s',
+                    }} />
+                  </div>
                 </div>
               ))}
             </div>

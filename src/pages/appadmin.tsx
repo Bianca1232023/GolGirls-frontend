@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type ChangeEvent } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { AppShell } from '../components/layout/AppShell'
 import { MuralFeed } from '../components/mural/MuralFeed'
@@ -7,21 +7,26 @@ import { ProfileMenu } from '../components/profile/ProfileMenu'
 import BottomNavigation from '../components/bottomNavigation'
 import { useMural, getDisplayName } from '../contexts/MuralContext'
 import { logoutToLogin, getSessionLabel } from '../services/auth'
+import { EditProfileModal } from '../components/profile/EditProfileModal'
 import '../styles/apphub.scss'
 import '../styles/golgirls-design.scss'
 
 
 
-function AdminProfilePage({ sessionLabel }: { sessionLabel: string | null }) {
+function AdminProfilePage({ sessionLabel, onLogout }: { sessionLabel: string | null; onLogout?: () => void }) {
   const { posts: allPosts, addPost, toggleLike, addComment } = useMural()
-  const displayName = getDisplayName(sessionLabel)
+  const [displayName, setDisplayName] = useState(() => getDisplayName(sessionLabel))
+  const [currentEmail, setCurrentEmail] = useState(sessionLabel ?? '')
   const initial = (displayName[0] ?? 'A').toUpperCase()
   const myPosts = allPosts.filter((p) => p.authorName === displayName)
 
+  const [editOpen, setEditOpen] = useState(false)
   const [commentOpen, setCommentOpen] = useState<string | null>(null)
   const [commentText, setCommentText] = useState('')
   const [showNewPost, setShowNewPost] = useState(false)
   const [newPostText, setNewPostText] = useState('')
+  const [newPostImage, setNewPostImage] = useState<string | null>(null)
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null)
 
   function handleAddComment(postId: string) {
     if (!commentText.trim()) return
@@ -31,9 +36,19 @@ function AdminProfilePage({ sessionLabel }: { sessionLabel: string | null }) {
 
   function createPost() {
     if (!newPostText.trim()) return
-    addPost(newPostText)
+    addPost(newPostText, newPostImage ?? undefined, displayName)
     setNewPostText('')
+    setNewPostImage(null)
     setShowNewPost(false)
+  }
+
+  function handleImageSelect(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (ev) => setNewPostImage(ev.target?.result as string)
+    reader.readAsDataURL(file)
+    e.target.value = ''
   }
 
   const activePost = commentOpen ? allPosts.find((p) => p.id === commentOpen) : null
@@ -61,7 +76,7 @@ function AdminProfilePage({ sessionLabel }: { sessionLabel: string | null }) {
           {initial}
         </div>
         {/* Editar */}
-        <button type="button" style={{
+        <button type="button" onClick={() => setEditOpen(true)} style={{
           position: 'absolute', top: 12, right: 16,
           background: '#fff', border: 'none', borderRadius: 20,
           padding: '0.35rem 0.85rem', color: '#ff1493',
@@ -109,7 +124,7 @@ function AdminProfilePage({ sessionLabel }: { sessionLabel: string | null }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem' }}>
           {(
             [
-              ['✉️', 'E-mail Corporativo', sessionLabel ?? 'ana.paula@golgirls.org'],
+              ['✉️', 'E-mail Corporativo', currentEmail || 'ana.paula@golgirls.org'],
               ['📱', 'Telefone', '(21) 98765-0000'],
               ['💼', 'Departamento', 'Gestão Executiva'],
               ['🔒', 'Nível de Acesso', 'Super Admin'],
@@ -166,7 +181,19 @@ function AdminProfilePage({ sessionLabel }: { sessionLabel: string | null }) {
                   <p style={{ margin: 0, fontSize: '0.72rem', color: '#888' }}>{post.timeAgo}</p>
                 </div>
               </div>
-              <p style={{ fontSize: '0.87rem', color: '#374151', margin: '0 0 0.75rem', lineHeight: 1.5 }}>{post.text}</p>
+              <p style={{ fontSize: '0.87rem', color: '#374151', margin: '0 0 0.5rem', lineHeight: 1.5 }}>{post.text}</p>
+              {post.imageUrl && (
+                <img
+                  src={post.imageUrl}
+                  alt=""
+                  onClick={() => setLightboxSrc(post.imageUrl!)}
+                  style={{
+                    width: '100%', aspectRatio: '16/9', objectFit: 'cover',
+                    borderRadius: '0.65rem', display: 'block', marginBottom: '0.5rem',
+                    cursor: 'zoom-in',
+                  }}
+                />
+              )}
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                 <button type="button" onClick={() => toggleLike(post.id)} style={{
                   background: 'none', border: 'none', cursor: 'pointer', padding: 0,
@@ -190,7 +217,31 @@ function AdminProfilePage({ sessionLabel }: { sessionLabel: string | null }) {
             </div>
           ))}
         </div>
+        {onLogout && (
+          <button type="button" onClick={onLogout} style={{
+            width: '100%', marginTop: '1.5rem',
+            padding: '0.85rem 1rem', border: '2px solid #ef4444',
+            borderRadius: '9999px', background: 'transparent',
+            color: '#ef4444', fontWeight: 600, cursor: 'pointer',
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+          }}>Sair da conta</button>
+        )}
       </div>
+
+      {/* Edit Profile Modal */}
+      {editOpen && (
+        <EditProfileModal
+          role="admin"
+          currentName={displayName}
+          currentEmail={currentEmail}
+          accentColor="#a020f0"
+          onClose={() => setEditOpen(false)}
+          onSaved={(updates) => {
+            if (updates.name) setDisplayName(updates.name)
+            if (updates.email) setCurrentEmail(updates.email)
+          }}
+        />
+      )}
 
       {/* Comments Modal */}
       {commentOpen && (
@@ -288,14 +339,107 @@ function AdminProfilePage({ sessionLabel }: { sessionLabel: string | null }) {
                   outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit',
                 }}
               />
-              <button type="button" onClick={createPost} style={{
-                marginTop: '0.75rem', width: '100%',
-                background: 'linear-gradient(135deg, #a020f0, #7c3aed)',
-                color: '#fff', border: 'none', borderRadius: 20,
-                padding: '0.75rem', fontSize: '0.9rem', fontWeight: 600, cursor: 'pointer',
-              }}>Publicar</button>
+
+              {/* Image preview */}
+              {newPostImage && (
+                <div style={{ position: 'relative', marginTop: '0.75rem' }}>
+                  <img
+                    src={newPostImage}
+                    alt="Prévia"
+                    style={{
+                      width: '100%', aspectRatio: '16/9', objectFit: 'cover',
+                      borderRadius: '0.65rem', display: 'block',
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setNewPostImage(null)}
+                    aria-label="Remover foto"
+                    style={{
+                      position: 'absolute', top: 8, right: 8,
+                      width: 28, height: 28, borderRadius: '50%',
+                      background: 'rgba(0,0,0,0.55)', border: 'none',
+                      color: '#fff', fontSize: '0.9rem', cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}
+                  >×</button>
+                </div>
+              )}
+
+              <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem', alignItems: 'center' }}>
+                <label style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 4,
+                  padding: '0.55rem 0.9rem', border: '1.5px solid #a020f0',
+                  borderRadius: 20, color: '#a020f0', cursor: 'pointer',
+                  fontSize: '0.8rem', fontWeight: 600, flexShrink: 0,
+                }}>
+                  📷 {newPostImage ? 'Trocar foto' : 'Foto'}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    onChange={handleImageSelect}
+                  />
+                </label>
+                <button type="button" onClick={createPost} style={{
+                  flex: 1,
+                  background: 'linear-gradient(135deg, #a020f0, #7c3aed)',
+                  color: '#fff', border: 'none', borderRadius: 20,
+                  padding: '0.6rem', fontSize: '0.9rem', fontWeight: 600, cursor: 'pointer',
+                }}>Publicar</button>
+              </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Lightbox */}
+      {lightboxSrc && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Imagem ampliada"
+          onClick={() => setLightboxSrc(null)}
+          onKeyDown={(e) => e.key === 'Escape' && setLightboxSrc(null)}
+          tabIndex={0}
+          style={{
+            position: 'fixed', inset: 0,
+            background: 'rgba(0,0,0,0.92)',
+            zIndex: 9999,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '1rem',
+            cursor: 'zoom-out',
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setLightboxSrc(null)}
+            aria-label="Fechar"
+            style={{
+              position: 'absolute', top: 16, right: 16,
+              background: 'rgba(255,255,255,0.18)',
+              border: 'none', borderRadius: '50%',
+              width: 44, height: 44,
+              color: '#fff', fontSize: '1.5rem', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              zIndex: 1,
+            }}
+          >×</button>
+          <img
+            src={lightboxSrc}
+            alt="Imagem em tamanho completo"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              display: 'block',
+              maxWidth: '95vw',
+              maxHeight: '90vh',
+              width: 'auto',
+              height: 'auto',
+              borderRadius: '0.75rem',
+              boxShadow: '0 8px 48px rgba(0,0,0,0.6)',
+              cursor: 'default',
+            }}
+          />
         </div>
       )}
     </div>
@@ -334,7 +478,7 @@ export const AppAdmin = () => {
             <MuralFeed role="admin" />
           </>
         ) : (
-          <AdminProfilePage sessionLabel={sessionLabel} />
+          <AdminProfilePage sessionLabel={sessionLabel} onLogout={handleLogout} />
         )}
         <BottomNavigation role="admin" activeTab={tab} onTabChange={setActiveTab} />
       </div>
