@@ -3,8 +3,11 @@ import { api } from '../services/api'
 import BottomNavigation from '../components/bottomNavigation'
 import FilterChips from '../components/filterChips'
 import InputField from '../components/inputField'
-import { MapPin, UserPlus, Search, Filter } from '../components/icons'
+import { AppShell } from '../components/layout/AppShell'
+import { MapPin, UserPlus, Search, Filter, AlertCircle } from '../components/icons'
+import { MOCK_FALTAS_CONSECUTIVAS, type ChamadaStatus } from '../data/mockData'
 import '../styles/professorpainel.scss'
+import '../styles/golgirls-design.scss'
 
 type ProfessorTab = 'chamada' | 'buscar' | 'cadastrar' | 'relatorios'
 
@@ -37,7 +40,7 @@ interface Aluna {
 }
 
 export const ProfessorPainel = () => {
-  const [tab, setTab] = useState<ProfessorTab>('cadastrar')
+  const [tab, setTab] = useState<ProfessorTab>('chamada')
   const [turmas, setTurmas] = useState<Turma[]>([])
   const [nucleos, setNucleos] = useState<Nucleo[]>([])
 
@@ -53,6 +56,7 @@ export const ProfessorPainel = () => {
   // Cadastrar form state
   const [nome, setNome] = useState('')
   const [matricula, setMatricula] = useState('')
+  const [email, setEmail] = useState('')
   const [dataNasc, setDataNasc] = useState('')
   const [nucleoId, setNucleoId] = useState('')
   const [turmaId, setTurmaId] = useState('')
@@ -63,6 +67,19 @@ export const ProfessorPainel = () => {
 
   const [loading, setLoading] = useState(false)
   const [feedback, setFeedback] = useState<{ type: 'error' | 'success'; msg: string } | null>(null)
+  const [deletingId, setDeletingId] = useState<number | null>(null)
+
+  const [chamadaTurmaId, setChamadaTurmaId] = useState('')
+  const [chamadaData, setChamadaData] = useState(new Date().toISOString().slice(0, 10))
+  const [chamadaAlunos, setChamadaAlunos] = useState<Aluna[]>([])
+  const [chamadaBusca, setChamadaBusca] = useState('')
+  const [statusMap, setStatusMap] = useState<Record<number, ChamadaStatus>>({})
+  const [nucleoChamada, setNucleoChamada] = useState<string>('')
+  const [showChamadaModal, setShowChamadaModal] = useState(false)
+  const [relatorio, setRelatorio] = useState<Array<{
+    aluno_id: number; nome: string; matricula: string; turma_nome: string;
+    total_aulas: number; presentes: number; faltas: number; percentual: number;
+  }> | null>(null)
 
   const localizacaoDisplay =
     turmas.find((t) => t.nucleo_localizacao)?.nucleo_localizacao ?? 'Localização'
@@ -101,11 +118,103 @@ export const ProfessorPainel = () => {
 
   useEffect(() => {
     if (tab === 'buscar') void fetchAlunos()
+    if (tab === 'relatorios') void fetchRelatorios()
   }, [tab]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  async function loadChamadaAlunos(turmaId: string) {
+    if (!turmaId) {
+      setChamadaAlunos([])
+      return
+    }
+    try {
+      const res = await api.get(`/alunos?turma_id=${turmaId}`) as { alunos?: Aluna[] }
+      const list = res.alunos ?? []
+      setChamadaAlunos(list)
+      const map: Record<number, ChamadaStatus> = {}
+      list.forEach((a) => { map[a.id] = null })
+      setStatusMap(map)
+    } catch {
+      setChamadaAlunos([])
+    }
+  }
+
+  async function fetchRelatorios() {
+    try {
+      const res = await api.get('/professor/relatorios') as { data?: Array<{
+        aluno_id: number; nome: string; matricula: string; turma_nome: string;
+        total_aulas: number; presentes: number; faltas: number; percentual: number;
+      }> }
+      setRelatorio(res.data ?? [])
+    } catch {
+      setRelatorio(null)
+    }
+  }
+
+  async function handleSalvarChamada() {
+    if (!chamadaTurmaId) {
+      showFeedback('error', 'Selecione uma turma')
+      return
+    }
+    const pendentes = chamadaAlunos.filter((a) => !statusMap[a.id])
+    if (pendentes.length) {
+      showFeedback('error', `Marque P, F ou T para ${pendentes.length} aluna(s)`)
+      return
+    }
+    setLoading(true)
+    try {
+      await api.post('/professor/chamada', {
+        turma_id: Number(chamadaTurmaId),
+        data: chamadaData,
+        registros: chamadaAlunos.map((a) => ({
+          aluno_id: a.id,
+          presente: statusMap[a.id] === 'P',
+        })),
+      })
+      setShowChamadaModal(false)
+      showFeedback('success', 'Chamada finalizada com sucesso!')
+    } catch (err) {
+      showFeedback('error', err instanceof Error ? err.message : 'Erro ao salvar chamada')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const chamadaResumo = {
+    p: chamadaAlunos.filter((a) => statusMap[a.id] === 'P').length,
+    f: chamadaAlunos.filter((a) => statusMap[a.id] === 'F').length,
+    t: chamadaAlunos.filter((a) => statusMap[a.id] === 'T').length,
+    pendentes: chamadaAlunos.filter((a) => !statusMap[a.id]).length,
+  }
+
+  function setStatus(alunoId: number, s: ChamadaStatus) {
+    setStatusMap((m) => ({ ...m, [alunoId]: s }))
+  }
+
+  function hasEvasionRisk(alunoId: number) {
+    return (MOCK_FALTAS_CONSECUTIVAS[alunoId] ?? 0) >= 3
+  }
+
+  function faltasConsecutivas(alunoId: number) {
+    return MOCK_FALTAS_CONSECUTIVAS[alunoId] ?? 0
+  }
 
   function showFeedback(type: 'error' | 'success', msg: string) {
     setFeedback({ type, msg })
     setTimeout(() => setFeedback(null), 3500)
+  }
+
+  async function handleDeleteAluna(a: Aluna) {
+    if (!window.confirm(`Excluir a aluna "${a.nome}" (Mat. ${a.matricula})? Esta ação não pode ser desfeita.`)) return
+    setDeletingId(a.id)
+    try {
+      await api.delete(`/aluno/${a.id}`)
+      setAlunos((prev) => prev.filter((x) => x.id !== a.id))
+      showFeedback('success', `Aluna "${a.nome}" removida com sucesso.`)
+    } catch (err) {
+      showFeedback('error', err instanceof Error ? err.message : 'Erro ao excluir aluna')
+    } finally {
+      setDeletingId(null)
+    }
   }
 
   function calcIdade(data: string): number | undefined {
@@ -122,20 +231,28 @@ export const ProfessorPainel = () => {
 
   async function handleCadastrar(e: React.FormEvent) {
     e.preventDefault()
+    const selectedTurma = turmas.find((t) => t.id === Number(turmaId))
+    if (!selectedTurma?.escola_id) {
+      showFeedback('error', 'Turma sem escola vinculada. Peça ao administrativo para configurar a turma.')
+      return
+    }
     setLoading(true)
     try {
-      const selectedTurma = turmas.find((t) => t.id === Number(turmaId))
       await api.post('/professor/createaluno', {
         nome: nome.trim(),
         matricula: matricula.trim(),
+        email: email.trim(),
         nucleo_id: Number(nucleoId),
-        escola_id: selectedTurma?.escola_id ?? undefined,
+        escola_id: selectedTurma.escola_id,
         turma_id: Number(turmaId),
         bairro: bairro.trim(),
         idade: calcIdade(dataNasc),
+        telefone_aluna: telefoneAluna.trim() || undefined,
+        nome_responsavel: nomeResp.trim(),
+        telefone_responsavel: telefoneResp.trim(),
       })
-      showFeedback('success', 'Aluna cadastrada com sucesso!')
-      setNome(''); setMatricula(''); setDataNasc('')
+      showFeedback('success', 'Aluna cadastrada! E-mail enviado para definir a senha.')
+      setNome(''); setMatricula(''); setEmail(''); setDataNasc('')
       setNucleoId(''); setTurmaId(''); setBairro('')
       setTelefoneAluna(''); setNomeResp(''); setTelefoneResp('')
     } catch (err) {
@@ -168,6 +285,7 @@ export const ProfessorPainel = () => {
   })
 
   return (
+    <AppShell role="professor">
     <div className="prof-page">
 
       {/* Header */}
@@ -291,6 +409,157 @@ export const ProfessorPainel = () => {
                       {[a.turma_nome, a.nucleo].filter(Boolean).join(' · ')}
                     </span>
                   )}
+                  <button
+                    type="button"
+                    disabled={deletingId === a.id}
+                    onClick={() => void handleDeleteAluna(a)}
+                    style={{
+                      marginTop: '0.6rem',
+                      background: 'none',
+                      border: '1px solid #e55',
+                      borderRadius: '0.4rem',
+                      color: '#e55',
+                      padding: '0.25rem 0.65rem',
+                      fontSize: '0.78rem',
+                      cursor: 'pointer',
+                      alignSelf: 'flex-start',
+                    }}
+                  >
+                    {deletingId === a.id ? 'Excluindo...' : 'Excluir'}
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {tab === 'chamada' && (
+        <div className="prof-chamada">
+          <div className="prof-chamada__body">
+            <div className="gg-card" style={{ marginBottom: '1rem' }}>
+              <label className="input-field__label">Núcleo</label>
+              <select
+                className="input-field__control"
+                value={nucleoChamada}
+                onChange={(e) => {
+                  setNucleoChamada(e.target.value)
+                  setChamadaTurmaId('')
+                  setChamadaAlunos([])
+                }}
+              >
+                <option value="">Todos os núcleos</option>
+                {nucleos.map((n) => (
+                  <option key={n.id} value={String(n.id)}>{n.nome}</option>
+                ))}
+              </select>
+            </div>
+            <InputField
+              label="Turma *"
+              value={chamadaTurmaId}
+              onChange={(v) => { setChamadaTurmaId(v); void loadChamadaAlunos(v) }}
+              placeholder="Selecione a turma"
+              options={turmas
+                .filter((t) => !nucleoChamada || String(t.nucleo_id) === nucleoChamada)
+                .map((t) => ({ value: t.id, label: t.nome }))}
+            />
+            <div className="input-field" style={{ marginTop: '0.75rem' }}>
+              <label className="input-field__label">Data da aula *</label>
+              <input className="input-field__control" type="date" value={chamadaData} onChange={(e) => setChamadaData(e.target.value)} />
+            </div>
+            {chamadaAlunos.length === 0 ? (
+              <p className="prof-empty">Selecione uma turma para listar alunas.</p>
+            ) : (
+              <>
+                <div className="prof-search-wrap prof-chamada__search">
+                  <Search width="18" height="18" />
+                  <input
+                    type="text"
+                    placeholder="Buscar aluna na lista..."
+                    value={chamadaBusca}
+                    onChange={(e) => setChamadaBusca(e.target.value)}
+                  />
+                </div>
+                <div className="prof-chamada__list">
+                  {chamadaAlunos
+                    .filter((a) => a.nome.toLowerCase().includes(chamadaBusca.trim().toLowerCase()))
+                    .map((a) => (
+                      <div key={a.id} className={`prof-chamada-card ${hasEvasionRisk(a.id) ? 'prof-chamada-card--risk' : ''}`}>
+                        <div className="prof-chamada-card__info">
+                          <span className="prof-chamada-card__nome">
+                            {a.nome}
+                            {hasEvasionRisk(a.id) && <AlertCircle width="16" height="16" />}
+                          </span>
+                          {hasEvasionRisk(a.id) && (
+                            <span className="prof-chamada-card__risk">
+                              Risco de Evasão ({faltasConsecutivas(a.id)} faltas)
+                            </span>
+                          )}
+                        </div>
+                        <div className="prof-chamada-toggle">
+                          <button type="button" className={`prof-chamada-toggle__btn --p ${statusMap[a.id] === 'P' ? 'active' : ''}`} onClick={() => setStatus(a.id, 'P')}>P</button>
+                          <button type="button" className={`prof-chamada-toggle__btn --f ${statusMap[a.id] === 'F' ? 'active' : ''}`} onClick={() => setStatus(a.id, 'F')}>F</button>
+                          <button type="button" className={`prof-chamada-toggle__btn --t ${statusMap[a.id] === 'T' ? 'active' : ''}`} onClick={() => setStatus(a.id, 'T')}>T</button>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </>
+            )}
+          </div>
+          {chamadaAlunos.length > 0 && (
+            <div className="prof-chamada__footer">
+              <button
+                type="button"
+                className="gg-btn-primary prof-chamada__submit"
+                onClick={() => setShowChamadaModal(true)}
+              >
+                {chamadaResumo.pendentes > 0 ? `Finalizar Chamada (${chamadaResumo.pendentes} pendente(s))` : 'Finalizar Chamada'}
+              </button>
+            </div>
+          )}
+          {showChamadaModal && (
+            <div className="gg-modal-overlay" role="presentation" onClick={() => setShowChamadaModal(false)}>
+              <div className="gg-modal" role="dialog" onClick={(e) => e.stopPropagation()}>
+                <h3>Confirmar chamada</h3>
+                <p>Presentes: {chamadaResumo.p} · Faltas: {chamadaResumo.f} · Trancamentos: {chamadaResumo.t}</p>
+                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
+                  <button type="button" className="gg-btn-primary" disabled={loading} onClick={() => void handleSalvarChamada()}>Confirmar</button>
+                  <button type="button" onClick={() => setShowChamadaModal(false)}>Cancelar</button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {tab === 'relatorios' && (
+        <div className="prof-content">
+          <h3 style={{ marginBottom: '1rem' }}>Relatório de Presença por Aluna</h3>
+          {!relatorio?.length ? (
+            <p className="prof-empty">Nenhum dado disponível. Registre chamadas para ver o relatório.</p>
+          ) : (
+            <div className="prof-aluna-list">
+              {relatorio.map((a) => (
+                <div key={a.aluno_id} className="prof-aluna-card" style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                  <span className="prof-aluna-card__nome">{a.nome}</span>
+                  <span className="prof-aluna-card__sub" style={{ opacity: 0.7, fontSize: '0.82rem' }}>
+                    Matrícula: {a.matricula} · {a.turma_nome}
+                  </span>
+                  <div style={{ display: 'flex', gap: '1rem', marginTop: '0.25rem', flexWrap: 'wrap' }}>
+                    <span style={{ color: '#2ecc71', fontWeight: 600 }}>✓ {a.presentes} presenças</span>
+                    <span style={{ color: '#e74c3c', fontWeight: 600 }}>✗ {a.faltas} faltas</span>
+                    <span style={{ fontWeight: 700, color: a.percentual >= 75 ? '#2ecc71' : '#e74c3c' }}>
+                      {a.percentual}% frequência
+                    </span>
+                  </div>
+                  <div style={{ background: '#eee', borderRadius: '4px', height: '6px', marginTop: '0.25rem', overflow: 'hidden' }}>
+                    <div style={{
+                      width: `${a.percentual}%`, height: '100%',
+                      background: a.percentual >= 75 ? '#2ecc71' : '#e74c3c',
+                      borderRadius: '4px', transition: 'width 0.4s',
+                    }} />
+                  </div>
                 </div>
               ))}
             </div>
@@ -317,6 +586,14 @@ export const ProfessorPainel = () => {
               value={nome}
               onChange={setNome}
               placeholder="Nome completo da aluna"
+              required
+            />
+
+            <InputField
+              label="E-mail *"
+              value={email}
+              onChange={setEmail}
+              placeholder="e-mail da aluna"
               required
             />
 
@@ -402,7 +679,8 @@ export const ProfessorPainel = () => {
         </div>
       )}
 
-      <BottomNavigation role="professor" />
+      <BottomNavigation role="professor" activeTab="gestao" />
     </div>
+    </AppShell>
   )
 }

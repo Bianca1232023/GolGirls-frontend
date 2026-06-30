@@ -4,6 +4,11 @@ body{
     font-family: ui-sans-serif, system-ui, sans-serif;
 }
 
+/* banner LGPD acima do rodapé nas telas de login */
+body:has(.footer) .cookie-consent {
+  bottom: 5.5rem;
+}
+
 
 html, body, #root {
   min-height: 100%;

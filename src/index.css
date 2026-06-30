@@ -1,0 +1,7 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-gg-pink: #ff1493;
+  --color-gg-purple: #a020f0;
+  --color-gg-lilac: #e6e6fa;
+}

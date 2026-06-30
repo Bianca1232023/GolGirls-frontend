@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import './styles.scss'
 import UserCog from '../icons/user-cog'
 import Shield from '../icons/shield'
-import { Logo } from '../icons'
 import Buttons from '../Button'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { api } from '../../services/api'
+import { isValidPassword, passwordsMatch } from '../../utils/validation'
 
 type Role = 'professor' | 'admin';
 
@@ -44,8 +44,8 @@ const SetPasswordComponent: React.FC<SetPasswordProps> = ({ role }) => {
     const handleSetPassword = async () => {
         const newErrors = {
             name: !name.trim(),
-            password: !password.trim(),
-            confirmPassword: !!getConfirmPasswordError(),
+            password: !isValidPassword(password),
+            confirmPassword: !!getConfirmPasswordError() || !passwordsMatch(password, confirmPassword),
         };
 
         setErrors(newErrors);
@@ -70,7 +70,7 @@ const SetPasswordComponent: React.FC<SetPasswordProps> = ({ role }) => {
     return (
         <div className='all-setpassword-content'>
             <div className='setpassword-header'>
-                <Logo width="190" height="147" />
+                <img src="/logo-golgirls.svg" alt="Gol Girls" className="gg-logo gg-logo--login" />
                 <div className={`cap-icon-${role}`}>
                     {role === 'professor' ? <UserCog width="28" height="28" /> : <Shield width="28" height="28" />}
                 </div>
@@ -101,7 +101,11 @@ const SetPasswordComponent: React.FC<SetPasswordProps> = ({ role }) => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    {errors.password && <span className='setpassword-error-msg'>Digite sua senha</span>}
+                    {errors.password && (
+                        <span className='setpassword-error-msg'>
+                            {!password.trim() ? 'Digite sua senha' : 'Mínimo 8 caracteres'}
+                        </span>
+                    )}
 
                     <span className='field-label'>CONFIRMAR SENHA</span>
                     <input

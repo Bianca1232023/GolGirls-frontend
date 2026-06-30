@@ -1,78 +1,116 @@
 @use '../styles/variables.scss' as *;
 
-.painel-page {
+.admin-panel {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100%;
+  background-color: #f5f6fa;
+  padding: 1.25rem 1rem 6rem;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  background-color: #f5f6fa;
-  padding: 1.5rem 1rem 6rem;
-  box-sizing: border-box;
-  gap: 1.25rem;
-}
+  gap: 1rem;
 
-/* ── HEADER ── */
-.painel-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.5rem;
-
-  .painel-title {
+  &__header {
     display: flex;
-    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  &__title {
     text-align: left;
+    min-width: 0;
 
     h1 {
-      margin: 0;
-      font-size: 1.75rem;
-      font-weight: 700;
+      margin: 0 0 0.2rem;
+      font-size: 1.6rem;
+      font-weight: 800;
       color: #1a1a1a;
-      line-height: 1.2;
+      line-height: 1.15;
     }
 
-    span {
-      font-size: 0.8rem;
-      color: #888;
-      font-weight: 400;
+    p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: #9ca3af;
     }
   }
 
-  .painel-filter-btn {
+  &__filter-wrap {
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    background: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 0.75rem;
-    padding: 0.5rem 0.85rem;
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: #444;
-    cursor: pointer;
-    white-space: nowrap;
+    background: #eef0f4;
+    border-radius: 9999px;
+    padding: 0.4rem 0.75rem 0.4rem 0.85rem;
+    flex-shrink: 0;
+    color: #374151;
 
-    &:hover {
-      background: #f0f0f0;
+    svg {
+      color: #374151;
+      flex-shrink: 0;
     }
+  }
+
+  &__filter {
+    appearance: none;
+    background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right center;
+    border: none;
+    padding: 0 1.15rem 0 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #374151;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  &__card {
+    background: #fff;
+    border: 1px solid #eef0f4;
+    border-radius: 1rem;
+    padding: 1rem 1.1rem;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  &__card-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 800;
+    color: #1a1a1a;
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  &__empty {
+    margin: 0;
+    font-size: 0.82rem;
+    color: #9ca3af;
+    text-align: center;
+    padding: 0.5rem 0;
   }
 }
 
-/* ── STATS CARDS ── */
-.painel-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
-}
-
+/* ── STAT CARDS ── */
 .stat-card {
   background: #fff;
+  border: 1px solid #eef0f4;
   border-radius: 1rem;
-  padding: 1rem;
+  padding: 1.1rem 0.75rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.4rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  gap: 0.45rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  text-align: center;
 
   .stat-icon-wrap {
     width: 2.5rem;
@@ -86,262 +124,343 @@
       background-color: #fce4f0;
       color: $color-primary;
     }
-
     &.green {
       background-color: #d6f5e3;
       color: #22c55e;
     }
+    &.orange {
+      background-color: #fef3c7;
+      color: #f59e0b;
+    }
   }
 
   .stat-label {
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: #888;
+    color: #9ca3af;
+    line-height: 1.25;
   }
 
   .stat-value {
     font-size: 1.75rem;
-    font-weight: 700;
+    font-weight: 800;
     color: #1a1a1a;
     line-height: 1;
   }
 }
 
-/* ── EVASÃO CARD ── */
-.evasao-card {
+/* ── RISCO DE EVASÃO ── */
+.admin-evasao-card {
   background: #fff;
+  border: 1px solid #eef0f4;
   border-radius: 1rem;
-  padding: 1rem 1.25rem;
+  padding: 1rem 1.1rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  gap: 0.9rem;
 
-  .evasao-icon-wrap {
+  &__icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: #fef3c7;
+    color: #f59e0b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    gap: 0.1rem;
+  }
+
+  &__label {
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #9ca3af;
+  }
+
+  &__value {
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: #1a1a1a;
+    line-height: 1;
+  }
+}
+
+/* ── CHART ── */
+.admin-chart-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  .admin-chart-card__inner {
+    width: 100%;
+  }
+}
+
+/* ── AÇÕES (Convites / Sistema) ── */
+.admin-action-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  border-radius: 1rem;
+  padding: 1rem 1.1rem;
+  box-sizing: border-box;
+
+  &--convites {
+    background: linear-gradient(180deg, #f6edfb 0%, #f1e6fa 100%);
+    border: 1px solid rgba(154, 88, 246, 0.18);
+  }
+
+  &--sistema {
+    background: linear-gradient(180deg, #eaf3ff 0%, #e6f6fb 100%);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+  }
+
+  &__icon {
+    width: 2.85rem;
+    height: 2.85rem;
+    border-radius: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    flex-shrink: 0;
+
+    &.convites {
+      background: linear-gradient(135deg, #9a58f6, #cf75dd);
+    }
+    &.sistema {
+      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    }
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    gap: 0.15rem;
+  }
+
+  &__title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #1a1a1a;
+    line-height: 1.2;
+  }
+
+  &__desc {
+    font-size: 0.76rem;
+    color: #6b7280;
+    line-height: 1.3;
+  }
+
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    border: none;
+    border-radius: 9999px;
+    padding: 0.55rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+
+    svg {
+      flex-shrink: 0;
+    }
+
+    &.convites {
+      background: linear-gradient(135deg, #9a58f6, #cf75dd);
+    }
+    &.sistema {
+      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    }
+
+    &:hover {
+      opacity: 0.92;
+    }
+  }
+}
+
+/* ── SECTION HEADINGS ── */
+.admin-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+
+  &__title {
+    margin: 0;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #6b7280;
+  }
+}
+
+.admin-master-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: #eef0f4;
+  color: #9ca3af;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: 9999px;
+  padding: 0.35rem 0.7rem;
+  white-space: nowrap;
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+/* ── EAR ── */
+.admin-ear-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  border-radius: 1rem;
+  padding: 1rem 1.1rem;
+  background: linear-gradient(180deg, #fdeef4 0%, #f3ecfb 100%);
+  border: 1px solid rgba(207, 117, 221, 0.2);
+
+  &__icon {
+    width: 2.85rem;
+    height: 2.85rem;
+    border-radius: 0.85rem;
+    background: #dbeafe;
+    color: #6d28d9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    gap: 0.2rem;
+  }
+
+  &__label {
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #6b7280;
+  }
+
+  &__value {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #1a1a1a;
+    line-height: 1;
+
+    span {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #9ca3af;
+    }
+
+    em {
+      font-style: normal;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #6d28d9;
+    }
+  }
+
+  &__menu {
     width: 2.5rem;
     height: 2.5rem;
-    min-width: 2.5rem;
     border-radius: 50%;
-    background-color: #fef9c3;
-    color: #d97706;
+    border: 1px solid rgba(207, 117, 221, 0.35);
+    background: rgba(255, 255, 255, 0.6);
+    color: $color-primary;
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-
-  .evasao-info {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-    flex: 1;
-
-    .evasao-label {
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #888;
-    }
-
-    .evasao-value {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #1a1a1a;
-      line-height: 1.2;
-    }
-  }
-
-  .evasao-btn {
-    background: transparent;
-    border: 1.5px solid #d97706;
-    border-radius: 2rem;
-    padding: 0.4rem 0.9rem;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: #d97706;
     cursor: pointer;
-    white-space: nowrap;
+    flex-shrink: 0;
 
     &:hover {
-      background: #fef3c7;
+      background: #fff;
     }
-  }
-}
-
-/* ── CONVITES CARD ── */
-.convites-card {
-  background: #f5e9f8;
-  border-radius: 1rem;
-  padding: 1rem 1.25rem;
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
-
-  .convites-icon-wrap {
-    width: 3rem;
-    height: 3rem;
-    min-width: 3rem;
-    border-radius: 0.85rem;
-    background: linear-gradient(135deg, #9a58f6, #cf75dd);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .convites-info {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-    flex: 1;
-
-    .convites-title {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #1a1a1a;
-    }
-
-    .convites-desc {
-      font-size: 0.75rem;
-      color: #888;
-    }
-  }
-
-  .convites-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    background: linear-gradient(135deg, #9a58f6, #cf75dd);
-    color: #fff;
-    border: none;
-    border-radius: 2rem;
-    padding: 0.5rem 1rem;
-    font-size: 0.82rem;
-    font-weight: 700;
-    cursor: pointer;
-    white-space: nowrap;
-
-    &:hover {
-      opacity: 0.9;
-    }
-  }
-}
-
-/* ── SISTEMA CARD ── */
-.sistema-card {
-  background: #e8f0fe;
-  border-radius: 1rem;
-  padding: 1rem 1.25rem;
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
-
-  .sistema-icon-wrap {
-    width: 3rem;
-    height: 3rem;
-    min-width: 3rem;
-    border-radius: 0.85rem;
-    background: linear-gradient(135deg, #3b82f6, #06b6d4);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .sistema-info {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-    flex: 1;
-
-    .sistema-title {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #1a1a1a;
-    }
-
-    .sistema-desc {
-      font-size: 0.75rem;
-      color: #888;
-    }
-  }
-
-  .sistema-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    background: linear-gradient(135deg, #3b82f6, #06b6d4);
-    color: #fff;
-    border: none;
-    border-radius: 2rem;
-    padding: 0.5rem 1rem;
-    font-size: 0.82rem;
-    font-weight: 700;
-    cursor: pointer;
-    white-space: nowrap;
-
-    &:hover { opacity: 0.9; }
   }
 }
 
 /* ── CORPO DOCENTE ── */
-.docente-section {
+.docente-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: $color-primary;
+  background: transparent;
+  border: none;
+  padding: 0.2rem 0.3rem;
+  cursor: pointer;
+  white-space: nowrap;
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.docente-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
-
-  .docente-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 0.25rem;
-
-    .docente-title {
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #888;
-    }
-
-    .docente-add-btn {
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: $color-primary;
-      background: none;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.2rem;
-
-      &:hover {
-        opacity: 0.75;
-      }
-    }
-  }
+  gap: 0.65rem;
 }
 
 .docente-item {
   background: #fff;
+  border: 1px solid #eef0f4;
   border-radius: 1rem;
-  padding: 0.85rem 1rem;
+  padding: 0.85rem 0.95rem;
   display: flex;
   align-items: center;
-  gap: 0.85rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  gap: 0.75rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
 
   .docente-avatar {
     width: 2.5rem;
     height: 2.5rem;
     min-width: 2.5rem;
-    border-radius: 0.75rem;
+    border-radius: 50%;
     background-color: #fce4f0;
     color: $color-primary;
     font-size: 1rem;
@@ -356,62 +475,66 @@
     flex-direction: column;
     text-align: left;
     flex: 1;
-    gap: 0.1rem;
+    min-width: 0;
+    gap: 0.15rem;
 
-    .docente-name-row {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-
-      .docente-name {
-        font-size: 0.9rem;
-        font-weight: 700;
-        color: #1a1a1a;
-      }
-
-      .badge {
-        font-size: 0.6rem;
-        font-weight: 700;
-        letter-spacing: 0.05em;
-        border-radius: 2rem;
-        padding: 0.15rem 0.55rem;
-
-        &.ativa {
-          background-color: #d6f5e3;
-          color: #16a34a;
-        }
-
-        &.afastada {
-          background-color: #e5e7eb;
-          color: #6b7280;
-        }
-      }
+    .docente-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .docente-nucleo {
-      font-size: 0.7rem;
-      color: #aaa;
+      font-size: 0.66rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      color: #9ca3af;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .badge {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border-radius: 9999px;
+    padding: 0.22rem 0.6rem;
+    flex-shrink: 0;
+
+    &.ativa {
+      background-color: #d6f5e3;
+      color: #16a34a;
+    }
+
+    &.afastada {
+      background-color: #e5e7eb;
+      color: #6b7280;
     }
   }
 
   .docente-menu-btn {
     background: none;
     border: none;
-    color: #aaa;
+    color: #9ca3af;
     cursor: pointer;
     padding: 0.25rem;
+    flex-shrink: 0;
 
     &:hover {
-      color: #666;
+      color: #6b7280;
     }
   }
 }
 
-/* ── Dropdown 3 pontos ── */
 .docente-menu-wrap {
   position: relative;
+  flex-shrink: 0;
 
   .docente-dropdown {
     position: absolute;
@@ -447,5 +570,73 @@
         background: #fee2e2;
       }
     }
+  }
+}
+
+.evasao-btn {
+  background: transparent;
+  border: 1.5px solid #d97706;
+  border-radius: 2rem;
+  padding: 0.45rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #d97706;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  &:hover {
+    background: #fef3c7;
+  }
+}
+
+/* ── MODAL ── */
+.painel-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.painel-modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  h3 {
+    margin: 0 0 0.5rem;
+  }
+
+  label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #6b7280;
+  }
+
+  input {
+    padding: 0.6rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  &__cancel {
+    background: #999 !important;
+    border-color: #999 !important;
+    color: #fff !important;
   }
 }

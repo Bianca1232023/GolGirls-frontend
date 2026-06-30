@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import './styles.scss'
+import GraduationCap from '../icons/graduation-cap'
 import UserCog from '../icons/user-cog'
 import Shield from '../icons/shield'
-import { Logo } from '../icons'
 import Buttons from '../Button'
 import { api } from '../../services/api'
+import { isValidEmail } from '../../utils/validation'
 
-type Role = 'professor' | 'admin';
+type Role = 'professor' | 'admin' | 'aluno';
 
 interface ForgotPasswordProps {
     role: Role;
@@ -20,7 +21,7 @@ const ForgotPasswordComponent: React.FC<ForgotPasswordProps> = ({ role }) => {
     const [success, setSuccess] = useState(false);
 
     const handleSubmit = async () => {
-        const invalid = !email.trim() || !email.includes('@gmail.com');
+        const invalid = !isValidEmail(email);
         setEmailError(invalid);
         if (invalid) return;
 
@@ -28,7 +29,10 @@ const ForgotPasswordComponent: React.FC<ForgotPasswordProps> = ({ role }) => {
         setServerError(null);
 
         try {
-            const endpoint = role === 'admin' ? '/admin/forgot-password' : '/professor/forgot-password';
+            const endpoint =
+              role === 'admin' ? '/admin/forgot-password'
+              : role === 'aluno' ? '/aluno/forgot-password'
+              : '/professor/forgot-password';
             await api.post(endpoint, { email });
             setSuccess(true);
         } catch (err) {
@@ -42,9 +46,11 @@ const ForgotPasswordComponent: React.FC<ForgotPasswordProps> = ({ role }) => {
     return (
         <div className='all-forgot-content'>
             <div className='forgot-header'>
-                <Logo width="190" height="147" />
+                <img src="/logo-golgirls.svg" alt="Gol Girls" className="gg-logo gg-logo--login" />
                 <div className={`cap-icon-${role}`}>
-                    {role === 'professor' ? <UserCog width="28" height="28" /> : <Shield width="28" height="28" />}
+                    {role === 'professor' ? <UserCog width="28" height="28" />
+                      : role === 'aluno' ? <GraduationCap width="28" height="28" />
+                      : <Shield width="28" height="28" />}
                 </div>
                 <div className='forgot-title'>
                     <h1>Esqueci minha senha</h1>
@@ -71,7 +77,7 @@ const ForgotPasswordComponent: React.FC<ForgotPasswordProps> = ({ role }) => {
                         />
                         {emailError && (
                             <span className='input-error-msg'>
-                                {!email.trim() ? 'Digite seu e-mail' : 'O e-mail deve conter @gmail.com'}
+                                Digite um e-mail válido
                             </span>
                         )}
                         <Buttons

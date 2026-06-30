@@ -1,18 +1,25 @@
 import React from 'react'
 import Inputs from '../components/inputLogin'
-import Buttons from '../components/Button'
-import Footer from '../components/footer'
+import ArrowLeft from '../components/icons/arrow-left'
 import { useNavigate } from 'react-router-dom'
+import { AppShell } from '../components/layout/AppShell'
+import '../styles/golgirls-design.scss'
 
 export const ProfessorLogin = () => {
   const [value, setValue] = React.useState('')
   const navigate = useNavigate()
 
   return (
-    <div>
-      <Buttons type="back" label="Voltar" onClick={() => navigate(-1)} />
-      <Inputs type="email" value={value} onChange={(e) => setValue(e.target.value)} role={'professor'} />
-      <Footer text="Problemas com o acesso? Entre em contato com o Administrativo" />
-    </div>
+    <AppShell publicPage>
+      <div className="gg-login-page">
+        <div className="gg-login-shell">
+          <button type="button" className="gg-login-back" onClick={() => navigate('/')}>
+            <ArrowLeft width="18" height="18" />
+            Voltar
+          </button>
+          <Inputs type="email" value={value} onChange={(e) => setValue(e.target.value)} role="professor" />
+        </div>
+      </div>
+    </AppShell>
   )
 }

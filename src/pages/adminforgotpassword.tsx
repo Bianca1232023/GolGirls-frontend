@@ -2,6 +2,8 @@ import Buttons from '../components/Button'
 import ForgotPasswordComponent from '../components/forgotPassword'
 import Footer from '../components/footer'
 import { useNavigate } from 'react-router-dom'
+import { AppShell } from '../components/layout/AppShell'
+import '../styles/golgirls-design.scss'
 
 export const AdminForgotPassword = () => {
   const navigate = useNavigate()
@@ -15,10 +17,12 @@ export const AdminForgotPassword = () => {
   }
 
   return (
-    <div style={{ paddingBottom: '5rem' }}>
-      <Buttons type="back" label="Voltar" onClick={handleBack} />
-      <ForgotPasswordComponent role="admin" />
-      <Footer text="Lembrou sua senha? Volte para o login e acesse sua conta" />
-    </div>
+    <AppShell publicPage>
+      <div className="gg-login-page">
+        <Buttons type="back" label="Voltar" onClick={handleBack} />
+        <ForgotPasswordComponent role="admin" />
+        <Footer text="Lembrou sua senha? Volte para o login e acesse sua conta" />
+      </div>
+    </AppShell>
   )
 }
