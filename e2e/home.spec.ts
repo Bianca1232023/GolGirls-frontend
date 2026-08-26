@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 test.describe('GoLGirls — UI E2E', () => {
   test('página inicial exibe título e cards de acesso', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByRole('heading', { name: /Bem-vinda ao GolGirls/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /👧🏾 Bem-vinda ao Gol Girls ⚽/i })).toBeVisible();
     await expect(page.getByText('Aluna', { exact: true })).toBeVisible();
     await expect(page.getByText('Professor')).toBeVisible();
     await expect(page.getByText('Admin')).toBeVisible();

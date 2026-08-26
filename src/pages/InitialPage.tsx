@@ -9,7 +9,7 @@ export function InitialPage() {
     <AppShell publicPage>
       <div className="gg-home-page">
         <img src="/logo-golgirls.svg" alt="Gol Girls" className="gg-logo" />
-        <h1 className="title gg-home-title">Bem-vinda ao Gol Girls</h1>
+        <h1 className="title gg-home-title">👧🏾 Bem-vinda ao Gol Girls ⚽</h1>
         <span className="subtitle">Selecione o tipo de acesso</span>
 
         <div className="gg-home-cards">
