@@ -11,7 +11,9 @@ export const ProfessorResetPassword = () => {
   return (
     <AppShell publicPage>
       <div className="gg-login-page">
-        <Buttons type="back" label="Voltar" onClick={() => navigate('/login/professor')} />
+        <div className="gg-voltar-container">
+          <Buttons type="back" label="Voltar" onClick={() => navigate('/login/professor')} />
+        </div>
         <ResetPasswordFormComponent role="professor" />
         <Footer text="Link expirado? Solicite um novo na página de recuperação de senha" />
       </div>

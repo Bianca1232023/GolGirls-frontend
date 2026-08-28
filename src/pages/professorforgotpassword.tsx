@@ -19,7 +19,9 @@ export const ProfessorForgotPassword = () => {
   return (
     <AppShell publicPage>
       <div className="gg-login-page">
-        <Buttons type="back" label="Voltar" onClick={handleBack} />
+        <div className="forgot-pwd-back-btn-container">
+          <Buttons type="back" label="Voltar" onClick={handleBack} />
+        </div>
         <ForgotPasswordComponent role="professor" />
         <Footer text="Lembrou sua senha? Volte para o login e acesse sua conta" />
       </div>

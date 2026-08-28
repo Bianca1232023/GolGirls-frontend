@@ -15,6 +15,7 @@ export interface MuralPost {
   authorName: string
   authorRole?: string
   authorRoleKey?: string
+  authorEmail?: string
   initial: string
   authorAvatar?: string
   timeAgo: string
@@ -30,6 +31,7 @@ interface MuralContextValue {
   addPost: (text: string, imageUrl?: string, authorName?: string) => void
   toggleLike: (postId: string) => void
   addComment: (postId: string, text: string) => void
+  deletePost: (postId: string) => void
 }
 
 const STORAGE_KEY = 'gg_mural_posts_v3'
@@ -81,6 +83,7 @@ export function MuralProvider({ children }: { children: ReactNode }) {
         authorName: name,
         authorRole: getRoleLabel(role),
         authorRoleKey: role ?? 'aluno',
+        authorEmail: email ?? undefined,
         initial: getInitial(name),
         timeAgo: 'Agora',
         text,
@@ -128,8 +131,12 @@ export function MuralProvider({ children }: { children: ReactNode }) {
     )
   }
 
+  function deletePost(postId: string) {
+    setPosts((prev) => prev.filter((p) => p.id !== postId))
+  }
+
   return (
-    <MuralCtx.Provider value={{ posts, addPost, toggleLike, addComment }}>
+    <MuralCtx.Provider value={{ posts, addPost, toggleLike, addComment, deletePost }}>
       {children}
     </MuralCtx.Provider>
   )
