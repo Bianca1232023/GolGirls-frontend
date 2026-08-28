@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useMural } from '../../contexts/MuralContext'
+import { getSessionLabel, getRole } from '../../services/auth'
 
 interface MuralFeedProps {
   role?: 'aluno' | 'professor' | 'admin'
@@ -13,7 +14,9 @@ const DESTAQUES = [
 ]
 
 export function MuralFeed({ role = 'aluno', onJornadaClick }: MuralFeedProps) {
-  const { posts, toggleLike, addComment } = useMural()
+  const { posts, toggleLike, addComment, deletePost } = useMural()
+  const currentEmail = getSessionLabel()
+  const currentRole = getRole()
   // Mostrar apenas posts do mesmo role ou sem role definido (posts antigos)
   const visiblePosts = posts.filter(
     (p) => !p.authorRoleKey || p.authorRoleKey === role
@@ -118,6 +121,20 @@ export function MuralFeed({ role = 'aluno', onJornadaClick }: MuralFeedProps) {
                   style={{ marginLeft: 'auto' }}
                   aria-label="Compartilhar"
                 >↗</button>
+                {(currentRole === 'admin' || post.authorEmail === currentEmail) && (
+                  <button
+                    type="button"
+                    className="gg-mural-post__action gg-mural-post__action--delete"
+                    aria-label="Excluir publicação"
+                    onClick={() => {
+                      if (window.confirm('Tem certeza que deseja excluir esta publicação?')) {
+                        deletePost(post.id)
+                      }
+                    }}
+                  >
+                    🗑️
+                  </button>
+                )}
               </div>
 
               {/* Inline comments */}

@@ -493,6 +493,15 @@ $gg-yellow: #facc15;
     &--liked {
       color: $gg-pink;
     }
+
+    &--delete {
+      margin-left: auto;
+      color: #9ca3af;
+
+      &:hover {
+        color: #ef4444;
+      }
+    }
   }
 
   &__comment {
@@ -964,4 +973,11 @@ $gg-yellow: #facc15;
     width: 100%;
     max-width: none;
   }
+}
+
+.forgot-pwd-back-btn-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 1rem;
 }

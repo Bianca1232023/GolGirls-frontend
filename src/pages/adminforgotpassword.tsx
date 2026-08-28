@@ -19,7 +19,9 @@ export const AdminForgotPassword = () => {
   return (
     <AppShell publicPage>
       <div className="gg-login-page">
-        <Buttons type="back" label="Voltar" onClick={handleBack} />
+        <div className="forgot-pwd-back-btn-container">
+          <Buttons type="back" label="Voltar" onClick={handleBack} />
+        </div>
         <ForgotPasswordComponent role="admin" />
         <Footer text="Lembrou sua senha? Volte para o login e acesse sua conta" />
       </div>

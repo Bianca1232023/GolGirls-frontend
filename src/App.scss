@@ -1,7 +1,8 @@
 @use "./styles/variables.scss" as *;
 
 body{
-    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-family: "Segoe UI", sans-serif;
+    font-weight: 100;
 }
 
 /* banner LGPD acima do rodapé nas telas de login */
