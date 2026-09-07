@@ -76,6 +76,9 @@ export const ProfessorPainel = () => {
   const [statusMap, setStatusMap] = useState<Record<number, ChamadaStatus>>({})
   const [nucleoChamada, setNucleoChamada] = useState<string>('')
   const [showChamadaModal, setShowChamadaModal] = useState(false)
+  
+  // -- ESTADOS DOS RELATORIOS --
+  const [relatorioTurmaId, setRelatorioTurmaId] = useState('')
   const [relatorio, setRelatorio] = useState<Array<{
     aluno_id: number; nome: string; matricula: string; turma_nome: string;
     total_aulas: number; presentes: number; faltas: number; percentual: number;
@@ -118,8 +121,38 @@ export const ProfessorPainel = () => {
 
   useEffect(() => {
     if (tab === 'buscar') void fetchAlunos()
-    if (tab === 'relatorios') void fetchRelatorios()
+    // Quando abre a aba relatorios, limpa a tela se nao tem turma escolhida
+    if (tab === 'relatorios') {
+       if(relatorioTurmaId !== '') {
+          void fetchRelatorios()
+       } else {
+          setRelatorio(null)
+       }
+    }
   }, [tab]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // -- NOVA FUNCAO DO RELATORIO POR TURMA --
+  // Adiciona a turma no link do backend
+  async function fetchRelatorios() {
+    if (relatorioTurmaId === '') {
+       setRelatorio(null);
+       return;
+    }
+    try {
+      const res = await api.get('/professor/relatorios?turma_id=' + relatorioTurmaId) as { data?: Array<{
+        aluno_id: number; nome: string; matricula: string; turma_nome: string;
+        total_aulas: number; presentes: number; faltas: number; percentual: number;
+      }> }
+      setRelatorio(res.data ?? [])
+    } catch {
+      setRelatorio(null)
+    }
+  }
+
+  // Toda vez que o professor mudar a caixa de turma, atualiza os dados
+  useEffect(() => {
+      void fetchRelatorios();
+  }, [relatorioTurmaId])
 
   async function loadChamadaAlunos(turmaId: string) {
     if (!turmaId) {
@@ -138,17 +171,6 @@ export const ProfessorPainel = () => {
     }
   }
 
-  async function fetchRelatorios() {
-    try {
-      const res = await api.get('/professor/relatorios') as { data?: Array<{
-        aluno_id: number; nome: string; matricula: string; turma_nome: string;
-        total_aulas: number; presentes: number; faltas: number; percentual: number;
-      }> }
-      setRelatorio(res.data ?? [])
-    } catch {
-      setRelatorio(null)
-    }
-  }
 
   async function handleSalvarChamada() {
     if (!chamadaTurmaId) {
@@ -533,11 +555,28 @@ export const ProfessorPainel = () => {
         </div>
       )}
 
+      {/* -- AREA DO RELATORIO ALTERADA -- */}
       {tab === 'relatorios' && (
         <div className="prof-content">
-          <h3 style={{ marginBottom: '1rem' }}>Relatório de Presença por Aluna</h3>
+          <h3 style={{ marginBottom: '0.5rem' }}>Relatório de Frequência por Turma</h3>
+          <p className="prof-buscar-desc" style={{ marginBottom: '1rem' }}>Selecione a turma para carregar o histórico de presença</p>
+
+          <div className="gg-card" style={{ marginBottom: '1rem' }}>
+             <label className="input-field__label">Selecione a Turma *</label>
+             <select
+                className="input-field__control"
+                value={relatorioTurmaId}
+                onChange={(e) => setRelatorioTurmaId(e.target.value)}
+              >
+                <option value="">Selecione uma opção...</option>
+                {turmas.map((t) => (
+                  <option key={t.id} value={String(t.id)}>{t.nome}</option>
+                ))}
+             </select>
+          </div>
+
           {!relatorio?.length ? (
-            <p className="prof-empty">Nenhum dado disponível. Registre chamadas para ver o relatório.</p>
+            <p className="prof-empty">Nenhum dado disponível. Escolha a turma acima.</p>
           ) : (
             <div className="prof-aluna-list">
               {relatorio.map((a) => (
