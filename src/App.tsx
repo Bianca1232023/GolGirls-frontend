@@ -117,9 +117,10 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/legado/aluno" element={<ProtectedRoute allowedRoles={['aluno']}><LegadoPage role="aluno" /></ProtectedRoute>} />
-        <Route path="/legado/professor" element={<ProtectedRoute allowedRoles={['professor']}><LegadoPage role="professor" /></ProtectedRoute>} />
-        <Route path="/legado/admin" element={<ProtectedRoute allowedRoles={['admin']}><LegadoPage role="admin" /></ProtectedRoute>} />
+        <Route path="/legado/aluno" element={<ProtectedRoute allowedRoles={['aluno']}><LegadoPage /></ProtectedRoute>} />
+        <Route path="/legado/professor" element={<ProtectedRoute allowedRoles={['professor']}><LegadoPage /></ProtectedRoute>} />
+        <Route path="/legado/admin" element={<ProtectedRoute allowedRoles={['admin']}><LegadoPage/></ProtectedRoute>} />
+        <Route path="/legado" element={<LegadoPage />} />
         <Route
           path="/admin/sistema"
           element={

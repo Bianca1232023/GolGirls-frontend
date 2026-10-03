@@ -25,6 +25,10 @@ export function InitialPage() {
           <p className="gg-home-lgpd">
             <Link to="/privacidade">Política de Privacidade (LGPD)</Link>
           </p>
+         <Link to="/legado" className="gg-home-legado">
+          <span className="gg-home-legado-ball">⚽</span>
+          <span>Conheça o Legado Gol Girls</span>
+        </Link>
         </footer>
       </div>
     </AppShell>

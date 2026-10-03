@@ -80,9 +80,12 @@ export const DEPOIMENTOS = [
 ]
 
 export const GALERIA_CONQUISTAS = [
-  'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=300&h=200&fit=crop',
-  'https://images.unsplash.com/photo-1461896836934-ffe607ba7a38?w=300&h=200&fit=crop',
-  'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=300&h=200&fit=crop',
+  '/images/golgirls.jpg',
+  '/images/golgirls2.jpg',
+  '/images/golgirls3.jpg',
+  '/images/golgirls4.jpg',
+  '/images/golgirls5.jpg',
+  '/images/golgirls6.jpg',
 ]
 
 export const ETNIAS = ['Preta', 'Parda', 'Branca', 'Indígena', 'Amarela', 'Prefiro não informar']
