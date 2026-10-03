@@ -2,72 +2,91 @@
 
 A iniciativa Gol Girls existe para promover o empoderamento de meninas negras, usando o esporte como uma ferramenta poderosa para abrir portas e realizar sonhos. Focamos em meninas negras e periféricas, pois queremos fortalecê-las em seu caminho de descoberta do mundo, construção da autoestima e ocupação de todos os espaços.
 
-Aplicação web do projeto Gol Girls desenvolvida com React, TypeScript e Vite. O frontend consome a API do backend do projeto para autenticação e demais fluxos da aplicação.
+Aplicação web do projeto Gol Girls desenvolvida com React, TypeScript e Vite. O frontend consome a API do backend para autenticação e demais fluxos.
 
-## 🧠 O que a API precisa
+## Stack
 
-- Node.js 20.x ou superior
-- npm 9+
-- Backend do projeto rodando em `http://localhost:3001`
-- Docker
+- React 19, React Router 7, TypeScript 5.9
+- Vite 7, Tailwind CSS 4, Sass
+- Vitest (testes unitários/API) e Playwright (E2E)
+- Docker: build com Node 22 e servido por Nginx 1.28
 
-## ⚙️ Passo a passo para rodar em desenvolvimento
+## Requisitos
 
-1. Abra um terminal na pasta do frontend:
+- Node.js 20.19+ ou 22+
+- npm 10+
+- Backend do projeto rodando (por padrão em `http://localhost:3001`)
+- Docker (opcional, para rodar em container)
+
+## Variáveis de ambiente
+
+Crie o `.env` a partir do exemplo:
 
 ```bash
-cd GolGirls-frontend
+cp .env.example .env
 ```
 
-2. Instale as dependências:
+| Variável | Descrição | Padrão |
+| --- | --- | --- |
+| `VITE_API_URL` | URL base da API do backend | `http://localhost:3001` |
+
+> Variáveis `VITE_*` são embutidas no build. Ao alterar o valor, é necessário rebuildar.
+
+## Desenvolvimento
 
 ```bash
 npm install
-```
-
-3. Verifique se o backend já está em execução em `http://localhost:3001`.
-
-4. Inicie o frontend:
-
-```bash
 npm run dev
 ```
 
-## ☁️ Passo a passo rodar usando Docker
+A aplicação fica disponível em `http://localhost:5173`. O backend precisa permitir essa origem em `CORS_ORIGIN`.
 
-1. Abra um terminal na pasta do frontend:
+## Docker Compose
 
-```bash
-cd GolGirls-frontend
-```
-
-2. Suba a aplicação com Docker Compose:
+Com o Docker Desktop (ou outro runtime compatível com Docker Compose) aberto e o backend configurado e iniciado (veja o README do backend), na raiz do frontend execute:
 
 ```bash
-docker compose up --build
+cp .env.example .env
+docker compose up --build -d
 ```
 
-4. Para parar os containers:
+Se você usa Rancher Desktop no macOS e o contexto padrão não aponta para ele, use `docker --context rancher-desktop compose` no lugar de `docker compose` nos comandos desta seção.
+
+Acesse `http://localhost:8080`. O `.env.example` configura `VITE_API_URL=http://localhost:3001`, endereço da API acessível pelo navegador. Se o backend estiver em container, configure nele `CORS_ORIGIN=http://localhost:8080` e `APP_URL=http://localhost:8080` para alinhar a origem e os links de e-mail.
+
+Para apontar para outra API, informe a URL no build:
+
+```bash
+VITE_API_URL=https://api.exemplo.com docker compose up --build -d
+```
+
+Para parar:
 
 ```bash
 docker compose down
 ```
 
-## 🌐 Como validar se esta funcionando:
+Detalhes:
 
-```bash
-http://localhost:8080
-```
+- O `Dockerfile` usa multi-stage: build com `node:22-alpine` e execução com `nginx:1.28-alpine`.
+- O `nginx.conf` faz fallback para `index.html` (rotas do React Router), compressão gzip e cache longo para `/assets/`.
+- Ao usar o frontend em `http://localhost:8080`, configure o backend com `CORS_ORIGIN=http://localhost:8080` e `APP_URL=http://localhost:8080`.
 
-## Scripts disponíveis
+## Scripts
 
-- `npm run dev`: inicia o ambiente de desenvolvimento com Vite.
-- `npm run build`: gera a build de produção.
-- `npm run lint`: executa o ESLint no código.
-- `npm run preview`: faz a pré-visualização da build gerada.
+| Script | Descrição |
+| --- | --- |
+| `npm run dev` | Servidor de desenvolvimento (Vite) |
+| `npm run build` | Type-check e build de produção |
+| `npm run preview` | Pré-visualização da build |
+| `npm run lint` | ESLint |
+| `npm test` / `npm run test:all` | Todos os testes com Vitest |
+| `npm run test:unit` | Testes unitários (`src/utils`) |
+| `npm run test:e2e` | Testes de integração com a API (`src/__tests__/e2e`) |
+| `npm run test:e2e:ui` | Testes E2E de navegador com Playwright |
 
 ## Fluxo recomendado para subir tudo
 
-1. Suba o backend primeiro, porque ele depende do MySQL e expõe a API em `3001`.
-2. Em seguida, suba o frontend com `npm run dev` ou com Docker.
+1. Suba o backend primeiro (ele sobe o MySQL, aplica as migrations e expõe a API em `3001`). Veja o README do backend.
+2. Suba o frontend com `npm run dev` ou com Docker.
 3. Acesse o frontend no navegador e faça login com os dados cadastrados na API.
