@@ -1,11 +1,14 @@
 import type { SVGProps } from 'react';
-import React from 'react'
+import React from 'react';
 
 interface GraduationCapProps extends SVGProps<SVGSVGElement> {
-    className?: string;
+  className?: string;
 }
 
-const GraduationCap: React.FC<GraduationCapProps> = ({className, ...props}: GraduationCapProps) => {
+const GraduationCap: React.FC<GraduationCapProps> = ({
+  className,
+  ...props
+}: GraduationCapProps) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -24,7 +27,7 @@ const GraduationCap: React.FC<GraduationCapProps> = ({className, ...props}: Grad
       <path d="M22 10v6" />
       <path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5" />
     </svg>
-  )
-}
+  );
+};
 
 export default GraduationCap;

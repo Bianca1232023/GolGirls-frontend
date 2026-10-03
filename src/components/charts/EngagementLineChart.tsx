@@ -6,22 +6,26 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-} from 'recharts'
+} from 'recharts';
 
 interface Point {
-  mes: string
-  pct: number
+  mes: string;
+  pct: number;
 }
 
 interface EngagementLineChartProps {
-  data: Point[]
-  filterKey: string
+  data: Point[];
+  filterKey: string;
 }
 
 export function EngagementLineChart({ data, filterKey }: EngagementLineChartProps) {
   return (
     <ResponsiveContainer width="100%" height={220}>
-      <LineChart key={`chart-${filterKey}`} data={data} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+      <LineChart
+        key={`chart-${filterKey}`}
+        data={data}
+        margin={{ top: 8, right: 8, left: -16, bottom: 0 }}
+      >
         <CartesianGrid strokeDasharray="3 3" stroke="#fce7f3" />
         <XAxis dataKey="mes" tick={{ fontSize: 11, fill: '#6b7280' }} />
         <YAxis domain={[60, 100]} tick={{ fontSize: 11, fill: '#6b7280' }} unit="%" />
@@ -43,5 +47,5 @@ export function EngagementLineChart({ data, filterKey }: EngagementLineChartProp
         />
       </LineChart>
     </ResponsiveContainer>
-  )
+  );
 }

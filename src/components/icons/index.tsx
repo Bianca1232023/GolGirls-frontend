@@ -1,4 +1,4 @@
-export {default as Logo} from "./logo"
+export { default as Logo } from './logo';
 export { default as AlertCircle } from './alert-circle';
 export { default as AlertTriangle } from './alert-triangle';
 export { default as ArrowLeft } from './arrow-left';

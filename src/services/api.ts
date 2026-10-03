@@ -18,7 +18,11 @@ function authHeaders(): Record<string, string> {
 
 async function request<T>(path: string, options?: RequestInit): Promise<ApiResponse<T>> {
   const response = await fetch(`${BASE_URL}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...authHeaders(), ...options?.headers },
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(),
+      ...options?.headers,
+    },
     ...options,
   });
 
@@ -26,7 +30,10 @@ async function request<T>(path: string, options?: RequestInit): Promise<ApiRespo
   try {
     data = await response.json();
   } catch {
-    data = { status: response.status, message: 'Resposta inválida do servidor' };
+    data = {
+      status: response.status,
+      message: 'Resposta inválida do servidor',
+    };
   }
 
   if (response.status === 401 || response.status === 403) {

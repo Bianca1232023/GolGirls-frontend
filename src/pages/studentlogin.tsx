@@ -1,13 +1,13 @@
-import React from 'react'
-import Inputs from '../components/inputLogin'
-import ArrowLeft from '../components/icons/arrow-left'
-import { useNavigate } from 'react-router-dom'
-import { AppShell } from '../components/layout/AppShell'
-import '../styles/golgirls-design.scss'
+import React from 'react';
+import Inputs from '../components/inputLogin';
+import ArrowLeft from '../components/icons/arrow-left';
+import { useNavigate } from 'react-router-dom';
+import { AppShell } from '../components/layout/AppShell';
+import '../styles/golgirls-design.scss';
 
 export const StudentLogin = () => {
-  const [value, setValue] = React.useState('')
-  const navigate = useNavigate()
+  const [value, setValue] = React.useState('');
+  const navigate = useNavigate();
 
   return (
     <AppShell publicPage>
@@ -17,12 +17,17 @@ export const StudentLogin = () => {
             <ArrowLeft width="18" height="18" />
             Voltar
           </button>
-          <Inputs type="text" value={value} onChange={(e) => setValue(e.target.value)} role="aluno" />
+          <Inputs
+            type="text"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            role="aluno"
+          />
           <p className="gg-login-shell__footnote">
             Não tem acesso? Entre em contato com seu(a) professor(a) para criar sua conta.
           </p>
         </div>
       </div>
     </AppShell>
-  )
-}
+  );
+};

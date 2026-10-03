@@ -1,7 +1,7 @@
 .app-hub {
   min-height: 100vh;
   padding: 1.5rem 1.25rem 6rem;
-  background: linear-gradient(180deg, #fff5f9 0%, #ffffff 40%);
+  background: linear-gradient(180deg, #fff5f9 0%, #fff 40%);
 
   &__header {
     margin-bottom: 1.5rem;
@@ -39,7 +39,7 @@
     transition: box-shadow 0.15s;
 
     &:hover {
-      box-shadow: 0 4px 12px rgba(233, 30, 140, 0.12);
+      box-shadow: 0 4px 12px rgb(233 30 140 / 12%);
     }
 
     h2 {

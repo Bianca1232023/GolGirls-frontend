@@ -25,6 +25,7 @@
       color: #1a1a1a;
       line-height: 1.15;
     }
+
     p {
       margin: 0;
       font-size: 0.8rem;
@@ -67,6 +68,7 @@
     background: #d1fae5;
     color: #065f46;
   }
+
   &--error {
     background: #fee2e2;
     color: #991b1b;
@@ -114,12 +116,12 @@
   padding: 0.75rem 1rem 0.25rem;
   background: linear-gradient(
     180deg,
-    rgba(245, 246, 250, 0) 0%,
-    rgba(245, 246, 250, 0.95) 40%,
+    rgb(245 246 250 / 0%) 0%,
+    rgb(245 246 250 / 95%) 40%,
     #f5f6fa 100%
   );
 
-  @media (min-width: 1024px) {
+  @media (width >= 1024px) {
     bottom: 0;
     padding: 1rem 0;
   }
@@ -144,6 +146,7 @@
     font-weight: 700;
     color: #1a1a1a;
   }
+
   p {
     margin: 0;
     font-size: 0.78rem;
@@ -171,7 +174,7 @@
   background: #fff;
   border-radius: 1.25rem;
   padding: 1.25rem;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 6px rgb(0 0 0 / 6%);
 
   &__row {
     display: grid;
@@ -247,7 +250,9 @@
     color: #1a1a1a;
     font-family: inherit;
 
-    &::placeholder { color: #b0b0b0; }
+    &::placeholder {
+      color: #b0b0b0;
+    }
   }
 }
 
@@ -273,7 +278,9 @@
     display: block;
   }
 
-  &:hover { background: #fce4f0; }
+  &:hover {
+    background: #fce4f0;
+  }
 }
 
 .prof-filtros-panel {
@@ -283,7 +290,7 @@
   background: #fff;
   border-radius: 1rem;
   padding: 1rem;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+  box-shadow: 0 1px 6px rgb(0 0 0 / 7%);
 }
 
 .prof-filtros-actions {
@@ -320,7 +327,9 @@
   font-size: 0.85rem;
   color: #555;
 
-  strong { color: #1a1a1a; }
+  strong {
+    color: #1a1a1a;
+  }
 }
 
 .prof-empty {
@@ -341,7 +350,7 @@
   background: #fff;
   border-radius: 1rem;
   padding: 1rem 1.1rem;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.06);
+  box-shadow: 0 1px 5px rgb(0 0 0 / 6%);
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
@@ -423,7 +432,7 @@
   border: 1.5px solid transparent;
   border-radius: 1rem;
   padding: 1rem 1.1rem;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 5px rgb(0 0 0 / 6%);
 
   &--risk {
     border-color: #f5c84b;
@@ -483,16 +492,20 @@
     font-size: 0.95rem;
     color: #6b7280;
     cursor: pointer;
-    transition: background 0.15s, color 0.15s;
+    transition:
+      background 0.15s,
+      color 0.15s;
 
     &.--p.active {
       background: #16a34a;
       color: #fff;
     }
+
     &.--f.active {
       background: #dc2626;
       color: #fff;
     }
+
     &.--t.active {
       background: #6b7280;
       color: #fff;

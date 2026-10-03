@@ -1,11 +1,11 @@
 import type { SVGProps } from 'react';
-import React from 'react'
+import React from 'react';
 
 interface UserCogProps extends SVGProps<SVGSVGElement> {
-    className?: string;
+  className?: string;
 }
 
-const UserCog: React.FC<UserCogProps> = ({className, ...props}: UserCogProps) => {
+const UserCog: React.FC<UserCogProps> = ({ className, ...props }: UserCogProps) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -32,7 +32,7 @@ const UserCog: React.FC<UserCogProps> = ({className, ...props}: UserCogProps) =>
       <circle cx="18" cy="15" r="3" />
       <circle cx="9" cy="7" r="4" />
     </svg>
-  )
-}
+  );
+};
 
 export default UserCog;

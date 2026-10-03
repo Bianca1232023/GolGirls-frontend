@@ -1,0 +1,9 @@
+{
+  "extends": ["stylelint-config-standard-scss"],
+  "rules": {
+    "declaration-empty-line-before": "never",
+    "keyframes-name-pattern": null,
+    "number-max-precision": null,
+    "selector-class-pattern": null
+  }
+}

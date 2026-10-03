@@ -1,82 +1,95 @@
-import { useState, useEffect, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { api } from '../services/api'
-import BottomNavigation from '../components/bottomNavigation'
-import { Mail, CheckCircle, ArrowLeft } from '../components/icons'
-import '../styles/adminconvites.scss'
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { api } from '../services/api';
+import BottomNavigation from '../components/bottomNavigation';
+import { Mail, CheckCircle, ArrowLeft } from '../components/icons';
+import '../styles/adminconvites.scss';
 
-type InviteRole = 'professor' | 'admin'
-type InviteStatus = 'aceito' | 'pendente'
+type InviteRole = 'professor' | 'admin';
+type InviteStatus = 'aceito' | 'pendente';
 
 interface Invite {
-  id: number
-  email: string
-  role: InviteRole
-  created_at: string
-  status: InviteStatus
+  id: number;
+  email: string;
+  role: InviteRole;
+  created_at: string;
+  status: InviteStatus;
 }
 
 function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('pt-BR')
+  return new Date(iso).toLocaleDateString('pt-BR');
 }
 
 function roleLabel(role: InviteRole) {
-  return role === 'professor' ? 'Professor(a)' : 'Admin'
+  return role === 'professor' ? 'Professor(a)' : 'Admin';
 }
 
 export const AdminGerenciarConvites = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const [email, setEmail] = useState('')
-  const [role, setRole] = useState<InviteRole>('professor')
-  const [loading, setLoading] = useState(false)
-  const [feedback, setFeedback] = useState<{ type: 'error' | 'success'; msg: string } | null>(null)
-  const [invites, setInvites] = useState<Invite[]>([])
-  const [loadingList, setLoadingList] = useState(true)
-  const fetchRef = useRef(false)
+  const [email, setEmail] = useState('');
+  const [role, setRole] = useState<InviteRole>('professor');
+  const [loading, setLoading] = useState(false);
+  const [feedback, setFeedback] = useState<{
+    type: 'error' | 'success';
+    msg: string;
+  } | null>(null);
+  const [invites, setInvites] = useState<Invite[]>([]);
+  const [loadingList, setLoadingList] = useState(true);
+  const fetchRef = useRef(false);
 
   async function fetchInvites() {
-    setLoadingList(true)
+    setLoadingList(true);
     try {
-      const res = await api.get<Invite[]>('/admin/invites')
-      setInvites((res as { invites?: Invite[] }).invites ?? [])
+      const res = await api.get<Invite[]>('/admin/invites');
+      setInvites((res as { invites?: Invite[] }).invites ?? []);
     } catch {
       // lista vazia se falhar
     } finally {
-      setLoadingList(false)
+      setLoadingList(false);
     }
   }
 
   useEffect(() => {
-    if (fetchRef.current) return
-    fetchRef.current = true
-    void fetchInvites()
-  }, [])
+    if (fetchRef.current) return;
+    fetchRef.current = true;
+    void fetchInvites();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setFeedback(null)
-    setLoading(true)
+    e.preventDefault();
+    setFeedback(null);
+    setLoading(true);
     try {
-      await api.post('/admin/send-invite', { email: email.trim(), role })
-      setFeedback({ type: 'success', msg: 'Convite enviado com sucesso!' })
-      setEmail('')
-      await fetchInvites()
+      await api.post('/admin/send-invite', { email: email.trim(), role });
+      setFeedback({ type: 'success', msg: 'Convite enviado com sucesso!' });
+      setEmail('');
+      await fetchInvites();
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Erro ao enviar convite'
-      setFeedback({ type: 'error', msg })
+      const msg = err instanceof Error ? err.message : 'Erro ao enviar convite';
+      setFeedback({ type: 'error', msg });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="convites-page">
-
       {/* Header */}
       <div className="convites-page-header">
         <button
-          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#888', fontSize: '0.82rem' }}
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: 0,
+            marginBottom: '0.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.3rem',
+            color: '#888',
+            fontSize: '0.82rem',
+          }}
           onClick={() => navigate('/admin/painel')}
         >
           <ArrowLeft width="16" height="16" />
@@ -125,9 +138,7 @@ export const AdminGerenciarConvites = () => {
           </div>
         </div>
 
-        {feedback && (
-          <div className={`convites-feedback ${feedback.type}`}>{feedback.msg}</div>
-        )}
+        {feedback && <div className={`convites-feedback ${feedback.type}`}>{feedback.msg}</div>}
 
         <button className="convites-submit-btn" type="submit" disabled={loading}>
           <Mail width="16" height="16" />
@@ -165,5 +176,5 @@ export const AdminGerenciarConvites = () => {
 
       <BottomNavigation role="admin" />
     </div>
-  )
-}
+  );
+};

@@ -1,13 +1,13 @@
-import React from 'react'
-import Inputs from '../components/inputLogin'
-import ArrowLeft from '../components/icons/arrow-left'
-import { useNavigate } from 'react-router-dom'
-import { AppShell } from '../components/layout/AppShell'
-import '../styles/golgirls-design.scss'
+import React from 'react';
+import Inputs from '../components/inputLogin';
+import ArrowLeft from '../components/icons/arrow-left';
+import { useNavigate } from 'react-router-dom';
+import { AppShell } from '../components/layout/AppShell';
+import '../styles/golgirls-design.scss';
 
 export const ProfessorLogin = () => {
-  const [value, setValue] = React.useState('')
-  const navigate = useNavigate()
+  const [value, setValue] = React.useState('');
+  const navigate = useNavigate();
 
   return (
     <AppShell publicPage>
@@ -17,9 +17,14 @@ export const ProfessorLogin = () => {
             <ArrowLeft width="18" height="18" />
             Voltar
           </button>
-          <Inputs type="email" value={value} onChange={(e) => setValue(e.target.value)} role="professor" />
+          <Inputs
+            type="email"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            role="professor"
+          />
         </div>
       </div>
     </AppShell>
-  )
-}
+  );
+};

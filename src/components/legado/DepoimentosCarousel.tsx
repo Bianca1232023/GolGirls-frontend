@@ -1,17 +1,17 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronLeft, ChevronRight, Quote } from 'lucide-react'
-import { DEPOIMENTOS } from '../../data/mockData'
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight, Quote } from 'lucide-react';
+import { DEPOIMENTOS } from '../../data/mockData';
 
 export function DepoimentosCarousel() {
-  const [index, setIndex] = useState(0)
-  const d = DEPOIMENTOS[index]
+  const [index, setIndex] = useState(0);
+  const d = DEPOIMENTOS[index];
 
   function prev() {
-    setIndex((i) => (i === 0 ? DEPOIMENTOS.length - 1 : i - 1))
+    setIndex((i) => (i === 0 ? DEPOIMENTOS.length - 1 : i - 1));
   }
   function next() {
-    setIndex((i) => (i === DEPOIMENTOS.length - 1 ? 0 : i + 1))
+    setIndex((i) => (i === DEPOIMENTOS.length - 1 ? 0 : i + 1));
   }
 
   return (
@@ -43,5 +43,5 @@ export function DepoimentosCarousel() {
         </button>
       </div>
     </div>
-  )
+  );
 }

@@ -16,7 +16,11 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
 
   if (!role || !allowedRoles.includes(role)) {
     const loginPath =
-      role === 'professor' ? '/login/professor' : role === 'admin' ? '/login/admin' : '/login/aluno';
+      role === 'professor'
+        ? '/login/professor'
+        : role === 'admin'
+          ? '/login/admin'
+          : '/login/aluno';
     return <Navigate to={loginPath} state={{ from: location.pathname }} replace />;
   }
 

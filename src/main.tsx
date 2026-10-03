@@ -1,13 +1,13 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
-import { MuralProvider } from './contexts/MuralContext.tsx'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import './index.css';
+import App from './App.tsx';
+import { MuralProvider } from './contexts/MuralContext.tsx';
 
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
-    void navigator.serviceWorker.register('/sw.js')
-  })
+    void navigator.serviceWorker.register('/sw.js');
+  });
 }
 
 createRoot(document.getElementById('root')!).render(
@@ -16,4 +16,4 @@ createRoot(document.getElementById('root')!).render(
       <App />
     </MuralProvider>
   </StrictMode>,
-)
+);

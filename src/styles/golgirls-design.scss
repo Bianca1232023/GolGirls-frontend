@@ -9,10 +9,10 @@ $gg-gray: #6b7280;
 $gg-yellow: #facc15;
 
 @mixin gg-glass {
-  background: rgba(255, 255, 255, 0.75);
+  background: rgb(255 255 255 / 75%);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  box-shadow: 0 8px 32px rgba(255, 20, 147, 0.08);
+  border: 1px solid rgb(255 255 255 / 55%);
+  box-shadow: 0 8px 32px rgb(255 20 147 / 8%);
 }
 
 .gg-app-shell {
@@ -26,7 +26,8 @@ $gg-yellow: #facc15;
     display: flex;
     justify-content: center;
     padding: 0.5rem 0;
-    @media (min-width: 1024px) {
+
+    @media (width >= 1024px) {
       padding: 0;
       flex: 1;
     }
@@ -41,10 +42,10 @@ $gg-yellow: #facc15;
     background: $gg-white;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 0 40px rgb(0 0 0 / 8%);
     overflow: hidden;
 
-    @media (min-width: 1024px) {
+    @media (width >= 1024px) {
       max-width: none;
       max-height: none;
       aspect-ratio: auto;
@@ -57,14 +58,16 @@ $gg-yellow: #facc15;
 
   &__sidebar {
     display: none;
-    @media (min-width: 1024px) {
+
+    @media (width >= 1024px) {
       display: flex;
       flex-direction: column;
       width: 260px;
       min-height: 100vh;
       padding: 1.5rem;
+
       @include gg-glass;
-      border-right: 1px solid rgba(255, 20, 147, 0.12);
+      border-right: 1px solid rgb(255 20 147 / 12%);
     }
   }
 
@@ -72,7 +75,8 @@ $gg-yellow: #facc15;
     flex: 1;
     overflow-y: auto;
     padding-bottom: 5.5rem;
-    @media (min-width: 1024px) {
+
+    @media (width >= 1024px) {
       padding: 1.5rem 2rem 2rem;
     }
   }
@@ -91,15 +95,26 @@ $gg-yellow: #facc15;
   justify-content: center;
   gap: 0.35rem;
   line-height: 1;
+
   svg {
     flex-shrink: 0;
     display: block;
   }
-  &:hover:not(:disabled) { box-shadow: 0 6px 20px rgba(255, 20, 147, 0.35); }
-  &:disabled { opacity: 0.5; }
+
+  &:hover:not(:disabled) {
+    box-shadow: 0 6px 20px rgb(255 20 147 / 35%);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
 }
 
-.gg-card { @include gg-glass; border-radius: 1rem; padding: 1rem; }
+.gg-card {
+  @include gg-glass;
+  border-radius: 1rem;
+  padding: 1rem;
+}
 
 .gg-fab {
   position: fixed;
@@ -114,13 +129,35 @@ $gg-yellow: #facc15;
 .gg-toggle-group {
   display: flex;
   gap: 0.35rem;
+
   button {
-    width: 2.25rem; height: 2.25rem; border-radius: 0.5rem; border: 2px solid transparent;
-    font-weight: 700; font-size: 0.75rem; cursor: pointer;
-    &.--p.active { background: $gg-green; color: #fff; }
-    &.--f.active { background: $gg-red; color: #fff; }
-    &.--t.active { background: $gg-gray; color: #fff; }
-    &:not(.active) { background: #f3f4f6; color: $gg-gray; }
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.5rem;
+    border: 2px solid transparent;
+    font-weight: 700;
+    font-size: 0.75rem;
+    cursor: pointer;
+
+    &.--p.active {
+      background: $gg-green;
+      color: #fff;
+    }
+
+    &.--f.active {
+      background: $gg-red;
+      color: #fff;
+    }
+
+    &.--t.active {
+      background: $gg-gray;
+      color: #fff;
+    }
+
+    &:not(.active) {
+      background: #f3f4f6;
+      color: $gg-gray;
+    }
   }
 }
 
@@ -128,33 +165,95 @@ $gg-yellow: #facc15;
   border: 2px solid $gg-yellow !important;
   background: #fefce8 !important;
 }
+
 .gg-evasion-tag {
-  font-size: 0.65rem; background: $gg-yellow; padding: 0.15rem 0.4rem;
-  border-radius: 9999px; font-weight: 600; margin-left: 0.5rem;
+  font-size: 0.65rem;
+  background: $gg-yellow;
+  padding: 0.15rem 0.4rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  margin-left: 0.5rem;
 }
 
 .gg-modal-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200;
-  display: flex; align-items: center; justify-content: center; padding: 1rem;
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 45%);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
 }
-.gg-modal { @include gg-glass; border-radius: 1rem; max-width: 360px; width: 100%; padding: 1.5rem; background: #fff; }
 
-.gg-kpi-grid { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
-.gg-kpi { @include gg-glass; border-radius: 1rem; padding: 1rem; text-align: center;
-  strong { display: block; font-size: 1.5rem; color: $gg-pink; }
-  span { font-size: 0.75rem; color: $gg-gray; }
+.gg-modal {
+  @include gg-glass;
+  border-radius: 1rem;
+  max-width: 360px;
+  width: 100%;
+  padding: 1.5rem;
+  background: #fff;
 }
 
-.gg-chart-bars {
-  display: flex; align-items: flex-end; gap: 0.5rem; height: 120px;
-  .bar-wrap { flex: 1; text-align: center;
-    .bar { background: linear-gradient(180deg, $gg-pink, $gg-purple); border-radius: 4px 4px 0 0; margin: 0 auto; max-width: 28px; }
-    label { font-size: 0.65rem; color: $gg-gray; }
+.gg-kpi-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+}
+
+.gg-kpi {
+  @include gg-glass;
+  border-radius: 1rem;
+  padding: 1rem;
+  text-align: center;
+
+  strong {
+    display: block;
+    font-size: 1.5rem;
+    color: $gg-pink;
+  }
+
+  span {
+    font-size: 0.75rem;
+    color: $gg-gray;
   }
 }
 
-.gg-logo { width: min(280px, 85vw); height: auto; margin: 0 auto 1rem; display: block; }
-.gg-logo--login { width: min(200px, 65vw); margin: 0 auto 0.5rem; }
+.gg-chart-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  height: 120px;
+
+  .bar-wrap {
+    flex: 1;
+    text-align: center;
+
+    .bar {
+      background: linear-gradient(180deg, $gg-pink, $gg-purple);
+      border-radius: 4px 4px 0 0;
+      margin: 0 auto;
+      max-width: 28px;
+    }
+
+    label {
+      font-size: 0.65rem;
+      color: $gg-gray;
+    }
+  }
+}
+
+.gg-logo {
+  width: min(280px, 85vw);
+  height: auto;
+  margin: 0 auto 1rem;
+  display: block;
+}
+
+.gg-logo--login {
+  width: min(200px, 65vw);
+  margin: 0 auto 0.5rem;
+}
 
 .gg-home-page {
   width: 100%;
@@ -190,9 +289,17 @@ $gg-yellow: #facc15;
   gap: 1rem;
   margin-top: 1.25rem;
 
-  .acess-card-component:nth-child(1) { animation-delay: 0.05s; }
-  .acess-card-component:nth-child(2) { animation-delay: 0.15s; }
-  .acess-card-component:nth-child(3) { animation-delay: 0.25s; }
+  .acess-card-component:nth-child(1) {
+    animation-delay: 0.05s;
+  }
+
+  .acess-card-component:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+
+  .acess-card-component:nth-child(3) {
+    animation-delay: 0.25s;
+  }
 }
 
 .gg-home-footer {
@@ -220,7 +327,10 @@ $gg-yellow: #facc15;
   a {
     color: #888;
     text-decoration: none;
-    &:hover { text-decoration: underline; }
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 
@@ -237,6 +347,7 @@ $gg-yellow: #facc15;
   justify-content: center;
   gap: 0.35rem;
   line-height: 1;
+
   svg {
     flex-shrink: 0;
     display: block;
@@ -257,9 +368,10 @@ $gg-yellow: #facc15;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+
   &:hover {
     background: #fef2f2;
-    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.2);
+    box-shadow: 0 4px 16px rgb(239 68 68 / 20%);
   }
 }
 
@@ -269,7 +381,9 @@ $gg-yellow: #facc15;
   flex-direction: column;
   gap: 0.35rem;
   flex: 1;
-  a, button.nav-item {
+
+  a,
+  button.nav-item {
     text-align: left;
     padding: 0.6rem 0.75rem;
     border-radius: 0.75rem;
@@ -279,8 +393,9 @@ $gg-yellow: #facc15;
     font-size: 0.9rem;
     color: $gg-black;
     text-decoration: none;
+
     &.active {
-      background: linear-gradient(90deg, rgba(255, 20, 147, 0.15), rgba(160, 32, 240, 0.08));
+      background: linear-gradient(90deg, rgb(255 20 147 / 15%), rgb(160 32 240 / 8%));
       color: $gg-pink;
       font-weight: 600;
     }
@@ -288,7 +403,7 @@ $gg-yellow: #facc15;
 }
 
 .gg-mural-layout {
-  @media (min-width: 1024px) {
+  @media (width >= 1024px) {
     display: grid;
     grid-template-columns: 240px 1fr;
     gap: 1.5rem;
@@ -312,7 +427,6 @@ $gg-yellow: #facc15;
 
     span:first-child {
       background: linear-gradient(90deg, $gg-purple, $gg-pink);
-      -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
@@ -369,10 +483,10 @@ $gg-yellow: #facc15;
   gap: 0.65rem;
   align-items: flex-start;
   padding: 0.85rem 1rem;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(253, 242, 248, 0.9));
-  border: 1px solid rgba(255, 20, 147, 0.12);
+  background: linear-gradient(135deg, rgb(255 255 255 / 95%), rgb(253 242 248 / 90%));
+  border: 1px solid rgb(255 20 147 / 12%);
   border-radius: 0.85rem;
-  box-shadow: 0 4px 14px rgba(255, 20, 147, 0.06);
+  box-shadow: 0 4px 14px rgb(255 20 147 / 6%);
 
   &__dot {
     width: 0.5rem;
@@ -408,10 +522,10 @@ $gg-yellow: #facc15;
 
 .gg-mural-post {
   background: #fff;
-  border: 1px solid rgba(255, 20, 147, 0.1);
+  border: 1px solid rgb(255 20 147 / 10%);
   border-radius: 1rem;
   padding: 1rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 4%);
   text-align: left;
 
   &__header {
@@ -426,7 +540,7 @@ $gg-yellow: #facc15;
     height: 2.35rem;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid rgba(255, 20, 147, 0.15);
+    border: 2px solid rgb(255 20 147 / 15%);
     flex-shrink: 0;
   }
 
@@ -516,7 +630,7 @@ $gg-yellow: #facc15;
     min-width: 0;
     height: 2.5rem;
     border-radius: 9999px;
-    border: 1px solid rgba(255, 20, 147, 0.2);
+    border: 1px solid rgb(255 20 147 / 20%);
     padding: 0 0.9rem;
     font-size: 0.8125rem;
     background: #fafafa;
@@ -524,9 +638,9 @@ $gg-yellow: #facc15;
 
     &:focus {
       outline: none;
-      border-color: rgba(255, 20, 147, 0.45);
+      border-color: rgb(255 20 147 / 45%);
       background: #fff;
-      box-shadow: 0 0 0 3px rgba(255, 20, 147, 0.1);
+      box-shadow: 0 0 0 3px rgb(255 20 147 / 10%);
     }
   }
 
@@ -657,7 +771,7 @@ $gg-yellow: #facc15;
 
   &__badge {
     display: inline-block;
-    background: rgba(255, 255, 255, 0.25);
+    background: rgb(255 255 255 / 25%);
     color: #fff;
     font-size: 0.6rem;
     font-weight: 700;
@@ -682,7 +796,7 @@ $gg-yellow: #facc15;
   }
 
   &__subtitle {
-    color: rgba(255, 255, 255, 0.85);
+    color: rgb(255 255 255 / 85%);
     font-size: 0.8rem;
     margin: 0 0 0.75rem;
     line-height: 1.4;
@@ -728,28 +842,36 @@ $gg-yellow: #facc15;
 
   &__subtitle {
     margin: 0;
-    color: rgba(255, 255, 255, 0.85);
+    color: rgb(255 255 255 / 85%);
     font-size: 0.75rem;
   }
 }
 
 .app-hub--mural {
   padding-top: 1rem;
-  background: linear-gradient(180deg, #fff 0%, #fdf2f8 35%, #ffffff 100%);
+  background: linear-gradient(180deg, #fff 0%, #fdf2f8 35%, #fff 100%);
 }
 
 .gg-jornada {
-  background: linear-gradient(135deg, rgba(160, 32, 240, 0.12), rgba(255, 20, 147, 0.1), rgba(230, 230, 250, 0.5));
+  background: linear-gradient(
+    135deg,
+    rgb(160 32 240 / 12%),
+    rgb(255 20 147 / 10%),
+    rgb(230 230 250 / 50%)
+  );
   border-radius: 1.25rem;
   padding: 1rem;
+
   @include gg-glass;
 }
+
 .gg-jornada-progress {
   height: 6px;
-  background: rgba(255, 255, 255, 0.6);
+  background: rgb(255 255 255 / 60%);
   border-radius: 9999px;
   overflow: hidden;
   margin-bottom: 0.5rem;
+
   &__bar {
     height: 100%;
     background: linear-gradient(90deg, $gg-purple, $gg-pink);
@@ -757,14 +879,15 @@ $gg-yellow: #facc15;
     transition: width 0.3s ease;
   }
 }
+
 .gg-jornada-title {
   font-size: 1.1rem;
   margin: 0 0 1rem;
   background: linear-gradient(90deg, $gg-purple, $gg-pink);
-  -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
 .gg-field {
   display: flex;
   flex-direction: column;
@@ -773,28 +896,33 @@ $gg-yellow: #facc15;
   font-weight: 600;
   color: $gg-gray;
   margin-bottom: 0.65rem;
-  input, select {
+
+  input,
+  select {
     border-radius: 0.75rem;
-    border: 1px solid rgba(255, 20, 147, 0.2);
+    border: 1px solid rgb(255 20 147 / 20%);
     padding: 0.55rem 0.75rem;
     font-size: 0.9rem;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgb(255 255 255 / 90%);
   }
+
   &--error input,
   &--error select {
     border-color: #dc2626;
-    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.15);
+    box-shadow: 0 0 0 2px rgb(220 38 38 / 15%);
   }
 }
+
 .gg-jornada-hint {
   margin: 0.5rem 0 0;
   padding: 0.5rem 0.75rem;
   font-size: 0.8rem;
   color: #b91c1c;
-  background: rgba(254, 226, 226, 0.9);
+  background: rgb(254 226 226 / 90%);
   border-radius: 0.5rem;
   text-align: center;
 }
+
 .gg-check {
   display: flex;
   align-items: center;
@@ -802,6 +930,7 @@ $gg-yellow: #facc15;
   font-size: 0.85rem;
   margin-bottom: 0.5rem;
 }
+
 .gg-star-btn {
   width: 2.25rem;
   height: 2.25rem;
@@ -810,15 +939,21 @@ $gg-yellow: #facc15;
   background: #f3f4f6;
   font-size: 1.1rem;
   cursor: pointer;
-  &.active { background: $gg-yellow; color: #fff; }
+
+  &.active {
+    background: $gg-yellow;
+    color: #fff;
+  }
 }
+
 .gg-ear-item {
   @include gg-glass;
   border-radius: 0.75rem;
   padding: 0.75rem;
   margin-bottom: 0.65rem;
-  background: rgba(255, 255, 255, 0.85);
+  background: rgb(255 255 255 / 85%);
 }
+
 .gg-likert-btn {
   width: 2rem;
   height: 2rem;
@@ -828,6 +963,7 @@ $gg-yellow: #facc15;
   font-size: 0.75rem;
   font-weight: 700;
   cursor: pointer;
+
   &.active {
     border-color: $gg-pink;
     background: $gg-pink;
@@ -840,23 +976,28 @@ $gg-yellow: #facc15;
   height: 2.5rem;
   border-radius: 50%;
   border: none;
-  background: rgba(255, 20, 147, 0.1);
+  background: rgb(255 20 147 / 10%);
   color: $gg-pink;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.gg-carousel__slide { min-height: 140px; text-align: center; }
+
+.gg-carousel__slide {
+  min-height: 140px;
+  text-align: center;
+}
 
 .gg-admin-desktop {
-  @media (min-width: 1024px) {
+  @media (width >= 1024px) {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.25rem;
     align-items: start;
   }
 }
+
 .gg-admin-col-left,
 .gg-admin-col-right {
   min-width: 0;
@@ -864,8 +1005,8 @@ $gg-yellow: #facc15;
 
 .profile-menu {
   &__trigger {
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(255, 20, 147, 0.2);
+    background: rgb(255 255 255 / 90%);
+    border: 1px solid rgb(255 20 147 / 20%);
     border-radius: 50%;
     width: 2.5rem;
     height: 2.5rem;
@@ -875,17 +1016,19 @@ $gg-yellow: #facc15;
     cursor: pointer;
     color: #374151;
   }
+
   &__dropdown {
     position: absolute;
     top: 2.75rem;
     right: 0;
     background: #fff;
     border-radius: 0.75rem;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 12%);
     border: 1px solid #fce7f3;
     min-width: 160px;
     z-index: 20;
   }
+
   &__logout {
     width: 100%;
     display: flex;
@@ -899,16 +1042,20 @@ $gg-yellow: #facc15;
     cursor: pointer;
     border-radius: 0.75rem;
     line-height: 1;
+
     svg {
       flex-shrink: 0;
       display: block;
     }
-    &:hover { background: #fef2f2; }
+
+    &:hover {
+      background: #fef2f2;
+    }
   }
 }
+
 .gg-login-page {
   min-height: 100%;
-  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -923,9 +1070,9 @@ $gg-yellow: #facc15;
   background: #fff;
   border-radius: 1.35rem;
   box-shadow:
-    0 4px 6px rgba(0, 0, 0, 0.04),
-    0 16px 40px rgba(255, 20, 147, 0.1);
-  border: 1px solid rgba(255, 20, 147, 0.08);
+    0 4px 6px rgb(0 0 0 / 4%),
+    0 16px 40px rgb(255 20 147 / 10%);
+  border: 1px solid rgb(255 20 147 / 8%);
   padding: 1.25rem 1.35rem 1.5rem;
   box-sizing: border-box;
 }

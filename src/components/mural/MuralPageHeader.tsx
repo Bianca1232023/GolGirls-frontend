@@ -1,6 +1,6 @@
 interface MuralPageHeaderProps {
-  title?: string
-  subtitle?: string
+  title?: string;
+  subtitle?: string;
 }
 
 export function MuralPageHeader({ title, subtitle }: MuralPageHeaderProps) {
@@ -19,5 +19,5 @@ export function MuralPageHeader({ title, subtitle }: MuralPageHeaderProps) {
       </h1>
       {subtitle && <p className="gg-mural-header__subtitle">{subtitle}</p>}
     </header>
-  )
+  );
 }

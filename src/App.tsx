@@ -1,33 +1,38 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import './App.scss'
-import { CookieConsent } from './components/CookieConsent'
-import { useTokenRefresh } from './hooks/useTokenRefresh'
-import { ProtectedRoute } from './components/ProtectedRoute'
-import { InitialPage } from './pages/InitialPage'
-import { StudentLogin } from './pages/studentlogin'
-import { ProfessorLogin } from './pages/professorlogin'
-import { AdminLogin } from './pages/adminlogin'
-import { AlunoSetPasswordPage, AlunoForgotPassword, AlunoResetPassword, AdminRegisterRedirect } from './pages/alunoAuthPages'
-import { ProfessorRegister } from './pages/professorregister'
-import { ProfessorSetPassword } from './pages/professorsetpassword'
-import { AdminSetPassword } from './pages/adminsetpassword'
-import { AppAdmin } from './pages/appadmin'
-import { AppAluno } from './pages/appaluno'
-import { AppProfessor } from './pages/appprofessor'
-import { ProfessorForgotPassword } from './pages/professorforgotpassword'
-import { AdminForgotPassword } from './pages/adminforgotpassword'
-import { ProfessorResetPassword } from './pages/professorresetpassword'
-import { AdminResetPassword } from './pages/adminresetpassword'
-import { AdminPainel } from './pages/adminpainel'
-import { AdminGerenciarConvites } from './pages/admingerenciarconvites'
-import { AdminGerenciarSistema } from './pages/admingerenciarsistema'
-import { ProfessorPainel } from './pages/professorpainel'
-import { ProfessorMural, ProfessorPerfil } from './pages/professormural'
-import { LegadoPage } from './pages/LegadoPage'
-import { PrivacidadePage } from './pages/privacidade'
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import './App.scss';
+import { CookieConsent } from './components/CookieConsent';
+import { useTokenRefresh } from './hooks/useTokenRefresh';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { InitialPage } from './pages/InitialPage';
+import { StudentLogin } from './pages/studentlogin';
+import { ProfessorLogin } from './pages/professorlogin';
+import { AdminLogin } from './pages/adminlogin';
+import {
+  AlunoSetPasswordPage,
+  AlunoForgotPassword,
+  AlunoResetPassword,
+  AdminRegisterRedirect,
+} from './pages/alunoAuthPages';
+import { ProfessorRegister } from './pages/professorregister';
+import { ProfessorSetPassword } from './pages/professorsetpassword';
+import { AdminSetPassword } from './pages/adminsetpassword';
+import { AppAdmin } from './pages/appadmin';
+import { AppAluno } from './pages/appaluno';
+import { AppProfessor } from './pages/appprofessor';
+import { ProfessorForgotPassword } from './pages/professorforgotpassword';
+import { AdminForgotPassword } from './pages/adminforgotpassword';
+import { ProfessorResetPassword } from './pages/professorresetpassword';
+import { AdminResetPassword } from './pages/adminresetpassword';
+import { AdminPainel } from './pages/adminpainel';
+import { AdminGerenciarConvites } from './pages/admingerenciarconvites';
+import { AdminGerenciarSistema } from './pages/admingerenciarsistema';
+import { ProfessorPainel } from './pages/professorpainel';
+import { ProfessorMural, ProfessorPerfil } from './pages/professormural';
+import { LegadoPage } from './pages/LegadoPage';
+import { PrivacidadePage } from './pages/privacidade';
 
 function App() {
-  useTokenRefresh()
+  useTokenRefresh();
   return (
     <BrowserRouter>
       <CookieConsent />
@@ -117,9 +122,30 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/legado/aluno" element={<ProtectedRoute allowedRoles={['aluno']}><LegadoPage role="aluno" /></ProtectedRoute>} />
-        <Route path="/legado/professor" element={<ProtectedRoute allowedRoles={['professor']}><LegadoPage role="professor" /></ProtectedRoute>} />
-        <Route path="/legado/admin" element={<ProtectedRoute allowedRoles={['admin']}><LegadoPage role="admin" /></ProtectedRoute>} />
+        <Route
+          path="/legado/aluno"
+          element={
+            <ProtectedRoute allowedRoles={['aluno']}>
+              <LegadoPage role="aluno" />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/legado/professor"
+          element={
+            <ProtectedRoute allowedRoles={['professor']}>
+              <LegadoPage role="professor" />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/legado/admin"
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <LegadoPage role="admin" />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/admin/sistema"
           element={
@@ -130,7 +156,7 @@ function App() {
         />
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;

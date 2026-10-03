@@ -1,39 +1,45 @@
-import React from 'react'
-import './styles.scss'
-import GraduationCap from '../icons/graduation-cap'
-import UserCog from '../icons/user-cog'
-import Shield from '../icons/shield'
-import { useNavigate } from 'react-router-dom'
+import React from 'react';
+import './styles.scss';
+import GraduationCap from '../icons/graduation-cap';
+import UserCog from '../icons/user-cog';
+import Shield from '../icons/shield';
+import { useNavigate } from 'react-router-dom';
 
-type Role = 'aluno' | 'professor' | 'admin'
+type Role = 'aluno' | 'professor' | 'admin';
 
 interface AcessCardProps {
-  role: Role
+  role: Role;
 }
 
 const AcessCard: React.FC<AcessCardProps> = ({ role }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const roleConfig = {
     aluno: { label: 'Aluna', description: 'Acesse seu portal de aprendizado' },
-    professor: { label: 'Professor(a)', description: 'Gerencie suas turmas e alunas' },
-    admin: { label: 'Administrador', description: 'Dashboard e controle total' },
-  }
+    professor: {
+      label: 'Professor(a)',
+      description: 'Gerencie suas turmas e alunas',
+    },
+    admin: {
+      label: 'Administrador',
+      description: 'Dashboard e controle total',
+    },
+  };
 
   const renderIcon = () => {
     switch (role) {
       case 'aluno':
-        return <GraduationCap width="28" height="28" />
+        return <GraduationCap width="28" height="28" />;
       case 'professor':
-        return <UserCog width="28" height="28" />
+        return <UserCog width="28" height="28" />;
       case 'admin':
-        return <Shield width="28" height="28" />
+        return <Shield width="28" height="28" />;
     }
-  }
+  };
 
   const handleLoginClick = () => {
-    navigate(`/login/${role === 'admin' ? 'admin' : role}`)
-  }
+    navigate(`/login/${role === 'admin' ? 'admin' : role}`);
+  };
 
   return (
     <div className="acess-card-component">
@@ -52,7 +58,7 @@ const AcessCard: React.FC<AcessCardProps> = ({ role }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AcessCard
+export default AcessCard;

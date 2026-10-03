@@ -1,12 +1,12 @@
-import SetPasswordComponent from '../components/setPassword'
-import Buttons from '../components/Button'
-import Footer from '../components/footer'
-import { useNavigate } from 'react-router-dom'
-import { AppShell } from '../components/layout/AppShell'
-import '../styles/golgirls-design.scss'
+import SetPasswordComponent from '../components/setPassword';
+import Buttons from '../components/Button';
+import Footer from '../components/footer';
+import { useNavigate } from 'react-router-dom';
+import { AppShell } from '../components/layout/AppShell';
+import '../styles/golgirls-design.scss';
 
 export const AdminSetPassword = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <AppShell publicPage>
@@ -16,5 +16,5 @@ export const AdminSetPassword = () => {
         <Footer text="Link expirado? Entre em contato com outro administrador para receber um novo" />
       </div>
     </AppShell>
-  )
-}
+  );
+};
