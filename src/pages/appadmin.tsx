@@ -14,7 +14,7 @@ import '../styles/golgirls-design.scss'
 
 
 function AdminProfilePage({ sessionLabel, onLogout }: { sessionLabel: string | null; onLogout?: () => void }) {
-  const { posts: allPosts, addPost, toggleLike, addComment } = useMural()
+  const { posts: allPosts, addPost, toggleLike, addComment, deletePost } = useMural()
   const [displayName, setDisplayName] = useState(() => getDisplayName(sessionLabel))
   const [currentEmail, setCurrentEmail] = useState(sessionLabel ?? '')
   const initial = (displayName[0] ?? 'A').toUpperCase()
@@ -213,6 +213,16 @@ function AdminProfilePage({ sessionLabel, onLogout }: { sessionLabel: string | n
                   background: 'none', border: 'none', cursor: 'pointer',
                   color: '#888', fontSize: '1rem', marginLeft: 'auto', padding: 0,
                 }}>↗</button>
+                <button type="button" onClick={() => {
+                  if (window.confirm('Tem certeza que deseja excluir esta publicação?')) {
+                    deletePost(post.id)
+                  }
+                }} aria-label="Excluir publicação" title="Excluir publicação" style={{
+                  background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+                  color: '#ef4444', fontSize: '0.9rem',
+                }}>
+                  🗑️
+                </button>
               </div>
             </div>
           ))}
