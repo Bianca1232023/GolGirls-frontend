@@ -34,14 +34,14 @@
 }
 
 .btn-login--aluno{
-  @include btn-login($bg-primary);
+  @include btn-login($bg-primary, rgba(242, 62, 164, 0.35));
 }
 
 .btn-login--professor{
-  @include btn-login($bg-secondary);
+  @include btn-login($bg-secondary, rgba(249, 63, 149, 0.35));
 }
 .btn-login--admin {
-    @include btn-login($bg-tertiary);
+    @include btn-login($bg-tertiary, rgba(154, 88, 246, 0.35));
 }
 
 .btn-back {
