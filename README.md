@@ -85,6 +85,10 @@ Detalhes:
 | `npm run test:e2e` | Testes de integração com a API (`src/__tests__/e2e`) |
 | `npm run test:e2e:ui` | Testes E2E de navegador com Playwright |
 
+## Atalhos com Make
+
+Na raiz do frontend, use `make help` para listar todos os comandos. `make setup` instala as dependências, `make run` inicia o Vite e `make build` valida os tipos e gera a build de produção. Também estão disponíveis `make test`, `make lint`, `make docker-up` e `make docker-down`.
+
 ## Fluxo recomendado para subir tudo
 
 1. Suba o backend primeiro (ele sobe o MySQL, aplica as migrations e expõe a API em `3001`). Veja o README do backend.

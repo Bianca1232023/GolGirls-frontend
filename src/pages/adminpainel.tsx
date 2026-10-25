@@ -99,8 +99,8 @@ export const AdminPainel = () => {
     try {
       await api.delete(route)
       setMembers((prev) => prev.filter((m) => !(m.id === member.id && m.role === member.role)))
-    } catch {
-      alert('Erro ao remover membro.')
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Erro ao remover membro.')
     } finally {
       setOpenMenuId(null)
     }

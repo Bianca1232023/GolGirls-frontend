@@ -33,10 +33,15 @@
     padding: 25px;
 }
 
-.btn-login--aluno,
-.btn-login--professor,
+.btn-login--aluno{
+  @include btn-login($bg-primary);
+}
+
+.btn-login--professor{
+  @include btn-login($bg-secondary);
+}
 .btn-login--admin {
-    @include btn-login(#ff1493, rgba(255, 20, 147, 0.35));
+    @include btn-login($bg-tertiary);
 }
 
 .btn-back {
