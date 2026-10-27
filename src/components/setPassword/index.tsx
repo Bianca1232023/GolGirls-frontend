@@ -92,7 +92,7 @@ const SetPasswordComponent: React.FC<SetPasswordProps> = ({ role }) => {
 
       <div className="setpassword-form">
         <div className="setpassword-container">
-          <span className="field-label">NOME</span>
+          <span className="field-label">NOME:</span>
           <input
             className={`setpassword-input${errors.name ? ' setpassword-input--error' : ''}`}
             type="text"
@@ -102,7 +102,7 @@ const SetPasswordComponent: React.FC<SetPasswordProps> = ({ role }) => {
           />
           {errors.name && <span className="setpassword-error-msg">Digite seu nome</span>}
 
-          <span className="field-label">SENHA</span>
+          <span className="field-label">SENHA:</span>
           <input
             className={`setpassword-input${errors.password ? ' setpassword-input--error' : ''}`}
             type="password"
@@ -116,7 +116,7 @@ const SetPasswordComponent: React.FC<SetPasswordProps> = ({ role }) => {
             </span>
           )}
 
-          <span className="field-label">CONFIRMAR SENHA</span>
+          <span className="field-label">CONFIRMAR SENHA:</span>
           <input
             className={`setpassword-input${errors.confirmPassword ? ' setpassword-input--error' : ''}`}
             type="password"

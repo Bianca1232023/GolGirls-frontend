@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useMural } from '../../contexts/MuralContext';
 import { getSessionLabel, getRole } from '../../services/auth';
+import Carousel from '../Carousel';
+import { EVENTOS_CAROUSEL } from '../../data/mockData';
 
 interface MuralFeedProps {
   role?: 'aluno' | 'professor' | 'admin';
@@ -10,19 +12,19 @@ interface MuralFeedProps {
 const DESTAQUES = [
   {
     id: 'd1',
-    color: 'linear-gradient(135deg, #3b82f6, #6366f1)',
+    variant: 'torneio',
     title: 'Torneio Regional',
     subtitle: 'Inscrições abertas!',
   },
   {
     id: 'd2',
-    color: 'linear-gradient(135deg, #7c3aed, #a020f0)',
+    variant: 'bolsa',
     title: 'Bolsa Atleta',
     subtitle: 'Documentos necessários',
   },
   {
     id: 'd3',
-    color: 'linear-gradient(135deg, #f97316, #ef4444)',
+    variant: 'semana',
     title: 'Destaque da Semana',
     subtitle: 'Maria (Seropédica)',
   },
@@ -67,12 +69,14 @@ export function MuralFeed({ role = 'aluno', onJornadaClick }: MuralFeedProps) {
           </button>
         )}
 
+        {role === 'aluno' && <Carousel items={EVENTOS_CAROUSEL} />}
+
         {/* Destaques da semana */}
         <section>
           <h2 className="gg-mural-highlights__heading">Destaques da Semana</h2>
           <div className="gg-destaques-list">
             {DESTAQUES.map((d) => (
-              <div key={d.id} className="gg-destaque-card" style={{ background: d.color }}>
+              <div key={d.id} className={`gg-destaque-card gg-destaque-card--${d.variant}`}>
                 <span className="gg-destaque-card__icon" aria-hidden="true">
                   ⭐
                 </span>

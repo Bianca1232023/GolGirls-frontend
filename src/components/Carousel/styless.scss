@@ -1,10 +1,12 @@
+@use '../../styles/variables.scss' as *;
+@use '../../styles/mixins.scss' as *;
+
 .carousel {
   position: relative;
   width: 100%;
   max-width: 1200px;
   height: 350px;
   margin: 0 auto;
-  padding: 0 55px 40px;
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -15,6 +17,7 @@
     height: 100%;
     overflow: hidden;
     border-radius: 14px;
+    touch-action: pan-y;
   }
 
   &__track {
@@ -30,23 +33,33 @@
     box-sizing: border-box;
   }
 
-  &__image-wrapper {
+  &__category {
     width: 100%;
     height: 180px;
-    overflow: hidden;
     border-radius: 14px 14px 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
   }
 
-  &__image {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: cover;
-    transition: transform 0.3s ease;
+  &__category--educacao {
+    background: $bg-quaternary;
   }
 
-  &__card:hover &__image {
-    transform: scale(1.03);
+  &__category--futebol {
+    background: $bg-secondary;
+  }
+
+  &__category-icon {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
   }
 
 
@@ -187,16 +200,18 @@
   }
 }
 
+.gg-mural .carousel {
+  margin-top: 0;
+}
+
 @media (width <= 900px) {
   .carousel {
-    padding-left: 50px;
-    padding-right: 50px;
 
     &__card {
       flex: 0 0 50%;
     }
 
-    &__image-wrapper {
+    &__category {
       height: 170px;
     }
   }
@@ -204,14 +219,16 @@
 
 @media (width <= 600px) {
   .carousel {
-    padding-left: 42px;
-    padding-right: 42px;
+
+    &__arrow {
+      display: none;
+    }
 
     &__card {
       flex: 0 0 100%;
     }
 
-    &__image-wrapper {
+    &__category {
       height: 200px;
     }
 
@@ -223,14 +240,5 @@
       font-size: 14px;
     }
 
-    &__arrow {
-      width: 38px;
-      height: 38px;
-
-      svg {
-        width: 20px;
-        height: 20px;
-      }
-    }
   }
 }

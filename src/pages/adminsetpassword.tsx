@@ -11,7 +11,12 @@ export const AdminSetPassword = () => {
   return (
     <AppShell publicPage>
       <div className="gg-login-page">
-        <Buttons type="back" label="Voltar" onClick={() => navigate('/login/admin')} />
+        <Buttons
+          type="back"
+          label="Voltar"
+          className="setpassword-back-button"
+          onClick={() => navigate('/login/admin')}
+        />
         <SetPasswordComponent role="admin" />
         <Footer text="Link expirado? Entre em contato com outro administrador para receber um novo" />
       </div>

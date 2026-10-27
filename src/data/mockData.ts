@@ -119,29 +119,29 @@ export const EVENTOS_CAROUSEL = [
   {
     id: 1,
     titulo: 'Modulo 1 - Introdução teste com titulo mt grande',
-    imagem: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=240&fit=crop',
     data: '12 de setembro de 2026',
+    categoria: 'futebol' as const,
   },
   {
     id: 2,
     titulo: 'Modulo 2 - Avançado',
     descricao: 'Descrição do Modulo 2',
-    imagem: 'https://images.unsplash.com/photo-1461896836934-ffe607ba7a38?w=400&h=240&fit=crop',
     data: '15 de setembro de 2026',
+    categoria: 'educacao' as const,
   },
   {
     id: 3,
     titulo: 'Modulo 3 - Intermediário',
     descricao: 'Descrição do Modulo 3',
-    imagem: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=240&fit=crop',
     data: '18 de setembro de 2026',
+    categoria: 'educacao' as const,
   },
   {
     id: 4,
     titulo: 'Modulo 4 - Avançado',
     descricao: 'Descrição do Modulo 4',
-    imagem: 'https://images.unsplash.com/photo-1517836357463-d25ddfcb53ef?w=400&h=240&fit=crop',
     data: '20 de setembro de 2026',
+    categoria: 'futebol' as const,
   },
 ];
 

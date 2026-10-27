@@ -1,4 +1,6 @@
-/* Gol Girls — design system Figma */
+@use './variables.scss' as *;
+@use './mixins.scss' as *;
+
 $gg-pink: #ff1493;
 $gg-black: #000;
 $gg-white: #fff;
@@ -820,12 +822,30 @@ $gg-yellow: #facc15;
 }
 
 .gg-destaque-card {
+  --destaque-cor-inicio: #3b82f6;
+  --destaque-cor-fim: #6366f1;
+
   display: flex;
   align-items: center;
   gap: 0.85rem;
   padding: 1rem 1.1rem;
   border-radius: 0.85rem;
   cursor: pointer;
+  background: linear-gradient(135deg, var(--destaque-cor-inicio), var(--destaque-cor-fim));
+
+  &--torneio {
+    --destaque-cor-inicio: #3b82f6;
+    --destaque-cor-fim: #6366f1;
+  }
+
+  &--bolsa {
+    --destaque-cor-inicio: #7c3aed;
+    --destaque-cor-fim: #a020f0;
+  }
+
+  &--semana {
+    background: $bg-secondary;
+  }
 
   &__icon {
     font-size: 1.25rem;
@@ -1055,6 +1075,8 @@ $gg-yellow: #facc15;
 }
 
 .gg-login-page {
+  display: flex;
+  justify-content: center;
   min-height: 100%;
   flex-direction: column;
   align-items: center;

@@ -11,7 +11,12 @@ export const ProfessorSetPassword = () => {
   return (
     <AppShell publicPage>
       <div className="gg-login-page">
-        <Buttons type="back" label="Voltar" onClick={() => navigate('/login/professor')} />
+        <Buttons
+          type="back"
+          label="Voltar"
+          className="setpassword-back-button"
+          onClick={() => navigate('/login/professor')}
+        />
         <SetPasswordComponent role="professor" />
         <Footer text="Link expirado? Entre em contato com o Administrativo para receber um novo" />
       </div>

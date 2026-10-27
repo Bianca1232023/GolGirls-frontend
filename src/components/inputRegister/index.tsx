@@ -90,7 +90,7 @@ const InputRegister: React.FC = () => {
 
       <div className="register-form">
         <div className="register-container">
-          <span className="field-label">NOME</span>
+          <span className="field-label">NOME:</span>
           <input
             className={`register-input${errors.name ? ' register-input--error' : ''}`}
             type="text"
@@ -100,7 +100,7 @@ const InputRegister: React.FC = () => {
           />
           {errors.name && <span className="register-error-msg">Digite seu nome</span>}
 
-          <span className="field-label">E-MAIL</span>
+          <span className="field-label">E-MAIL:</span>
           <input
             className={`register-input${errors.email ? ' register-input--error' : ''}`}
             type="email"
@@ -111,7 +111,7 @@ const InputRegister: React.FC = () => {
           />
           {errors.email && <span className="register-error-msg">{getEmailError()}</span>}
 
-          <span className="field-label">SENHA</span>
+          <span className="field-label">SENHA:</span>
           <input
             className={`register-input${errors.password ? ' register-input--error' : ''}`}
             type="password"
@@ -122,7 +122,7 @@ const InputRegister: React.FC = () => {
           />
           {errors.password && <span className="register-error-msg">{getPasswordError()}</span>}
 
-          <span className="field-label">CONFIRMAR SENHA</span>
+          <span className="field-label">CONFIRMAR SENHA:</span>
           <input
             className={`register-input${errors.confirmPassword ? ' register-input--error' : ''}`}
             type="password"

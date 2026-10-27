@@ -1,11 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState, type TouchEvent } from 'react';
 import './styless.scss';
+import educationIcon from '../../assets/fluent-emoji-flat_open-book.svg';
+import footballIcon from '../../assets/noto_soccer-ball.svg';
+
+export type VideoCategory = 'educacao' | 'futebol';
 
 export interface CarouselItem {
   id: number | string;
-  imagem: string;
   titulo: string;
   data: string;
+  categoria: VideoCategory;
 }
 
 interface CarouselProps {
@@ -54,26 +58,24 @@ function CalendarIcon() {
   );
 }
 
-function LocationIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path
-        d="M20 10C20 15.5 12 22 12 22C12 22 4 15.5 4 10C4 5.58 7.58 2 12 2C16.42 2 20 5.58 20 10Z"
-        stroke="currentColor"
-        strokeWidth="2"
-      />
-
-      <circle cx="12" cy="10" r="2.5" stroke="currentColor" strokeWidth="2" />
-    </svg>
-  );
-}
-
 export default function Carousel({ items }: CarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [visibleCards, setVisibleCards] = useState(3);
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
 
-  const visibleCards = 3;
+  useEffect(() => {
+    const updateVisibleCards = () => {
+      setVisibleCards(window.matchMedia('(max-width: 600px)').matches ? 1 :
+        window.matchMedia('(max-width: 900px)').matches ? 2 : 3);
+    };
 
-  const maxIndex = Math.max(items.length - visibleCards, 0);
+    updateVisibleCards();
+    window.addEventListener('resize', updateVisibleCards);
+    return () => window.removeEventListener('resize', updateVisibleCards);
+  }, []);
+
+  const cardsInView = Math.min(visibleCards, items.length);
+  const maxIndex = Math.max(items.length - cardsInView, 0);
 
   const next = () => {
     setCurrentIndex((current) => Math.min(current + 1, maxIndex));
@@ -82,6 +84,20 @@ export default function Carousel({ items }: CarouselProps) {
   const previous = () => {
     setCurrentIndex((current) => Math.max(current - 1, 0));
   };
+
+  function handleTouchEnd(event: TouchEvent<HTMLDivElement>) {
+    const start = touchStart.current;
+    touchStart.current = null;
+    const end = event.changedTouches[0];
+    if (!start || !end) return;
+
+    const deltaX = end.clientX - start.x;
+    const deltaY = end.clientY - start.y;
+    if (Math.abs(deltaX) < 40 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+
+    if (deltaX < 0) next();
+    else previous();
+  }
 
   if (!items.length) {
     return null;
@@ -99,20 +115,38 @@ export default function Carousel({ items }: CarouselProps) {
         <ArrowLeft />
       </button>
 
-      <div className="carousel__window">
+      <div
+        className="carousel__window"
+        onTouchStart={(event) => {
+          const touch = event.touches[0];
+          touchStart.current = touch ? { x: touch.clientX, y: touch.clientY } : null;
+        }}
+        onTouchEnd={handleTouchEnd}
+        onTouchCancel={() => {
+          touchStart.current = null;
+        }}
+      >
         <div
           className="carousel__track"
           style={{
-            transform: `translateX(-${currentIndex * 33.333}%)`,
+            width: `${(items.length / cardsInView) * 100}%`,
+            transform: `translateX(-${(currentIndex * cardsInView * 100) / items.length}%)`,
           }}
         >
           {items.map((item) => (
-            <article className="carousel__card" key={item.id}>
-              <div className="carousel__image-wrapper">
-                <img src={item.imagem} alt={item.titulo} className="carousel__image" />
+            <article
+              className="carousel__card"
+              key={item.id}
+              style={{ flexBasis: `${100 / items.length}%` }}
+            >
+              <div className={`carousel__category carousel__category--${item.categoria}`}>
+                <img
+                  src={item.categoria === 'educacao' ? educationIcon : footballIcon}
+                  alt=""
+                  className="carousel__category-icon"
+                />
+                <span>{item.categoria === 'educacao' ? 'Educação' : 'Futebol'}</span>
               </div>
-
-              {/* CONTEÚDO */}
 
               <div className="carousel__content">
                 <h3 className="carousel__title">{item.titulo}</h3>
@@ -141,16 +175,16 @@ export default function Carousel({ items }: CarouselProps) {
       {/* BOLINHAS */}
 
       <div className="carousel__dots">
-        {items.map((item, index) => {
+        {Array.from({ length: maxIndex + 1 }, (_, index) => {
           const isActive = index === currentIndex;
 
           return (
             <button
               type="button"
-              key={item.id}
+              key={index}
               className={`carousel__dot ${isActive ? 'carousel__dot--active' : ''}`}
-              onClick={() => setCurrentIndex(Math.min(index, maxIndex))}
-              aria-label={`Ir para ${item.titulo}`}
+              onClick={() => setCurrentIndex(index)}
+              aria-label={`Ir para o item ${index + 1}`}
             />
           );
         })}
