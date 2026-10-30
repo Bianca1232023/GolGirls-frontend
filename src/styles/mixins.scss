@@ -1,23 +1,23 @@
-@use "./variables.scss" as *;
+@use './variables.scss' as *;
 
 @mixin btn-login($bg-color, $shadow-color) {
-    background: $bg-color;
-    box-shadow: 0px 4px 6px $shadow-color;
+  background: $bg-color;
+  box-shadow: 0 4px 6px $shadow-color;
 }
 
 @mixin cap-icon($bg-color) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 3.25rem;
-    height: 3.25rem;
-    border-radius: 0.75rem;
-    color: white;
-    background: $bg-color;
-    flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 0.75rem;
+  color: white;
+  background: $bg-color;
+  flex-shrink: 0;
 
-    svg {
-        width: 28px;
-        height: 28px;
-    }
+  svg {
+    width: 28px;
+    height: 28px;
+  }
 }

@@ -1,11 +1,11 @@
 {
-	"folders": [
-		{
-			"path": "../.."
-		},
-		{
-			"path": "../../../GoGirls-Backend"
-		}
-	],
-	"settings": {}
+  "folders": [
+    {
+      "path": "../..",
+    },
+    {
+      "path": "../../../GoGirls-Backend",
+    },
+  ],
+  "settings": {},
 }

@@ -1,5 +1,5 @@
-@use "../../styles/variables.scss" as *;
-@use "../../styles/mixins.scss" as *;
+@use '../../styles/variables.scss' as *;
+@use '../../styles/mixins.scss' as *;
 
 .gg-login-card {
   width: 100%;
@@ -15,7 +15,7 @@
   width: 100%;
   text-align: center;
   padding-bottom: 1.25rem;
-  border-bottom: 1px solid rgba(255, 20, 147, 0.08);
+  border-bottom: 1px solid rgb(255 20 147 / 8%);
   margin-bottom: 1.25rem;
 
   .gg-logo--login {
@@ -94,7 +94,10 @@
     background: #fafafa;
     color: #1f2937;
     box-sizing: border-box;
-    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+    transition:
+      border-color 0.15s,
+      box-shadow 0.15s,
+      background 0.15s;
 
     &::placeholder {
       color: #b0b8c4;
@@ -102,9 +105,9 @@
 
     &:focus {
       outline: none;
-      border-color: rgba(255, 20, 147, 0.45);
+      border-color: rgb(255 20 147 / 45%);
       background: #fff;
-      box-shadow: 0 0 0 3px rgba(255, 20, 147, 0.12);
+      box-shadow: 0 0 0 3px rgb(255 20 147 / 12%);
     }
 
     &--error {
@@ -152,7 +155,10 @@
   color: #fff;
   cursor: pointer;
   letter-spacing: 0.01em;
-  transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s;
+  transition:
+    transform 0.15s,
+    box-shadow 0.2s,
+    opacity 0.2s;
 
   &:hover:not(:disabled) {
     transform: translateY(-1px);
@@ -165,17 +171,17 @@
 
   &--aluno {
     background: linear-gradient(90deg, #cf75dd 0%, #f23ea4 100%);
-    box-shadow: 0 6px 18px rgba(242, 62, 164, 0.35);
+    box-shadow: 0 6px 18px rgb(242 62 164 / 35%);
   }
 
   &--professor {
     background: linear-gradient(90deg, #f93f95 0%, #ff5f82 100%);
-    box-shadow: 0 6px 18px rgba(249, 63, 149, 0.35);
+    box-shadow: 0 6px 18px rgb(249 63 149 / 35%);
   }
 
   &--admin {
     background: linear-gradient(90deg, #9a58f6 0%, #cf75dd 100%);
-    box-shadow: 0 6px 18px rgba(154, 88, 246, 0.35);
+    box-shadow: 0 6px 18px rgb(154 88 246 / 35%);
     font-size: 0.85rem;
     padding: 0.85rem 1rem;
   }

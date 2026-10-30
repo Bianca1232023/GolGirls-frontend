@@ -1,16 +1,16 @@
-import Buttons from '../components/Button'
-import ForgotPasswordComponent from '../components/forgotPassword'
-import ResetPasswordFormComponent from '../components/resetPasswordForm'
-import AlunoSetPassword from '../components/alunoSetPassword'
-import Footer from '../components/footer'
-import { AppShell } from '../components/layout/AppShell'
-import { Navigate, useNavigate } from 'react-router-dom'
-import '../styles/golgirls-design.scss'
+import Buttons from '../components/Button';
+import ForgotPasswordComponent from '../components/forgotPassword';
+import ResetPasswordFormComponent from '../components/resetPasswordForm';
+import AlunoSetPassword from '../components/alunoSetPassword';
+import Footer from '../components/footer';
+import { AppShell } from '../components/layout/AppShell';
+import { Navigate, useNavigate } from 'react-router-dom';
+import '../styles/golgirls-design.scss';
 
-export const AlunoSetPasswordPage = () => <AlunoSetPassword />
+export const AlunoSetPasswordPage = () => <AlunoSetPassword />;
 
 export const AlunoForgotPassword = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <AppShell publicPage>
@@ -20,11 +20,11 @@ export const AlunoForgotPassword = () => {
         <Footer text="Lembrou sua senha? Volte para o login e acesse sua conta" />
       </div>
     </AppShell>
-  )
-}
+  );
+};
 
 export const AlunoResetPassword = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <AppShell publicPage>
@@ -34,7 +34,7 @@ export const AlunoResetPassword = () => {
         <Footer text="Link expirado? Solicite um novo na página de recuperação de senha" />
       </div>
     </AppShell>
-  )
-}
+  );
+};
 
-export const AdminRegisterRedirect = () => <Navigate to="/login/admin" replace />
+export const AdminRegisterRedirect = () => <Navigate to="/login/admin" replace />;

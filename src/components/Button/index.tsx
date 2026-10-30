@@ -1,6 +1,6 @@
-import React from 'react'
-import './styles.scss'
-import ArrowLeft from '../icons/arrow-left'
+import React from 'react';
+import './styles.scss';
+import ArrowLeft from '../icons/arrow-left';
 
 interface ButtonProps {
   label: string;
@@ -10,7 +10,13 @@ interface ButtonProps {
   icon?: React.ReactNode;
 }
 
-const Buttons: React.FC<ButtonProps> = ({ label, onClick, type = 'default', className = '', icon }) => {
+const Buttons: React.FC<ButtonProps> = ({
+  label,
+  onClick,
+  type = 'default',
+  className = '',
+  icon,
+}) => {
   const buttonClass = `btn btn-${type} ${className}`;
 
   return (
@@ -22,4 +28,4 @@ const Buttons: React.FC<ButtonProps> = ({ label, onClick, type = 'default', clas
   );
 };
 
-export default Buttons
+export default Buttons;

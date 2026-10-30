@@ -1,21 +1,29 @@
-import './styles.scss'
+import './styles.scss';
 
 interface Option {
-  value: string | number
-  label: string
+  value: string | number;
+  label: string;
 }
 
 interface InputFieldProps {
-  label: string
-  value: string
-  onChange: (val: string) => void
-  placeholder?: string
-  type?: 'text' | 'email' | 'number'
-  options?: Option[]
-  required?: boolean
+  label: string;
+  value: string;
+  onChange: (val: string) => void;
+  placeholder?: string;
+  type?: 'text' | 'email' | 'number';
+  options?: Option[];
+  required?: boolean;
 }
 
-const InputField = ({ label, value, onChange, placeholder, type = 'text', options, required }: InputFieldProps) => {
+const InputField = ({
+  label,
+  value,
+  onChange,
+  placeholder,
+  type = 'text',
+  options,
+  required,
+}: InputFieldProps) => {
   return (
     <div className="input-field">
       <label className="input-field__label">{label}</label>
@@ -44,7 +52,7 @@ const InputField = ({ label, value, onChange, placeholder, type = 'text', option
         />
       )}
     </div>
-  )
-}
+  );
+};
 
-export default InputField
+export default InputField;

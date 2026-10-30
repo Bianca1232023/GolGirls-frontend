@@ -1,10 +1,10 @@
-import Buttons from '../components/Button'
-import Footer from '../components/footer'
-import { Logo, UserCog } from '../components/icons'
-import { useNavigate } from 'react-router-dom'
+import Buttons from '../components/Button';
+import Footer from '../components/footer';
+import { Logo, UserCog } from '../components/icons';
+import { useNavigate } from 'react-router-dom';
 
 export const ProfessorRegister = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <div className="invite-only-page" style={{ padding: '1.5rem', paddingBottom: '5rem' }}>
@@ -19,9 +19,14 @@ export const ProfessorRegister = () => {
           Professoras são cadastradas pela equipe administrativa. Você receberá um e-mail com link
           para definir sua senha em <strong>/professor/definir-senha</strong>.
         </p>
-        <Buttons type="login" label="Ir para login" onClick={() => navigate('/login/professor')} className="btn-login--professor" />
+        <Buttons
+          type="login"
+          label="Ir para login"
+          onClick={() => navigate('/login/professor')}
+          className="btn-login--professor"
+        />
       </div>
       <Footer text="Problemas com o acesso? Entre em contato com o Administrativo" />
     </div>
-  )
-}
+  );
+};

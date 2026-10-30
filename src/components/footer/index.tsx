@@ -1,5 +1,5 @@
-import React from 'react'
-import './styles.scss'
+import React from 'react';
+import './styles.scss';
 
 interface FooterProps {
   text: string;
@@ -8,9 +8,9 @@ interface FooterProps {
 const Footer: React.FC<FooterProps> = ({ text }) => {
   return (
     <footer className="footer">
-      <p>{text}</p>
+      <p className="footer__text">{text}</p>
     </footer>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

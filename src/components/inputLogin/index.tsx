@@ -1,30 +1,34 @@
-import React, { useState } from 'react'
-import './styles.scss'
-import GraduationCap from '../icons/graduation-cap'
-import UserCog from '../icons/user-cog'
-import Shield from '../icons/shield'
-import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../hooks/useAuth'
-import { hasLgpdConsent } from '../../services/auth'
-import { isValidEmail } from '../../utils/validation'
+import React, { useState } from 'react';
+import './styles.scss';
+import GraduationCap from '../icons/graduation-cap';
+import UserCog from '../icons/user-cog';
+import Shield from '../icons/shield';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
+import { hasLgpdConsent } from '../../services/auth';
+import { isValidEmail } from '../../utils/validation';
 
-type InputType = 'text' | 'password' | 'email'
-type Role = 'aluno' | 'professor' | 'admin'
+type InputType = 'text' | 'password' | 'email';
+type Role = 'aluno' | 'professor' | 'admin';
 
 interface InputProps {
-  type: InputType
-  role: Role
-  placeholder?: string
-  value: string
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  type: InputType;
+  role: Role;
+  placeholder?: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const Inputs: React.FC<InputProps> = (props: InputProps) => {
-  const navigate = useNavigate()
-  const { login, loading, serverError } = useAuth()
+  const navigate = useNavigate();
+  const { login, loading, serverError } = useAuth();
 
-  const [password, setPassword] = useState('')
-  const [errors, setErrors] = useState({ main: false, password: false, lgpd: false })
+  const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState({
+    main: false,
+    password: false,
+    lgpd: false,
+  });
 
   const roleConfig = {
     aluno: {
@@ -51,61 +55,69 @@ const Inputs: React.FC<InputProps> = (props: InputProps) => {
       placeholder: 'admin@golgirls.org',
       submitLabel: 'Entrar com Credenciais Admin',
     },
-  }
+  };
 
-  const config = roleConfig[props.role]
+  const config = roleConfig[props.role];
 
   const renderIcon = () => {
     switch (props.role) {
       case 'aluno':
-        return <GraduationCap width="28" height="28" />
+        return <GraduationCap width="28" height="28" />;
       case 'professor':
-        return <UserCog width="28" height="28" />
+        return <UserCog width="28" height="28" />;
       case 'admin':
-        return <Shield width="28" height="28" />
+        return <Shield width="28" height="28" />;
     }
-  }
+  };
 
   const handleClickEnter = async () => {
-    const mainEmpty = !props.value.trim()
-    const passwordEmpty = !password.trim()
+    const mainEmpty = !props.value.trim();
+    const passwordEmpty = !password.trim();
     const invalidEmail =
       (props.role === 'professor' || props.role === 'admin') &&
       props.value.trim() &&
-      !isValidEmail(props.value)
-    const lgpdMissing = !hasLgpdConsent()
+      !isValidEmail(props.value);
+    const lgpdMissing = !hasLgpdConsent();
 
     if (mainEmpty || passwordEmpty || invalidEmail || lgpdMissing) {
-      setErrors({ main: !!(mainEmpty || invalidEmail), password: passwordEmpty, lgpd: lgpdMissing })
-      return
+      setErrors({
+        main: !!(mainEmpty || invalidEmail),
+        password: passwordEmpty,
+        lgpd: lgpdMissing,
+      });
+      return;
     }
 
-    setErrors({ main: false, password: false, lgpd: false })
+    setErrors({ main: false, password: false, lgpd: false });
 
-    const token = await login({ role: props.role, value: props.value, password })
-    if (!token) return
+    const token = await login({
+      role: props.role,
+      value: props.value,
+      password,
+    });
+    if (!token) return;
 
     switch (props.role) {
       case 'aluno':
-        navigate('/app/aluno')
-        break
+        navigate('/app/aluno');
+        break;
       case 'professor':
-        navigate('/professor/painel')
-        break
+        navigate('/professor/painel');
+        break;
       case 'admin':
-        navigate('/admin/painel')
-        break
+        navigate('/admin/painel');
+        break;
     }
-  }
+  };
 
   const getMainErrorMsg = () => {
-    if (props.role === 'aluno') return 'Digite sua matrícula ou e-mail'
-    if (!props.value.trim()) return 'Digite seu e-mail'
-    if (!isValidEmail(props.value)) return 'Digite um e-mail válido'
-    return ''
-  }
+    if (props.role === 'aluno') return 'Digite sua matrícula ou e-mail';
+    if (!props.value.trim()) return 'Digite seu e-mail';
+    if (!isValidEmail(props.value)) return 'Digite um e-mail válido';
+    return '';
+  };
 
-  const mainErrorMsg = getMainErrorMsg()
+  const mainErrorMsg = getMainErrorMsg();
 
   return (
     <div className={`gg-login-card gg-login-form gg-login-form--${props.role}`}>
@@ -153,9 +165,11 @@ const Inputs: React.FC<InputProps> = (props: InputProps) => {
           <button
             type="button"
             className="gg-login-forgot"
-            onClick={() => navigate(
-              props.role === 'aluno' ? '/aluno/esqueci-senha' : `/${props.role}/esqueci-senha`
-            )}
+            onClick={() =>
+              navigate(
+                props.role === 'aluno' ? '/aluno/esqueci-senha' : `/${props.role}/esqueci-senha`,
+              )
+            }
           >
             Esqueci minha senha
           </button>
@@ -176,11 +190,14 @@ const Inputs: React.FC<InputProps> = (props: InputProps) => {
           {loading ? 'Entrando...' : config.submitLabel}
         </button>
 
-        {serverError && <span className="gg-login-error" style={{ textAlign: 'center', marginTop: '0.75rem' }}>{serverError}</span>}
-
+        {serverError && (
+          <span className="gg-login-error" style={{ textAlign: 'center', marginTop: '0.75rem' }}>
+            {serverError}
+          </span>
+        )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Inputs
+export default Inputs;

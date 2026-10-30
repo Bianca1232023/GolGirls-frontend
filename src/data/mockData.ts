@@ -1,29 +1,33 @@
 /** Dados fictícios (Figma Make) — complementam a API */
 
-export type NucleoFilter = 'todos' | 'meier' | 'seropedica'
-export type ChamadaStatus = 'P' | 'F' | 'T' | null
+export type NucleoFilter = 'todos' | 'meier' | 'seropedica';
+export type ChamadaStatus = 'P' | 'F' | 'T' | null;
 
 export const NUCLEOS = [
   { id: 'meier' as const, label: 'Méier' },
   { id: 'seropedica' as const, label: 'Seropédica' },
-]
+];
 
 export interface MuralPost {
-  id: string
-  authorName: string
-  authorAvatar: string
-  timeAgo: string
-  text: string
-  imageUrl: string
-  likes: number
-  comments: number
-  liked?: boolean
+  id: string;
+  authorName: string;
+  authorAvatar: string;
+  timeAgo: string;
+  text: string;
+  imageUrl: string;
+  likes: number;
+  comments: number;
+  liked?: boolean;
 }
 
 export const MURAL_HIGHLIGHTS = [
-  { id: 'h1', title: 'Campeonato interno', subtitle: 'Turma Méier — destaque da semana' },
+  {
+    id: 'h1',
+    title: 'Campeonato interno',
+    subtitle: 'Turma Méier — destaque da semana',
+  },
   { id: 'h2', title: 'Oficina NEABI', subtitle: 'Letramento tecnológico' },
-]
+];
 
 export const MURAL_POSTS: MuralPost[] = [
   {
@@ -46,18 +50,18 @@ export const MURAL_POSTS: MuralPost[] = [
     likes: 18,
     comments: 3,
   },
-]
+];
 
 /** Faltas consecutivas simuladas para alerta de evasão (id da aluna) */
 export const MOCK_FALTAS_CONSECUTIVAS: Record<number, number> = {
   3: 4,
-}
+};
 
 export const ADMIN_KPI = {
   totalAlunas: 60,
   taxaFrequencia: 87,
   alertasEvasao: 8,
-}
+};
 
 export const CHART_MENSAL = [
   { mes: 'Jan', pct: 72 },
@@ -65,47 +69,106 @@ export const CHART_MENSAL = [
   { mes: 'Mar', pct: 81 },
   { mes: 'Abr', pct: 85 },
   { mes: 'Mai', pct: 87 },
-]
+];
 
 export const TIMELINE_LEGADO = [
-  { year: '2018', title: 'Fundação do Instituto', desc: 'Início do empoderamento de meninas negras periféricas.' },
-  { year: '2022', title: 'Expansão Méier', desc: 'Núcleo Méier com foco em futebol e formação.' },
-  { year: '2024', title: 'Seropédica', desc: 'Novo núcleo e parcerias com escolas locais.' },
-  { year: '2026', title: 'Digitalização NEABI', desc: 'Maria da Graça — 60 alunas em fase de digitalização.' },
-]
+  {
+    year: '2018',
+    title: 'Fundação do Instituto',
+    desc: 'Início do empoderamento de meninas negras periféricas.',
+  },
+  {
+    year: '2022',
+    title: 'Expansão Méier',
+    desc: 'Núcleo Méier com foco em futebol e formação.',
+  },
+  {
+    year: '2024',
+    title: 'Seropédica',
+    desc: 'Novo núcleo e parcerias com escolas locais.',
+  },
+  {
+    year: '2026',
+    title: 'Digitalização NEABI',
+    desc: 'Maria da Graça — 60 alunas em fase de digitalização.',
+  },
+];
 
 export const DEPOIMENTOS = [
-  { id: 'd1', author: 'Ana, 12 anos', quote: 'O Gol Girls me mostrou que posso sonhar grande.', role: 'Menina do Projeto' },
-  { id: 'd2', author: 'Patrocinadora XYZ', quote: 'Investir nessas meninas é investir no futuro da cidade.', role: 'Patrocinador' },
-]
+  {
+    id: 'd1',
+    author: 'Ana, 12 anos',
+    quote: 'O Gol Girls me mostrou que posso sonhar grande.',
+    role: 'Menina do Projeto',
+  },
+  {
+    id: 'd2',
+    author: 'Patrocinadora XYZ',
+    quote: 'Investir nessas meninas é investir no futuro da cidade.',
+    role: 'Patrocinador',
+  },
+];
 
 export const GALERIA_CONQUISTAS = [
-  '/images/golgirls.jpg',
-  '/images/golgirls2.jpg',
-  '/images/golgirls3.jpg',
-  '/images/golgirls4.jpg',
-  '/images/golgirls5.jpg',
-  '/images/golgirls6.jpg',
-]
+  'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=300&h=200&fit=crop',
+  'https://images.unsplash.com/photo-1461896836934-ffe607ba7a38?w=300&h=200&fit=crop',
+  'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=300&h=200&fit=crop',
+];
 
-export const ETNIAS = ['Preta', 'Parda', 'Branca', 'Indígena', 'Amarela', 'Prefiro não informar']
-export const GENEROS = ['Menina cis', 'Menina trans', 'Não-binárie', 'Outro', 'Prefiro não informar']
-export const BAIRROS = ['Méier', 'Seropédica', 'Maria da Graça', 'Penha', 'Madureira', 'Outro']
-export const TEMPOS_REDES = ['Menos de 1h/dia', '1–2h/dia', '3–4h/dia', 'Mais de 4h/dia']
+export const EVENTOS_CAROUSEL = [
+  {
+    id: 1,
+    titulo: 'Modulo 1 - Introdução teste com titulo mt grande',
+    data: '12 de setembro de 2026',
+    categoria: 'futebol' as const,
+  },
+  {
+    id: 2,
+    titulo: 'Modulo 2 - Avançado',
+    descricao: 'Descrição do Modulo 2',
+    data: '15 de setembro de 2026',
+    categoria: 'educacao' as const,
+  },
+  {
+    id: 3,
+    titulo: 'Modulo 3 - Intermediário',
+    descricao: 'Descrição do Modulo 3',
+    data: '18 de setembro de 2026',
+    categoria: 'educacao' as const,
+  },
+  {
+    id: 4,
+    titulo: 'Modulo 4 - Avançado',
+    descricao: 'Descrição do Modulo 4',
+    data: '20 de setembro de 2026',
+    categoria: 'futebol' as const,
+  },
+];
+
+export const ETNIAS = ['Preta', 'Parda', 'Branca', 'Indígena', 'Amarela', 'Prefiro não informar'];
+export const GENEROS = [
+  'Menina cis',
+  'Menina trans',
+  'Não-binárie',
+  'Outro',
+  'Prefiro não informar',
+];
+export const BAIRROS = ['Méier', 'Seropédica', 'Maria da Graça', 'Penha', 'Madureira', 'Outro'];
+export const TEMPOS_REDES = ['Menos de 1h/dia', '1–2h/dia', '3–4h/dia', 'Mais de 4h/dia'];
 
 export const LIKERT_LABELS: Record<1 | 2 | 3 | 4, string> = {
   1: 'Discordo totalmente',
   2: 'Discordo',
   3: 'Concordo',
   4: 'Concordo totalmente',
-}
+};
 
 /** Fallback quando não há respostas no localStorage */
 export const AUTOESTIMA_FALLBACK = {
   todos: 3.2,
   meier: 3.4,
   seropedica: 2.9,
-} as const
+} as const;
 
 export const ROSENBERG_ITEMS = [
   'Eu sinto que sou uma pessoa de valor, pelo menos igual às outras pessoas.',
@@ -118,4 +181,4 @@ export const ROSENBERG_ITEMS = [
   'Eu gostaria de ter mais respeito por mim mesma.',
   'Às vezes eu me sinto inútil.',
   'Às vezes eu acho que não presto para nada.',
-]
+];

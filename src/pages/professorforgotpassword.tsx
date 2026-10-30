@@ -1,20 +1,20 @@
-import Buttons from '../components/Button'
-import ForgotPasswordComponent from '../components/forgotPassword'
-import Footer from '../components/footer'
-import { useNavigate } from 'react-router-dom'
-import { AppShell } from '../components/layout/AppShell'
-import '../styles/golgirls-design.scss'
+import Buttons from '../components/Button';
+import ForgotPasswordComponent from '../components/forgotPassword';
+import Footer from '../components/footer';
+import { useNavigate } from 'react-router-dom';
+import { AppShell } from '../components/layout/AppShell';
+import '../styles/golgirls-design.scss';
 
 export const ProfessorForgotPassword = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleBack = () => {
     if (window.history.length > 1) {
-      navigate(-1)
-      return
+      navigate(-1);
+      return;
     }
-    navigate('/login/professor')
-  }
+    navigate('/login/professor');
+  };
 
   return (
     <AppShell publicPage>
@@ -26,5 +26,5 @@ export const ProfessorForgotPassword = () => {
         <Footer text="Lembrou sua senha? Volte para o login e acesse sua conta" />
       </div>
     </AppShell>
-  )
-}
+  );
+};

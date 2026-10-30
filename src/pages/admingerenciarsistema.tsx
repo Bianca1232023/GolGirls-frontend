@@ -1,204 +1,260 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { api } from '../services/api'
-import BottomNavigation from '../components/bottomNavigation'
-import FilterChips from '../components/filterChips'
-import InputField from '../components/inputField'
-import { ArrowLeft, School, MapPin, Users, Share2, Plus, Trash } from '../components/icons'
-import '../styles/admingerenciarsistema.scss'
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { api } from '../services/api';
+import BottomNavigation from '../components/bottomNavigation';
+import FilterChips from '../components/filterChips';
+import InputField from '../components/inputField';
+import { ArrowLeft, School, MapPin, Users, Share2, Plus, Trash } from '../components/icons';
+import '../styles/admingerenciarsistema.scss';
 
-type Tab = 'escolas' | 'nucleos' | 'turmas' | 'vinculos'
+type Tab = 'escolas' | 'nucleos' | 'turmas' | 'vinculos';
 
-interface Escola { id: number; nome: string; endereco?: string }
-interface Nucleo { id: number; nome: string; localizacao?: string }
-interface Turma  { id: number; nome: string; capacidade?: number; escola_nome?: string; escola_endereco?: string; nucleo_nome?: string; nucleo_localizacao?: string }
-interface Vinculo { professor_id: number; professor_nome: string; turma_id: number; turma_nome: string }
-interface Professor { id: number; name: string; email: string }
+interface Escola {
+  id: number;
+  nome: string;
+  endereco?: string;
+}
+interface Nucleo {
+  id: number;
+  nome: string;
+  localizacao?: string;
+}
+interface Turma {
+  id: number;
+  nome: string;
+  capacidade?: number;
+  escola_nome?: string;
+  escola_endereco?: string;
+  nucleo_nome?: string;
+  nucleo_localizacao?: string;
+}
+interface Vinculo {
+  professor_id: number;
+  professor_nome: string;
+  turma_id: number;
+  turma_nome: string;
+}
+interface Professor {
+  id: number;
+  name: string;
+  email: string;
+}
 
 export const AdminGerenciarSistema = () => {
-  const navigate = useNavigate()
-  const [tab, setTab] = useState<Tab>('escolas')
+  const navigate = useNavigate();
+  const [tab, setTab] = useState<Tab>('escolas');
 
   // Dados
-  const [escolas, setEscolas] = useState<Escola[]>([])
-  const [nucleos, setNucleos] = useState<Nucleo[]>([])
-  const [turmas, setTurmas] = useState<Turma[]>([])
-  const [vinculos, setVinculos] = useState<Vinculo[]>([])
-  const [professors, setProfessors] = useState<Professor[]>([])
+  const [escolas, setEscolas] = useState<Escola[]>([]);
+  const [nucleos, setNucleos] = useState<Nucleo[]>([]);
+  const [turmas, setTurmas] = useState<Turma[]>([]);
+  const [vinculos, setVinculos] = useState<Vinculo[]>([]);
+  const [professors, setProfessors] = useState<Professor[]>([]);
 
   // Formulários
-  const [escolaNome, setEscolaNome] = useState('')
-  const [escolaEndereco, setEscolaEndereco] = useState('')
+  const [escolaNome, setEscolaNome] = useState('');
+  const [escolaEndereco, setEscolaEndereco] = useState('');
 
-  const [nucleoNome, setNucleoNome] = useState('')
-  const [nucleoLocalizacao, setNucleoLocalizacao] = useState('')
+  const [nucleoNome, setNucleoNome] = useState('');
+  const [nucleoLocalizacao, setNucleoLocalizacao] = useState('');
 
-  const [turmaNome, setTurmaNome] = useState('')
-  const [turmaEscolaId, setTurmaEscolaId] = useState('')
-  const [turmaNucleoId, setTurmaNucleoId] = useState('')
-  const [turmaCapacidade, setTurmaCapacidade] = useState('')
+  const [turmaNome, setTurmaNome] = useState('');
+  const [turmaEscolaId, setTurmaEscolaId] = useState('');
+  const [turmaNucleoId, setTurmaNucleoId] = useState('');
+  const [turmaCapacidade, setTurmaCapacidade] = useState('');
 
-  const [vinculoProfId, setVinculoProfId] = useState('')
-  const [vinculoTurmaId, setVinculoTurmaId] = useState('')
+  const [vinculoProfId, setVinculoProfId] = useState('');
+  const [vinculoTurmaId, setVinculoTurmaId] = useState('');
 
-  const [feedback, setFeedback] = useState<{ type: 'error' | 'success'; msg: string } | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [feedback, setFeedback] = useState<{
+    type: 'error' | 'success';
+    msg: string;
+  } | null>(null);
+  const [loading, setLoading] = useState(false);
 
   // ── Fetch ────────────────────────────────────────────────────────────────
 
   async function fetchAll() {
-    const [resEscolas, resNucleos, resTurmas, resVinculos, resProfessors] = await Promise.allSettled([
-      api.get('/escolas'),
-      api.get('/nucleos'),
-      api.get('/admin/turmas'),
-      api.get('/admin/turmas/vinculos'),
-      api.get('/admin/professors'),
-    ])
+    const [resEscolas, resNucleos, resTurmas, resVinculos, resProfessors] =
+      await Promise.allSettled([
+        api.get('/escolas'),
+        api.get('/nucleos'),
+        api.get('/admin/turmas'),
+        api.get('/admin/turmas/vinculos'),
+        api.get('/admin/professors'),
+      ]);
 
     if (resEscolas.status === 'fulfilled')
-      setEscolas((resEscolas.value as { escolas?: Escola[] }).escolas ?? [])
+      setEscolas((resEscolas.value as { escolas?: Escola[] }).escolas ?? []);
     if (resNucleos.status === 'fulfilled')
-      setNucleos((resNucleos.value as { nucleos?: Nucleo[] }).nucleos ?? [])
+      setNucleos((resNucleos.value as { nucleos?: Nucleo[] }).nucleos ?? []);
     if (resTurmas.status === 'fulfilled')
-      setTurmas((resTurmas.value as { turmas?: Turma[] }).turmas ?? [])
+      setTurmas((resTurmas.value as { turmas?: Turma[] }).turmas ?? []);
     if (resVinculos.status === 'fulfilled')
-      setVinculos((resVinculos.value as { vinculos?: Vinculo[] }).vinculos ?? [])
+      setVinculos((resVinculos.value as { vinculos?: Vinculo[] }).vinculos ?? []);
     if (resProfessors.status === 'fulfilled')
-      setProfessors((resProfessors.value as { professors?: Professor[] }).professors ?? [])
+      setProfessors((resProfessors.value as { professors?: Professor[] }).professors ?? []);
   }
 
   useEffect(() => {
-    void fetchAll()
-  }, [])
+    void fetchAll();
+  }, []);
 
   // ── Helpers ───────────────────────────────────────────────────────────────
 
   function showFeedback(type: 'error' | 'success', msg: string) {
-    setFeedback({ type, msg })
-    setTimeout(() => setFeedback(null), 3500)
+    setFeedback({ type, msg });
+    setTimeout(() => setFeedback(null), 3500);
   }
 
   // ── Handlers ─────────────────────────────────────────────────────────────
 
   async function handleCadastrarEscola(e: React.FormEvent) {
-    e.preventDefault()
-    setLoading(true)
+    e.preventDefault();
+    setLoading(true);
     try {
-      await api.post('/admin/escolas', { nome: escolaNome.trim(), endereco: escolaEndereco.trim() || undefined })
-      showFeedback('success', 'Escola cadastrada com sucesso!')
-      setEscolaNome('')
-      setEscolaEndereco('')
-      await fetchAll()
+      await api.post('/admin/escolas', {
+        nome: escolaNome.trim(),
+        endereco: escolaEndereco.trim() || undefined,
+      });
+      showFeedback('success', 'Escola cadastrada com sucesso!');
+      setEscolaNome('');
+      setEscolaEndereco('');
+      await fetchAll();
     } catch (err) {
-      showFeedback('error', err instanceof Error ? err.message : 'Erro ao cadastrar escola')
+      showFeedback('error', err instanceof Error ? err.message : 'Erro ao cadastrar escola');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   async function handleDeleteEscola(id: number) {
-    if (!confirm('Remover esta escola?')) return
+    if (!confirm('Remover esta escola?')) return;
     try {
-      await api.delete(`/admin/escolas/${id}`)
-      setEscolas((prev) => prev.filter((e) => e.id !== id))
+      await api.delete(`/admin/escolas/${id}`);
+      setEscolas((prev) => prev.filter((e) => e.id !== id));
     } catch {
-      showFeedback('error', 'Erro ao remover escola')
+      showFeedback('error', 'Erro ao remover escola');
     }
   }
 
   async function handleCadastrarNucleo(e: React.FormEvent) {
-    e.preventDefault()
-    setLoading(true)
+    e.preventDefault();
+    setLoading(true);
     try {
-      await api.post('/admin/nucleos', { nome: nucleoNome.trim(), localizacao: nucleoLocalizacao.trim() || undefined })
-      showFeedback('success', 'Núcleo cadastrado com sucesso!')
-      setNucleoNome('')
-      setNucleoLocalizacao('')
-      await fetchAll()
+      await api.post('/admin/nucleos', {
+        nome: nucleoNome.trim(),
+        localizacao: nucleoLocalizacao.trim() || undefined,
+      });
+      showFeedback('success', 'Núcleo cadastrado com sucesso!');
+      setNucleoNome('');
+      setNucleoLocalizacao('');
+      await fetchAll();
     } catch (err) {
-      showFeedback('error', err instanceof Error ? err.message : 'Erro ao cadastrar núcleo')
+      showFeedback('error', err instanceof Error ? err.message : 'Erro ao cadastrar núcleo');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   async function handleDeleteNucleo(id: number) {
-    if (!confirm('Remover este núcleo?')) return
+    if (!confirm('Remover este núcleo?')) return;
     try {
-      await api.delete(`/admin/nucleos/${id}`)
-      setNucleos((prev) => prev.filter((n) => n.id !== id))
+      await api.delete(`/admin/nucleos/${id}`);
+      setNucleos((prev) => prev.filter((n) => n.id !== id));
     } catch {
-      showFeedback('error', 'Erro ao remover núcleo')
+      showFeedback('error', 'Erro ao remover núcleo');
     }
   }
 
   async function handleCadastrarTurma(e: React.FormEvent) {
-    e.preventDefault()
-    setLoading(true)
+    e.preventDefault();
+    setLoading(true);
     try {
       await api.post('/admin/turmas', {
         nome: turmaNome.trim(),
         escola_id: turmaEscolaId ? Number(turmaEscolaId) : undefined,
         nucleo_id: turmaNucleoId ? Number(turmaNucleoId) : undefined,
         capacidade: turmaCapacidade ? Number(turmaCapacidade) : undefined,
-      })
-      showFeedback('success', 'Turma cadastrada com sucesso!')
-      setTurmaNome('')
-      setTurmaEscolaId('')
-      setTurmaNucleoId('')
-      setTurmaCapacidade('')
-      await fetchAll()
+      });
+      showFeedback('success', 'Turma cadastrada com sucesso!');
+      setTurmaNome('');
+      setTurmaEscolaId('');
+      setTurmaNucleoId('');
+      setTurmaCapacidade('');
+      await fetchAll();
     } catch (err) {
-      showFeedback('error', err instanceof Error ? err.message : 'Erro ao cadastrar turma')
+      showFeedback('error', err instanceof Error ? err.message : 'Erro ao cadastrar turma');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   async function handleDeleteTurma(id: number) {
-    if (!confirm('Remover esta turma?')) return
+    if (!confirm('Remover esta turma?')) return;
     try {
-      await api.delete(`/admin/turmas/${id}`)
-      setTurmas((prev) => prev.filter((t) => t.id !== id))
+      await api.delete(`/admin/turmas/${id}`);
+      setTurmas((prev) => prev.filter((t) => t.id !== id));
     } catch {
-      showFeedback('error', 'Erro ao remover turma')
+      showFeedback('error', 'Erro ao remover turma');
     }
   }
 
   async function handleVincular(e: React.FormEvent) {
-    e.preventDefault()
+    e.preventDefault();
     if (!vinculoProfId || !vinculoTurmaId) {
-      showFeedback('error', 'Selecione professor e turma')
-      return
+      showFeedback('error', 'Selecione professor e turma');
+      return;
     }
-    setLoading(true)
+    setLoading(true);
     try {
-      await api.post(`/admin/turmas/${vinculoTurmaId}/professores`, { professor_id: Number(vinculoProfId) })
-      showFeedback('success', 'Professor vinculado com sucesso!')
-      setVinculoProfId('')
-      setVinculoTurmaId('')
-      await fetchAll()
+      await api.post(`/admin/turmas/${vinculoTurmaId}/professores`, {
+        professor_id: Number(vinculoProfId),
+      });
+      showFeedback('success', 'Professor vinculado com sucesso!');
+      setVinculoProfId('');
+      setVinculoTurmaId('');
+      await fetchAll();
     } catch (err) {
-      showFeedback('error', err instanceof Error ? err.message : 'Erro ao vincular professor')
+      showFeedback('error', err instanceof Error ? err.message : 'Erro ao vincular professor');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   // ── Chips ─────────────────────────────────────────────────────────────────
 
   const chips = [
-    { key: 'escolas',  label: 'Escolas',  count: escolas.length,  icon: <School  width="14" height="14" /> },
-    { key: 'nucleos',  label: 'Núcleos',  count: nucleos.length,  icon: <MapPin  width="14" height="14" /> },
-    { key: 'turmas',   label: 'Turmas',   count: turmas.length,   icon: <Users   width="14" height="14" /> },
-    { key: 'vinculos', label: 'Vínculos', count: vinculos.length, icon: <Share2  width="14" height="14" /> },
-  ]
+    {
+      key: 'escolas',
+      label: 'Escolas',
+      count: escolas.length,
+      icon: <School width="14" height="14" />,
+    },
+    {
+      key: 'nucleos',
+      label: 'Núcleos',
+      count: nucleos.length,
+      icon: <MapPin width="14" height="14" />,
+    },
+    {
+      key: 'turmas',
+      label: 'Turmas',
+      count: turmas.length,
+      icon: <Users width="14" height="14" />,
+    },
+    {
+      key: 'vinculos',
+      label: 'Vínculos',
+      count: vinculos.length,
+      icon: <Share2 width="14" height="14" />,
+    },
+  ];
 
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
     <div className="sistema-page">
-
       {/* Header */}
       <div className="sistema-header">
         <button className="sistema-back-btn" onClick={() => navigate('/admin/painel')}>
@@ -214,9 +270,7 @@ export const AdminGerenciarSistema = () => {
 
       {/* Feedback */}
       {feedback && (
-        <div className={`sistema-feedback sistema-feedback--${feedback.type}`}>
-          {feedback.msg}
-        </div>
+        <div className={`sistema-feedback sistema-feedback--${feedback.type}`}>{feedback.msg}</div>
       )}
 
       {/* ── ESCOLAS ── */}
@@ -225,9 +279,24 @@ export const AdminGerenciarSistema = () => {
           <div className="sistema-form-card">
             <h2 className="sistema-form-title">Cadastrar Nova Escola</h2>
             <form onSubmit={handleCadastrarEscola} className="sistema-form">
-              <InputField label="Nome da Escola" value={escolaNome} onChange={setEscolaNome} placeholder="Ex: E.M. Paulo Freire" required />
-              <InputField label="Endereço" value={escolaEndereco} onChange={setEscolaEndereco} placeholder="Rua, número, bairro" />
-              <button className="sistema-submit-btn sistema-submit-btn--blue" type="submit" disabled={loading || !escolaNome.trim()}>
+              <InputField
+                label="Nome da Escola"
+                value={escolaNome}
+                onChange={setEscolaNome}
+                placeholder="Ex: E.M. Paulo Freire"
+                required
+              />
+              <InputField
+                label="Endereço"
+                value={escolaEndereco}
+                onChange={setEscolaEndereco}
+                placeholder="Rua, número, bairro"
+              />
+              <button
+                className="sistema-submit-btn sistema-submit-btn--blue"
+                type="submit"
+                disabled={loading || !escolaNome.trim()}
+              >
                 <Plus width="16" height="16" /> Cadastrar Escola
               </button>
             </form>
@@ -242,7 +311,11 @@ export const AdminGerenciarSistema = () => {
                   <span className="sistema-list-name">{escola.nome}</span>
                   {escola.endereco && <span className="sistema-list-sub">{escola.endereco}</span>}
                 </div>
-                <button className="sistema-delete-btn" onClick={() => handleDeleteEscola(escola.id)} title="Remover">
+                <button
+                  className="sistema-delete-btn"
+                  onClick={() => handleDeleteEscola(escola.id)}
+                  title="Remover"
+                >
                   <Trash width="16" height="16" />
                 </button>
               </div>
@@ -257,9 +330,24 @@ export const AdminGerenciarSistema = () => {
           <div className="sistema-form-card">
             <h2 className="sistema-form-title">Cadastrar Novo Núcleo</h2>
             <form onSubmit={handleCadastrarNucleo} className="sistema-form">
-              <InputField label="Nome do Núcleo" value={nucleoNome} onChange={setNucleoNome} placeholder="Ex: Zona Norte" required />
-              <InputField label="Localização" value={nucleoLocalizacao} onChange={setNucleoLocalizacao} placeholder="Ex: Méier" />
-              <button className="sistema-submit-btn sistema-submit-btn--purple" type="submit" disabled={loading || !nucleoNome.trim()}>
+              <InputField
+                label="Nome do Núcleo"
+                value={nucleoNome}
+                onChange={setNucleoNome}
+                placeholder="Ex: Zona Norte"
+                required
+              />
+              <InputField
+                label="Localização"
+                value={nucleoLocalizacao}
+                onChange={setNucleoLocalizacao}
+                placeholder="Ex: Méier"
+              />
+              <button
+                className="sistema-submit-btn sistema-submit-btn--purple"
+                type="submit"
+                disabled={loading || !nucleoNome.trim()}
+              >
                 <Plus width="16" height="16" /> Cadastrar Núcleo
               </button>
             </form>
@@ -272,9 +360,15 @@ export const AdminGerenciarSistema = () => {
               <div key={nucleo.id} className="sistema-list-item">
                 <div className="sistema-list-info">
                   <span className="sistema-list-name">{nucleo.nome}</span>
-                  {nucleo.localizacao && <span className="sistema-list-sub">{nucleo.localizacao}</span>}
+                  {nucleo.localizacao && (
+                    <span className="sistema-list-sub">{nucleo.localizacao}</span>
+                  )}
                 </div>
-                <button className="sistema-delete-btn" onClick={() => handleDeleteNucleo(nucleo.id)} title="Remover">
+                <button
+                  className="sistema-delete-btn"
+                  onClick={() => handleDeleteNucleo(nucleo.id)}
+                  title="Remover"
+                >
                   <Trash width="16" height="16" />
                 </button>
               </div>
@@ -289,7 +383,13 @@ export const AdminGerenciarSistema = () => {
           <div className="sistema-form-card">
             <h2 className="sistema-form-title">Cadastrar Nova Turma</h2>
             <form onSubmit={handleCadastrarTurma} className="sistema-form">
-              <InputField label="Nome da Turma" value={turmaNome} onChange={setTurmaNome} placeholder="Ex: 8º Ano A" required />
+              <InputField
+                label="Nome da Turma"
+                value={turmaNome}
+                onChange={setTurmaNome}
+                placeholder="Ex: 8º Ano A"
+                required
+              />
               <InputField
                 label="Escola"
                 value={turmaEscolaId}
@@ -304,8 +404,18 @@ export const AdminGerenciarSistema = () => {
                 placeholder="Selecione um núcleo"
                 options={nucleos.map((n) => ({ value: n.id, label: n.nome }))}
               />
-              <InputField label="Capacidade" value={turmaCapacidade} onChange={setTurmaCapacidade} placeholder="Ex: 30" type="number" />
-              <button className="sistema-submit-btn sistema-submit-btn--green" type="submit" disabled={loading || !turmaNome.trim()}>
+              <InputField
+                label="Capacidade"
+                value={turmaCapacidade}
+                onChange={setTurmaCapacidade}
+                placeholder="Ex: 30"
+                type="number"
+              />
+              <button
+                className="sistema-submit-btn sistema-submit-btn--green"
+                type="submit"
+                disabled={loading || !turmaNome.trim()}
+              >
                 <Plus width="16" height="16" /> Cadastrar Turma
               </button>
             </form>
@@ -330,7 +440,11 @@ export const AdminGerenciarSistema = () => {
                       .join(' · ') || 'Sem detalhes'}
                   </span>
                 </div>
-                <button className="sistema-delete-btn" onClick={() => handleDeleteTurma(turma.id)} title="Remover">
+                <button
+                  className="sistema-delete-btn"
+                  onClick={() => handleDeleteTurma(turma.id)}
+                  title="Remover"
+                >
                   <Trash width="16" height="16" />
                 </button>
               </div>
@@ -350,7 +464,10 @@ export const AdminGerenciarSistema = () => {
                 value={vinculoProfId}
                 onChange={setVinculoProfId}
                 placeholder="Selecione um professor"
-                options={professors.map((p) => ({ value: p.id, label: p.name || p.email }))}
+                options={professors.map((p) => ({
+                  value: p.id,
+                  label: p.name || p.email,
+                }))}
               />
               <InputField
                 label="Turma"
@@ -386,5 +503,5 @@ export const AdminGerenciarSistema = () => {
 
       <BottomNavigation role="admin" />
     </div>
-  )
-}
+  );
+};

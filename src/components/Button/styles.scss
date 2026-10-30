@@ -1,5 +1,5 @@
-@use "../../styles/variables.scss" as *;
-@use "../../styles/mixins.scss" as *;
+@use '../../styles/variables.scss' as *;
+@use '../../styles/mixins.scss' as *;
 
 .btn {
   display: flex;
@@ -25,23 +25,22 @@
 }
 
 .btn-login {
-    width: 100%;
-    height: 2.5rem;
-    color: white;
-    font-size: small;
-    margin-top: 20px;
-    padding: 25px;
+  width: 100%;
+  height: 2.5rem;
+  color: white;
+  font-size: small;
+  margin-top: 20px;
+  padding: 25px;
 }
 
-.btn-login--aluno{
-  @include btn-login($bg-primary, rgba(242, 62, 164, 0.35));
+.btn-login--aluno {
+  background: $bg-primary;
 }
-
-.btn-login--professor{
-  @include btn-login($bg-secondary, rgba(249, 63, 149, 0.35));
+.btn-login--professor {
+  background: $bg-secondary;
 }
 .btn-login--admin {
-    @include btn-login($bg-tertiary, rgba(154, 88, 246, 0.35));
+  background: $bg-tertiary;
 }
 
 .btn-back {
@@ -55,6 +54,10 @@
   &:hover {
     opacity: 0.8;
   }
+}
+
+.btn-back.setpassword-back-button {
+  align-self: flex-start;
 }
 
 .btn-default {

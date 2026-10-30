@@ -56,7 +56,9 @@
 
   &__filter {
     appearance: none;
-    background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right center;
+    background: transparent
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")
+      no-repeat right center;
     border: none;
     padding: 0 1.15rem 0 0;
     font-size: 0.85rem;
@@ -74,7 +76,7 @@
     border: 1px solid #eef0f4;
     border-radius: 1rem;
     padding: 1rem 1.1rem;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 4px rgb(0 0 0 / 5%);
   }
 
   &__card-title {
@@ -109,7 +111,7 @@
   flex-direction: column;
   align-items: center;
   gap: 0.45rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 5%);
   text-align: center;
 
   .stat-icon-wrap {
@@ -124,10 +126,12 @@
       background-color: #fce4f0;
       color: $color-primary;
     }
+
     &.green {
       background-color: #d6f5e3;
       color: #22c55e;
     }
+
     &.orange {
       background-color: #fef3c7;
       color: #f59e0b;
@@ -157,7 +161,7 @@
   border: 1px solid #eef0f4;
   border-radius: 1rem;
   padding: 1rem 1.1rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 5%);
   display: flex;
   align-items: center;
   gap: 0.9rem;
@@ -220,12 +224,12 @@
 
   &--convites {
     background: linear-gradient(180deg, #f6edfb 0%, #f1e6fa 100%);
-    border: 1px solid rgba(154, 88, 246, 0.18);
+    border: 1px solid rgb(154 88 246 / 18%);
   }
 
   &--sistema {
     background: linear-gradient(180deg, #eaf3ff 0%, #e6f6fb 100%);
-    border: 1px solid rgba(59, 130, 246, 0.2);
+    border: 1px solid rgb(59 130 246 / 20%);
   }
 
   &__icon {
@@ -241,6 +245,7 @@
     &.convites {
       background: linear-gradient(135deg, #9a58f6, #cf75dd);
     }
+
     &.sistema {
       background: linear-gradient(135deg, #3b82f6, #06b6d4);
     }
@@ -289,6 +294,7 @@
     &.convites {
       background: linear-gradient(135deg, #9a58f6, #cf75dd);
     }
+
     &.sistema {
       background: linear-gradient(135deg, #3b82f6, #06b6d4);
     }
@@ -344,7 +350,7 @@
   border-radius: 1rem;
   padding: 1rem 1.1rem;
   background: linear-gradient(180deg, #fdeef4 0%, #f3ecfb 100%);
-  border: 1px solid rgba(207, 117, 221, 0.2);
+  border: 1px solid rgb(207 117 221 / 20%);
 
   &__icon {
     width: 2.85rem;
@@ -399,8 +405,8 @@
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 50%;
-    border: 1px solid rgba(207, 117, 221, 0.35);
-    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgb(207 117 221 / 35%);
+    background: rgb(255 255 255 / 60%);
     color: $color-primary;
     display: flex;
     align-items: center;
@@ -454,7 +460,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 4%);
 
   .docente-avatar {
     width: 2.5rem;
@@ -543,7 +549,7 @@
     background: #fff;
     border: 1px solid #e5e7eb;
     border-radius: 0.6rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
     z-index: 50;
     min-width: 7rem;
     overflow: hidden;
@@ -594,7 +600,7 @@
 .painel-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgb(0 0 0 / 45%);
   z-index: 200;
   display: flex;
   align-items: center;

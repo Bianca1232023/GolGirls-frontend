@@ -1,21 +1,15 @@
-import { useState, useEffect } from "react";
-import { api } from "../services/api";
-import BottomNavigation from "../components/bottomNavigation";
-import FilterChips from "../components/filterChips";
-import InputField from "../components/inputField";
-import { AppShell } from "../components/layout/AppShell";
-import {
-  MapPin,
-  UserPlus,
-  Search,
-  Filter,
-  AlertCircle,
-} from "../components/icons";
-import { MOCK_FALTAS_CONSECUTIVAS, type ChamadaStatus } from "../data/mockData";
-import "../styles/professorpainel.scss";
-import "../styles/golgirls-design.scss";
+import { useState, useEffect } from 'react';
+import { api } from '../services/api';
+import BottomNavigation from '../components/bottomNavigation';
+import FilterChips from '../components/filterChips';
+import InputField from '../components/inputField';
+import { AppShell } from '../components/layout/AppShell';
+import { MapPin, UserPlus, Search, Filter, AlertCircle } from '../components/icons';
+import { MOCK_FALTAS_CONSECUTIVAS, type ChamadaStatus } from '../data/mockData';
+import '../styles/professorpainel.scss';
+import '../styles/golgirls-design.scss';
 
-type ProfessorTab = "chamada" | "buscar" | "cadastrar" | "relatorios";
+type ProfessorTab = 'chamada' | 'buscar' | 'cadastrar' | 'relatorios';
 
 interface Turma {
   id: number;
@@ -46,50 +40,48 @@ interface Aluna {
 }
 
 export const ProfessorPainel = () => {
-  const [tab, setTab] = useState<ProfessorTab>("chamada");
+  const [tab, setTab] = useState<ProfessorTab>('chamada');
   const [turmas, setTurmas] = useState<Turma[]>([]);
   const [nucleos, setNucleos] = useState<Nucleo[]>([]);
 
   // Buscar state
   const [alunos, setAlunos] = useState<Aluna[]>([]);
-  const [busca, setBusca] = useState("");
+  const [busca, setBusca] = useState('');
   const [showFiltros, setShowFiltros] = useState(false);
-  const [filtraTurmaId, setFiltraTurmaId] = useState("");
-  const [filtraNucleoId, setFiltraNucleoId] = useState("");
-  const [filtraBairro, setFiltraBairro] = useState("");
+  const [filtraTurmaId, setFiltraTurmaId] = useState('');
+  const [filtraNucleoId, setFiltraNucleoId] = useState('');
+  const [filtraBairro, setFiltraBairro] = useState('');
   const [loadingAlunos, setLoadingAlunos] = useState(false);
 
   // Cadastrar form state
-  const [nome, setNome] = useState("");
-  const [matricula, setMatricula] = useState("");
-  const [email, setEmail] = useState("");
-  const [dataNasc, setDataNasc] = useState("");
-  const [nucleoId, setNucleoId] = useState("");
-  const [turmaId, setTurmaId] = useState("");
-  const [bairro, setBairro] = useState("");
-  const [telefoneAluna, setTelefoneAluna] = useState("");
-  const [nomeResp, setNomeResp] = useState("");
-  const [telefoneResp, setTelefoneResp] = useState("");
+  const [nome, setNome] = useState('');
+  const [matricula, setMatricula] = useState('');
+  const [email, setEmail] = useState('');
+  const [dataNasc, setDataNasc] = useState('');
+  const [nucleoId, setNucleoId] = useState('');
+  const [turmaId, setTurmaId] = useState('');
+  const [bairro, setBairro] = useState('');
+  const [telefoneAluna, setTelefoneAluna] = useState('');
+  const [nomeResp, setNomeResp] = useState('');
+  const [telefoneResp, setTelefoneResp] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState<{
-    type: "error" | "success";
+    type: 'error' | 'success';
     msg: string;
   } | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
-  const [chamadaTurmaId, setChamadaTurmaId] = useState("");
-  const [chamadaData, setChamadaData] = useState(
-    new Date().toISOString().slice(0, 10),
-  );
+  const [chamadaTurmaId, setChamadaTurmaId] = useState('');
+  const [chamadaData, setChamadaData] = useState(new Date().toISOString().slice(0, 10));
   const [chamadaAlunos, setChamadaAlunos] = useState<Aluna[]>([]);
-  const [chamadaBusca, setChamadaBusca] = useState("");
+  const [chamadaBusca, setChamadaBusca] = useState('');
   const [statusMap, setStatusMap] = useState<Record<number, ChamadaStatus>>({});
-  const [nucleoChamada, setNucleoChamada] = useState<string>("");
+  const [nucleoChamada, setNucleoChamada] = useState<string>('');
   const [showChamadaModal, setShowChamadaModal] = useState(false);
 
   // -- ESTADOS DOS RELATORIOS --
-  const [relatorioTurmaId, setRelatorioTurmaId] = useState("");
+  const [relatorioTurmaId, setRelatorioTurmaId] = useState('');
   const [relatorio, setRelatorio] = useState<Array<{
     aluno_id: number;
     nome: string;
@@ -102,17 +94,16 @@ export const ProfessorPainel = () => {
   }> | null>(null);
 
   const localizacaoDisplay =
-    turmas.find((t) => t.nucleo_localizacao)?.nucleo_localizacao ??
-    "Localização";
+    turmas.find((t) => t.nucleo_localizacao)?.nucleo_localizacao ?? 'Localização';
 
   async function fetchData() {
     const [resTurmas, resNucleos] = await Promise.allSettled([
-      api.get("/professor/turmas"),
-      api.get("/nucleos"),
+      api.get('/professor/turmas'),
+      api.get('/nucleos'),
     ]);
-    if (resTurmas.status === "fulfilled")
+    if (resTurmas.status === 'fulfilled')
       setTurmas((resTurmas.value as { turmas?: Turma[] }).turmas ?? []);
-    if (resNucleos.status === "fulfilled")
+    if (resNucleos.status === 'fulfilled')
       setNucleos((resNucleos.value as { nucleos?: Nucleo[] }).nucleos ?? []);
   }
 
@@ -120,11 +111,11 @@ export const ProfessorPainel = () => {
     setLoadingAlunos(true);
     try {
       const params = new URLSearchParams();
-      if (filtraTurmaId) params.set("turma_id", filtraTurmaId);
-      if (filtraNucleoId) params.set("nucleo_id", filtraNucleoId);
-      if (filtraBairro.trim()) params.set("bairro", filtraBairro.trim());
+      if (filtraTurmaId) params.set('turma_id', filtraTurmaId);
+      if (filtraNucleoId) params.set('nucleo_id', filtraNucleoId);
+      if (filtraBairro.trim()) params.set('bairro', filtraBairro.trim());
       const query = params.toString();
-      const res = (await api.get(`/alunos${query ? `?${query}` : ""}`)) as {
+      const res = (await api.get(`/alunos${query ? `?${query}` : ''}`)) as {
         alunos?: Aluna[];
       };
       setAlunos(res.alunos ?? []);
@@ -140,10 +131,10 @@ export const ProfessorPainel = () => {
   }, []);
 
   useEffect(() => {
-    if (tab === "buscar") void fetchAlunos();
+    if (tab === 'buscar') void fetchAlunos();
     // Quando abre a aba relatorios, limpa a tela se nao tem turma escolhida
-    if (tab === "relatorios") {
-      if (relatorioTurmaId !== "") {
+    if (tab === 'relatorios') {
+      if (relatorioTurmaId !== '') {
         void fetchRelatorios();
       } else {
         setRelatorio(null);
@@ -154,14 +145,12 @@ export const ProfessorPainel = () => {
   // -- NOVA FUNCAO DO RELATORIO POR TURMA --
   // Adiciona a turma no link do backend
   async function fetchRelatorios() {
-    if (relatorioTurmaId === "") {
+    if (relatorioTurmaId === '') {
       setRelatorio(null);
       return;
     }
     try {
-      const res = (await api.get(
-        "/professor/relatorios?turma_id=" + relatorioTurmaId,
-      )) as {
+      const res = (await api.get('/professor/relatorios?turma_id=' + relatorioTurmaId)) as {
         data?: Array<{
           aluno_id: number;
           nome: string;
@@ -207,15 +196,12 @@ export const ProfessorPainel = () => {
 
   async function handleSalvarChamada() {
     if (!chamadaTurmaId) {
-      showFeedback("error", "Selecione uma turma");
+      showFeedback('error', 'Selecione uma turma');
       return;
     }
     const pendentes = chamadaAlunos.filter((a) => !statusMap[a.id]);
     if (pendentes.length) {
-      showFeedback(
-        "error",
-        `Marque P, F ou T para ${pendentes.length} aluna(s)`,
-      );
+      showFeedback('error', `Marque P, F ou T para ${pendentes.length} aluna(s)`);
       return;
     }
     setLoading(true);
@@ -229,12 +215,9 @@ export const ProfessorPainel = () => {
         })),
       });
       setShowChamadaModal(false);
-      showFeedback("success", "Chamada finalizada com sucesso!");
+      showFeedback('success', 'Chamada finalizada com sucesso!');
     } catch (err) {
-      showFeedback(
-        "error",
-        err instanceof Error ? err.message : "Erro ao salvar chamada",
-      );
+      showFeedback('error', err instanceof Error ? err.message : 'Erro ao salvar chamada');
     } finally {
       setLoading(false);
     }
@@ -259,7 +242,7 @@ export const ProfessorPainel = () => {
     return MOCK_FALTAS_CONSECUTIVAS[alunoId] ?? 0;
   }
 
-  function showFeedback(type: "error" | "success", msg: string) {
+  function showFeedback(type: 'error' | 'success', msg: string) {
     setFeedback({ type, msg });
     setTimeout(() => setFeedback(null), 3500);
   }
@@ -275,12 +258,9 @@ export const ProfessorPainel = () => {
     try {
       await api.delete(`/aluno/${a.id}`);
       setAlunos((prev) => prev.filter((x) => x.id !== a.id));
-      showFeedback("success", `Aluna "${a.nome}" removida com sucesso.`);
+      showFeedback('success', `Aluna "${a.nome}" removida com sucesso.`);
     } catch (err) {
-      showFeedback(
-        "error",
-        err instanceof Error ? err.message : "Erro ao excluir aluna",
-      );
+      showFeedback('error', err instanceof Error ? err.message : 'Erro ao excluir aluna');
     } finally {
       setDeletingId(null);
     }
@@ -288,13 +268,10 @@ export const ProfessorPainel = () => {
 
   function calcIdade(data: string): number | undefined {
     if (!data) return undefined;
-    const [year, month, day] = data.split("-").map(Number);
+    const [year, month, day] = data.split('-').map(Number);
     const today = new Date();
     let age = today.getFullYear() - year;
-    if (
-      today.getMonth() + 1 < month ||
-      (today.getMonth() + 1 === month && today.getDate() < day)
-    )
+    if (today.getMonth() + 1 < month || (today.getMonth() + 1 === month && today.getDate() < day))
       age--;
     return age > 0 ? age : undefined;
   }
@@ -304,8 +281,8 @@ export const ProfessorPainel = () => {
     const selectedTurma = turmas.find((t) => t.id === Number(turmaId));
     if (!selectedTurma?.escola_id) {
       showFeedback(
-        "error",
-        "Turma sem escola vinculada. Peça ao administrativo para configurar a turma.",
+        'error',
+        'Turma sem escola vinculada. Peça ao administrativo para configurar a turma.',
       );
       return;
     }
@@ -324,25 +301,19 @@ export const ProfessorPainel = () => {
         nome_responsavel: nomeResp.trim(),
         telefone_responsavel: telefoneResp.trim(),
       });
-      showFeedback(
-        "success",
-        "Aluna cadastrada! E-mail enviado para definir a senha.",
-      );
-      setNome("");
-      setMatricula("");
-      setEmail("");
-      setDataNasc("");
-      setNucleoId("");
-      setTurmaId("");
-      setBairro("");
-      setTelefoneAluna("");
-      setNomeResp("");
-      setTelefoneResp("");
+      showFeedback('success', 'Aluna cadastrada! E-mail enviado para definir a senha.');
+      setNome('');
+      setMatricula('');
+      setEmail('');
+      setDataNasc('');
+      setNucleoId('');
+      setTurmaId('');
+      setBairro('');
+      setTelefoneAluna('');
+      setNomeResp('');
+      setTelefoneResp('');
     } catch (err) {
-      showFeedback(
-        "error",
-        err instanceof Error ? err.message : "Erro ao cadastrar aluna",
-      );
+      showFeedback('error', err instanceof Error ? err.message : 'Erro ao cadastrar aluna');
     } finally {
       setLoading(false);
     }
@@ -358,9 +329,9 @@ export const ProfessorPainel = () => {
   }
 
   function limparFiltros() {
-    setFiltraTurmaId("");
-    setFiltraNucleoId("");
-    setFiltraBairro("");
+    setFiltraTurmaId('');
+    setFiltraNucleoId('');
+    setFiltraBairro('');
   }
 
   const turmaIds = new Set(turmas.map((t) => t.id));
@@ -368,9 +339,7 @@ export const ProfessorPainel = () => {
   const alunasFiltradas = alunos.filter((a) => {
     if (!busca.trim()) return true;
     const q = busca.toLowerCase();
-    return (
-      a.nome.toLowerCase().includes(q) || a.matricula.toLowerCase().includes(q)
-    );
+    return a.nome.toLowerCase().includes(q) || a.matricula.toLowerCase().includes(q);
   });
 
   return (
@@ -405,21 +374,15 @@ export const ProfessorPainel = () => {
         </div>
 
         {/* Tabs */}
-        <FilterChips
-          role="professor"
-          active={tab}
-          onChange={(k) => setTab(k as ProfessorTab)}
-        />
+        <FilterChips role="professor" active={tab} onChange={(k) => setTab(k as ProfessorTab)} />
 
         {/* Feedback */}
         {feedback && (
-          <div className={`prof-feedback prof-feedback--${feedback.type}`}>
-            {feedback.msg}
-          </div>
+          <div className={`prof-feedback prof-feedback--${feedback.type}`}>{feedback.msg}</div>
         )}
 
         {/* ── BUSCAR ── */}
-        {tab === "buscar" && (
+        {tab === 'buscar' && (
           <div className="prof-content">
             <p className="prof-buscar-desc">
               Consulta avançada por matrícula, núcleo, escola, turma e bairro
@@ -471,18 +434,10 @@ export const ProfessorPainel = () => {
                   placeholder="Ex: Méier"
                 />
                 <div className="prof-filtros-actions">
-                  <button
-                    className="prof-filtros-limpar"
-                    type="button"
-                    onClick={limparFiltros}
-                  >
+                  <button className="prof-filtros-limpar" type="button" onClick={limparFiltros}>
                     Limpar
                   </button>
-                  <button
-                    className="prof-filtros-aplicar"
-                    type="button"
-                    onClick={aplicarFiltros}
-                  >
+                  <button className="prof-filtros-aplicar" type="button" onClick={aplicarFiltros}>
                     Aplicar
                   </button>
                 </div>
@@ -509,23 +464,19 @@ export const ProfessorPainel = () => {
                       <span className="prof-aluna-card__nome">{a.nome}</span>
                       <div className="prof-aluna-card__badges">
                         <span
-                          className={`prof-badge ${a.ativo ? "prof-badge--ativa" : "prof-badge--inativa"}`}
+                          className={`prof-badge ${a.ativo ? 'prof-badge--ativa' : 'prof-badge--inativa'}`}
                         >
-                          {a.ativo ? "Ativa" : "Inativa"}
+                          {a.ativo ? 'Ativa' : 'Inativa'}
                         </span>
                         {a.turma_id && turmaIds.has(a.turma_id) && (
-                          <span className="prof-badge prof-badge--turma">
-                            Minha Turma
-                          </span>
+                          <span className="prof-badge prof-badge--turma">Minha Turma</span>
                         )}
                       </div>
                     </div>
-                    <span className="prof-aluna-card__mat">
-                      Mat. {a.matricula}
-                    </span>
+                    <span className="prof-aluna-card__mat">Mat. {a.matricula}</span>
                     {(a.turma_nome || a.nucleo) && (
                       <span className="prof-aluna-card__sub">
-                        {[a.turma_nome, a.nucleo].filter(Boolean).join(" · ")}
+                        {[a.turma_nome, a.nucleo].filter(Boolean).join(' · ')}
                       </span>
                     )}
                     <button
@@ -533,18 +484,18 @@ export const ProfessorPainel = () => {
                       disabled={deletingId === a.id}
                       onClick={() => void handleDeleteAluna(a)}
                       style={{
-                        marginTop: "0.6rem",
-                        background: "none",
-                        border: "1px solid #e55",
-                        borderRadius: "0.4rem",
-                        color: "#e55",
-                        padding: "0.25rem 0.65rem",
-                        fontSize: "0.78rem",
-                        cursor: "pointer",
-                        alignSelf: "flex-start",
+                        marginTop: '0.6rem',
+                        background: 'none',
+                        border: '1px solid #e55',
+                        borderRadius: '0.4rem',
+                        color: '#e55',
+                        padding: '0.25rem 0.65rem',
+                        fontSize: '0.78rem',
+                        cursor: 'pointer',
+                        alignSelf: 'flex-start',
                       }}
                     >
-                      {deletingId === a.id ? "Excluindo..." : "Excluir"}
+                      {deletingId === a.id ? 'Excluindo...' : 'Excluir'}
                     </button>
                   </div>
                 ))}
@@ -553,17 +504,17 @@ export const ProfessorPainel = () => {
           </div>
         )}
 
-        {tab === "chamada" && (
+        {tab === 'chamada' && (
           <div className="prof-chamada">
             <div className="prof-chamada__body">
-              <div className="gg-card" style={{ marginBottom: "1rem" }}>
+              <div className="gg-card" style={{ marginBottom: '1rem' }}>
                 <label className="input-field__label">Núcleo</label>
                 <select
                   className="input-field__control"
                   value={nucleoChamada}
                   onChange={(e) => {
                     setNucleoChamada(e.target.value);
-                    setChamadaTurmaId("");
+                    setChamadaTurmaId('');
                     setChamadaAlunos([]);
                   }}
                 >
@@ -584,13 +535,10 @@ export const ProfessorPainel = () => {
                 }}
                 placeholder="Selecione a turma"
                 options={turmas
-                  .filter(
-                    (t) =>
-                      !nucleoChamada || String(t.nucleo_id) === nucleoChamada,
-                  )
+                  .filter((t) => !nucleoChamada || String(t.nucleo_id) === nucleoChamada)
                   .map((t) => ({ value: t.id, label: t.nome }))}
               />
-              <div className="input-field" style={{ marginTop: "0.75rem" }}>
+              <div className="input-field" style={{ marginTop: '0.75rem' }}>
                 <label className="input-field__label">Data da aula *</label>
                 <input
                   className="input-field__control"
@@ -600,9 +548,7 @@ export const ProfessorPainel = () => {
                 />
               </div>
               {chamadaAlunos.length === 0 ? (
-                <p className="prof-empty">
-                  Selecione uma turma para listar alunas.
-                </p>
+                <p className="prof-empty">Selecione uma turma para listar alunas.</p>
               ) : (
                 <>
                   <div className="prof-search-wrap prof-chamada__search">
@@ -617,48 +563,43 @@ export const ProfessorPainel = () => {
                   <div className="prof-chamada__list">
                     {chamadaAlunos
                       .filter((a) =>
-                        a.nome
-                          .toLowerCase()
-                          .includes(chamadaBusca.trim().toLowerCase()),
+                        a.nome.toLowerCase().includes(chamadaBusca.trim().toLowerCase()),
                       )
                       .map((a) => (
                         <div
                           key={a.id}
-                          className={`prof-chamada-card ${hasEvasionRisk(a.id) ? "prof-chamada-card--risk" : ""}`}
+                          className={`prof-chamada-card ${hasEvasionRisk(a.id) ? 'prof-chamada-card--risk' : ''}`}
                         >
                           <div className="prof-chamada-card__info">
                             <span className="prof-chamada-card__nome">
                               {a.nome}
-                              {hasEvasionRisk(a.id) && (
-                                <AlertCircle width="16" height="16" />
-                              )}
+                              {hasEvasionRisk(a.id) && <AlertCircle width="16" height="16" />}
                             </span>
                             {hasEvasionRisk(a.id) && (
                               <span className="prof-chamada-card__risk">
-                                Risco de Evasão ({faltasConsecutivas(a.id)}{" "}
-                                faltas)
+                                Risco de Evasão ({faltasConsecutivas(a.id)} faltas)
                               </span>
                             )}
                           </div>
                           <div className="prof-chamada-toggle">
                             <button
                               type="button"
-                              className={`prof-chamada-toggle__btn --p ${statusMap[a.id] === "P" ? "active" : ""}`}
-                              onClick={() => setStatus(a.id, "P")}
+                              className={`prof-chamada-toggle__btn --p ${statusMap[a.id] === 'P' ? 'active' : ''}`}
+                              onClick={() => setStatus(a.id, 'P')}
                             >
                               P
                             </button>
                             <button
                               type="button"
-                              className={`prof-chamada-toggle__btn --f ${statusMap[a.id] === "F" ? "active" : ""}`}
-                              onClick={() => setStatus(a.id, "F")}
+                              className={`prof-chamada-toggle__btn --f ${statusMap[a.id] === 'F' ? 'active' : ''}`}
+                              onClick={() => setStatus(a.id, 'F')}
                             >
                               F
                             </button>
                             <button
                               type="button"
-                              className={`prof-chamada-toggle__btn --t ${statusMap[a.id] === "T" ? "active" : ""}`}
-                              onClick={() => setStatus(a.id, "T")}
+                              className={`prof-chamada-toggle__btn --t ${statusMap[a.id] === 'T' ? 'active' : ''}`}
+                              onClick={() => setStatus(a.id, 'T')}
                             >
                               T
                             </button>
@@ -678,7 +619,7 @@ export const ProfessorPainel = () => {
                 >
                   {chamadaResumo.pendentes > 0
                     ? `Finalizar Chamada (${chamadaResumo.pendentes} pendente(s))`
-                    : "Finalizar Chamada"}
+                    : 'Finalizar Chamada'}
                 </button>
               </div>
             )}
@@ -688,21 +629,17 @@ export const ProfessorPainel = () => {
                 role="presentation"
                 onClick={() => setShowChamadaModal(false)}
               >
-                <div
-                  className="gg-modal"
-                  role="dialog"
-                  onClick={(e) => e.stopPropagation()}
-                >
+                <div className="gg-modal" role="dialog" onClick={(e) => e.stopPropagation()}>
                   <h3>Confirmar chamada</h3>
                   <p>
-                    Presentes: {chamadaResumo.p} · Faltas: {chamadaResumo.f} ·
-                    Trancamentos: {chamadaResumo.t}
+                    Presentes: {chamadaResumo.p} · Faltas: {chamadaResumo.f} · Trancamentos:{' '}
+                    {chamadaResumo.t}
                   </p>
                   <div
                     style={{
-                      display: "flex",
-                      gap: "0.5rem",
-                      marginTop: "1rem",
+                      display: 'flex',
+                      gap: '0.5rem',
+                      marginTop: '1rem',
                     }}
                   >
                     <button
@@ -713,10 +650,7 @@ export const ProfessorPainel = () => {
                     >
                       Confirmar
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => setShowChamadaModal(false)}
-                    >
+                    <button type="button" onClick={() => setShowChamadaModal(false)}>
                       Cancelar
                     </button>
                   </div>
@@ -727,16 +661,14 @@ export const ProfessorPainel = () => {
         )}
 
         {/* -- AREA DO RELATORIO ALTERADA -- */}
-        {tab === "relatorios" && (
+        {tab === 'relatorios' && (
           <div className="prof-content">
-            <h3 style={{ marginBottom: "0.5rem" }}>
-              Relatório de Frequência por Turma
-            </h3>
-            <p className="prof-buscar-desc" style={{ marginBottom: "1rem" }}>
+            <h3 style={{ marginBottom: '0.5rem' }}>Relatório de Frequência por Turma</h3>
+            <p className="prof-buscar-desc" style={{ marginBottom: '1rem' }}>
               Selecione a turma para carregar o histórico de presença
             </p>
 
-            <div className="gg-card" style={{ marginBottom: "1rem" }}>
+            <div className="gg-card" style={{ marginBottom: '1rem' }}>
               <label className="input-field__label">Selecione a Turma *</label>
               <select
                 className="input-field__control"
@@ -753,9 +685,7 @@ export const ProfessorPainel = () => {
             </div>
 
             {!relatorio?.length ? (
-              <p className="prof-empty">
-                Nenhum dado disponível. Escolha a turma acima.
-              </p>
+              <p className="prof-empty">Nenhum dado disponível. Escolha a turma acima.</p>
             ) : (
               <div className="prof-aluna-list">
                 {relatorio.map((a) => (
@@ -763,36 +693,34 @@ export const ProfessorPainel = () => {
                     key={a.aluno_id}
                     className="prof-aluna-card"
                     style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "0.25rem",
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.25rem',
                     }}
                   >
                     <span className="prof-aluna-card__nome">{a.nome}</span>
                     <span
                       className="prof-aluna-card__sub"
-                      style={{ opacity: 0.7, fontSize: "0.82rem" }}
+                      style={{ opacity: 0.7, fontSize: '0.82rem' }}
                     >
                       Matrícula: {a.matricula} · {a.turma_nome}
                     </span>
                     <div
                       style={{
-                        display: "flex",
-                        gap: "1rem",
-                        marginTop: "0.25rem",
-                        flexWrap: "wrap",
+                        display: 'flex',
+                        gap: '1rem',
+                        marginTop: '0.25rem',
+                        flexWrap: 'wrap',
                       }}
                     >
-                      <span style={{ color: "#2ecc71", fontWeight: 600 }}>
+                      <span style={{ color: '#2ecc71', fontWeight: 600 }}>
                         ✓ {a.presentes} presenças
                       </span>
-                      <span style={{ color: "#e74c3c", fontWeight: 600 }}>
-                        ✗ {a.faltas} faltas
-                      </span>
+                      <span style={{ color: '#e74c3c', fontWeight: 600 }}>✗ {a.faltas} faltas</span>
                       <span
                         style={{
                           fontWeight: 700,
-                          color: a.percentual >= 75 ? "#2ecc71" : "#e74c3c",
+                          color: a.percentual >= 75 ? '#2ecc71' : '#e74c3c',
                         }}
                       >
                         {a.percentual}% frequência
@@ -800,21 +728,20 @@ export const ProfessorPainel = () => {
                     </div>
                     <div
                       style={{
-                        background: "#eee",
-                        borderRadius: "4px",
-                        height: "6px",
-                        marginTop: "0.25rem",
-                        overflow: "hidden",
+                        background: '#eee',
+                        borderRadius: '4px',
+                        height: '6px',
+                        marginTop: '0.25rem',
+                        overflow: 'hidden',
                       }}
                     >
                       <div
                         style={{
                           width: `${a.percentual}%`,
-                          height: "100%",
-                          background:
-                            a.percentual >= 75 ? "#2ecc71" : "#e74c3c",
-                          borderRadius: "4px",
-                          transition: "width 0.4s",
+                          height: '100%',
+                          background: a.percentual >= 75 ? '#2ecc71' : '#e74c3c',
+                          borderRadius: '4px',
+                          transition: 'width 0.4s',
                         }}
                       />
                     </div>
@@ -826,7 +753,7 @@ export const ProfessorPainel = () => {
         )}
 
         {/* ── CADASTRAR ── */}
-        {tab === "cadastrar" && (
+        {tab === 'cadastrar' && (
           <div className="prof-content">
             <div className="prof-section-header">
               <div className="prof-section-icon">
@@ -878,19 +805,7 @@ export const ProfessorPainel = () => {
               <InputField
                 label="Núcleo de Atuação *"
                 value={nucleoId}
-                onChange={(value) => {
-                  setNucleoId(value);
-                  if (
-                    turmaId &&
-                    !turmas.some(
-                      (turma) =>
-                        turma.id === Number(turmaId) &&
-                        String(turma.nucleo_id) === value,
-                    )
-                  ) {
-                    setTurmaId("");
-                  }
-                }}
+                onChange={setNucleoId}
                 placeholder="Selecione o núcleo"
                 options={nucleos.map((n) => ({ value: n.id, label: n.nome }))}
                 required
@@ -900,19 +815,9 @@ export const ProfessorPainel = () => {
                 <InputField
                   label="Turma *"
                   value={turmaId}
-                  onChange={(value) => {
-                    setTurmaId(value);
-                    const turma = turmas.find(
-                      (item) => item.id === Number(value),
-                    );
-                    if (turma?.nucleo_id != null)
-                      setNucleoId(String(turma.nucleo_id));
-                  }}
+                  onChange={setTurmaId}
                   placeholder="Turma"
-                  options={turmasDoNucleo.map((t) => ({
-                    value: t.id,
-                    label: t.nome,
-                  }))}
+                  options={turmas.map((t) => ({ value: t.id, label: t.nome }))}
                   required
                 />
                 <InputField
@@ -922,6 +827,16 @@ export const ProfessorPainel = () => {
                   placeholder="Bairro"
                   required
                 />
+                <div className="input-field">
+                  <label className="input-field__label">Data Nasc. *</label>
+                  <input
+                    className="input-field__control"
+                    type="date"
+                    value={dataNasc}
+                    onChange={(e) => setDataNasc(e.target.value)}
+                    required
+                  />
+                </div>
               </div>
 
               <InputField
@@ -951,11 +866,7 @@ export const ProfessorPainel = () => {
                 required
               />
 
-              <button
-                className="prof-submit-btn"
-                type="submit"
-                disabled={loading}
-              >
+              <button className="prof-submit-btn" type="submit" disabled={loading}>
                 <UserPlus width="18" height="18" />
                 Cadastrar Aluna
               </button>

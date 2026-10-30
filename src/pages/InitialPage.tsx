@@ -1,8 +1,8 @@
-import { Link } from 'react-router-dom'
-import AcessCard from '../components/AcessCard'
-import { AppShell } from '../components/layout/AppShell'
-import '../styles/golgirls-design.scss'
-import '../App.scss'
+import { Link } from 'react-router-dom';
+import AcessCard from '../components/AcessCard';
+import { AppShell } from '../components/layout/AppShell';
+import '../styles/golgirls-design.scss';
+import '../App.scss';
 
 export function InitialPage() {
   return (
@@ -32,5 +32,5 @@ export function InitialPage() {
         </footer>
       </div>
     </AppShell>
-  )
+  );
 }

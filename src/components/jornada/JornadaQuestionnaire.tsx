@@ -1,6 +1,7 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react'
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
+import Carousel from '../Carousel';
 import {
   ROSENBERG_ITEMS,
   ETNIAS,
@@ -8,21 +9,22 @@ import {
   BAIRROS,
   TEMPOS_REDES,
   LIKERT_LABELS,
-} from '../../data/mockData'
+  EVENTOS_CAROUSEL,
+} from '../../data/mockData';
 import {
   calcIndiceAutoestima,
   loadJornada,
   saveJornada,
   type JornadaCompleta,
   type LikertValue,
-} from '../../services/jornadaStorage'
+} from '../../services/jornadaStorage';
 
 interface JornadaQuestionnaireProps {
-  userId: string
-  defaultNome?: string
-  defaultBairro?: string
-  nucleo?: string
-  onComplete?: () => void
+  userId: string;
+  defaultNome?: string;
+  defaultBairro?: string;
+  nucleo?: string;
+  onComplete?: () => void;
 }
 
 const emptyEtapa1 = (nome = '', bairro = '') => ({
@@ -34,7 +36,7 @@ const emptyEtapa1 = (nome = '', bairro = '') => ({
   genero: '',
   cidade: 'Rio de Janeiro',
   bairro,
-})
+});
 
 export function JornadaQuestionnaire({
   userId,
@@ -43,13 +45,13 @@ export function JornadaQuestionnaire({
   nucleo,
   onComplete,
 }: JornadaQuestionnaireProps) {
-  const existing = loadJornada(userId)
-  const [step, setStep] = useState(0)
+  const existing = loadJornada(userId);
+  const [step, setStep] = useState(0);
   const [completed, setCompleted] = useState<JornadaCompleta | null>(
     existing?.concluidoEm ? existing : null,
-  )
+  );
 
-  const [e1, setE1] = useState(existing?.etapa1 ?? emptyEtapa1(defaultNome, defaultBairro))
+  const [e1, setE1] = useState(existing?.etapa1 ?? emptyEtapa1(defaultNome, defaultBairro));
   const [e2, setE2] = useState(
     existing?.etapa2 ?? {
       pcd: false,
@@ -57,65 +59,65 @@ export function JornadaQuestionnaire({
       tempoRedes: '',
       motivacaoEdFisica: 3,
     },
-  )
+  );
   const [rosenberg, setRosenberg] = useState<(LikertValue | 0)[]>(
     existing?.rosenberg ?? Array(10).fill(0),
-  )
-  const [showValidation, setShowValidation] = useState(false)
+  );
+  const [showValidation, setShowValidation] = useState(false);
 
   const bairroOptions = [
     ...BAIRROS,
     ...(defaultBairro && !BAIRROS.includes(defaultBairro) ? [defaultBairro] : []),
-  ]
+  ];
 
-  const progress = ((step + 1) / 3) * 100
+  const progress = ((step + 1) / 3) * 100;
 
   function setLikert(index: number, value: LikertValue) {
     setRosenberg((prev) => {
-      const next = [...prev]
-      next[index] = value
-      return next
-    })
+      const next = [...prev];
+      next[index] = value;
+      return next;
+    });
   }
 
   function getMissingFields(): string[] {
     if (step === 0) {
-      const missing: string[] = []
-      if (!e1.nome.trim()) missing.push('nome')
-      if (!e1.dataNascimento) missing.push('data de nascimento')
-      if (!e1.etnia) missing.push('etnia / raça')
-      if (!e1.genero) missing.push('identidade de gênero')
-      if (!e1.bairro) missing.push('bairro')
-      return missing
+      const missing: string[] = [];
+      if (!e1.nome.trim()) missing.push('nome');
+      if (!e1.dataNascimento) missing.push('data de nascimento');
+      if (!e1.etnia) missing.push('etnia / raça');
+      if (!e1.genero) missing.push('identidade de gênero');
+      if (!e1.bairro) missing.push('bairro');
+      return missing;
     }
     if (step === 1) {
-      const missing: string[] = []
-      if (!e2.tempoRedes) missing.push('tempo em redes sociais')
-      return missing
+      const missing: string[] = [];
+      if (!e2.tempoRedes) missing.push('tempo em redes sociais');
+      return missing;
     }
-    const unanswered = rosenberg.filter((v) => v < 1 || v > 4).length
+    const unanswered = rosenberg.filter((v) => v < 1 || v > 4).length;
     if (unanswered > 0) {
-      return [`${unanswered} pergunta(s) da escala de autoestima`]
+      return [`${unanswered} pergunta(s) da escala de autoestima`];
     }
-    return []
+    return [];
   }
 
   function canAdvance(): boolean {
-    return getMissingFields().length === 0
+    return getMissingFields().length === 0;
   }
 
   function handleNext() {
     if (!canAdvance()) {
-      setShowValidation(true)
-      return
+      setShowValidation(true);
+      return;
     }
-    setShowValidation(false)
-    setStep((s) => s + 1)
+    setShowValidation(false);
+    setStep((s) => s + 1);
   }
 
   function handleFinish() {
-    const answers = rosenberg as LikertValue[]
-    const indice = calcIndiceAutoestima(answers)
+    const answers = rosenberg as LikertValue[];
+    const indice = calcIndiceAutoestima(answers);
     const data: JornadaCompleta = {
       etapa1: e1,
       etapa2: e2,
@@ -123,35 +125,41 @@ export function JornadaQuestionnaire({
       concluidoEm: new Date().toISOString(),
       indiceAutoestima: indice,
       nucleo: nucleo ?? e1.bairro,
-    }
-    saveJornada(userId, data)
-    setCompleted(data)
-    onComplete?.()
+    };
+    saveJornada(userId, data);
+    setCompleted(data);
+    onComplete?.();
   }
 
   if (completed) {
     return (
-      <div className="gg-jornada-summary gg-card">
-        <Sparkles className="text-[#ff1493] mb-2" size={28} />
-        <h3 className="text-lg font-bold m-0">Jornada concluída</h3>
-        <p className="text-sm text-gray-600">
-          Seu índice de autoestima (EAR): <strong className="text-[#ff1493]">{completed.indiceAutoestima}</strong> / 4
-        </p>
-        <p className="text-xs text-gray-500">
-          Dados sensíveis — visíveis apenas para a coordenação (Renata) em relatórios agregados.
-        </p>
-        <button
-          type="button"
-          className="gg-btn-primary mt-3"
-          onClick={() => {
-            setCompleted(null)
-            setStep(0)
-          }}
-        >
-          Revisar respostas
-        </button>
+      <div>
+        <div className="gg-jornada-summary gg-card">
+          <Sparkles className="text-[#ff1493] mb-2" size={28} />
+          <h3 className="text-lg font-bold m-0">Jornada concluída</h3>
+          <p className="text-sm text-gray-600">
+            Seu índice de autoestima (EAR):{' '}
+            <strong className="text-[#ff1493]">{completed.indiceAutoestima}</strong> / 4
+          </p>
+          <p className="text-xs text-gray-500">
+            Dados sensíveis — visíveis apenas para a coordenação (Renata) em relatórios agregados.
+          </p>
+          <button
+            type="button"
+            className="gg-btn-primary mt-3"
+            onClick={() => {
+              setCompleted(null);
+              setStep(0);
+            }}
+          >
+            Revisar respostas
+          </button>
+        </div>
+        <div className="gg-jornada-carousel mt-6">
+          <Carousel items={EVENTOS_CAROUSEL} />
+        </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -176,22 +184,38 @@ export function JornadaQuestionnaire({
             exit={{ opacity: 0, x: -24 }}
           >
             <h3 className="gg-jornada-title">Quem sou eu</h3>
-            <label className={`gg-field${showValidation && !e1.nome.trim() ? ' gg-field--error' : ''}`}>
+            <label
+              className={`gg-field${showValidation && !e1.nome.trim() ? ' gg-field--error' : ''}`}
+            >
               Nome *
               <input value={e1.nome} onChange={(ev) => setE1({ ...e1, nome: ev.target.value })} />
             </label>
-            <label className={`gg-field${showValidation && !e1.dataNascimento ? ' gg-field--error' : ''}`}>
+            <label
+              className={`gg-field${showValidation && !e1.dataNascimento ? ' gg-field--error' : ''}`}
+            >
               Data de nascimento *
-              <input type="date" value={e1.dataNascimento} onChange={(ev) => setE1({ ...e1, dataNascimento: ev.target.value })} />
+              <input
+                type="date"
+                value={e1.dataNascimento}
+                onChange={(ev) => setE1({ ...e1, dataNascimento: ev.target.value })}
+              />
             </label>
             <div className="grid grid-cols-2 gap-2">
               <label className="gg-field">
                 Altura (cm)
-                <input value={e1.altura} onChange={(ev) => setE1({ ...e1, altura: ev.target.value })} placeholder="150" />
+                <input
+                  value={e1.altura}
+                  onChange={(ev) => setE1({ ...e1, altura: ev.target.value })}
+                  placeholder="150"
+                />
               </label>
               <label className="gg-field">
                 Peso (kg)
-                <input value={e1.peso} onChange={(ev) => setE1({ ...e1, peso: ev.target.value })} placeholder="45" />
+                <input
+                  value={e1.peso}
+                  onChange={(ev) => setE1({ ...e1, peso: ev.target.value })}
+                  placeholder="45"
+                />
               </label>
             </div>
             <label className={`gg-field${showValidation && !e1.etnia ? ' gg-field--error' : ''}`}>
@@ -199,25 +223,37 @@ export function JornadaQuestionnaire({
               <select value={e1.etnia} onChange={(ev) => setE1({ ...e1, etnia: ev.target.value })}>
                 <option value="">Selecione</option>
                 {ETNIAS.map((o) => (
-                  <option key={o} value={o}>{o}</option>
+                  <option key={o} value={o}>
+                    {o}
+                  </option>
                 ))}
               </select>
             </label>
             <label className={`gg-field${showValidation && !e1.genero ? ' gg-field--error' : ''}`}>
               Identidade de gênero *
-              <select value={e1.genero} onChange={(ev) => setE1({ ...e1, genero: ev.target.value })}>
+              <select
+                value={e1.genero}
+                onChange={(ev) => setE1({ ...e1, genero: ev.target.value })}
+              >
                 <option value="">Selecione</option>
                 {GENEROS.map((o) => (
-                  <option key={o} value={o}>{o}</option>
+                  <option key={o} value={o}>
+                    {o}
+                  </option>
                 ))}
               </select>
             </label>
             <label className={`gg-field${showValidation && !e1.bairro ? ' gg-field--error' : ''}`}>
               Bairro *
-              <select value={e1.bairro} onChange={(ev) => setE1({ ...e1, bairro: ev.target.value })}>
+              <select
+                value={e1.bairro}
+                onChange={(ev) => setE1({ ...e1, bairro: ev.target.value })}
+              >
                 <option value="">Selecione</option>
                 {bairroOptions.map((o) => (
-                  <option key={o} value={o}>{o}</option>
+                  <option key={o} value={o}>
+                    {o}
+                  </option>
                 ))}
               </select>
             </label>
@@ -234,7 +270,11 @@ export function JornadaQuestionnaire({
           >
             <h3 className="gg-jornada-title">Meus hábitos e saúde</h3>
             <label className="gg-check">
-              <input type="checkbox" checked={e2.pcd} onChange={(ev) => setE2({ ...e2, pcd: ev.target.checked })} />
+              <input
+                type="checkbox"
+                checked={e2.pcd}
+                onChange={(ev) => setE2({ ...e2, pcd: ev.target.checked })}
+              />
               Pessoa com deficiência (PCD)
             </label>
             <label className="gg-check">
@@ -245,12 +285,19 @@ export function JornadaQuestionnaire({
               />
               Pratico atividade física fora da escola
             </label>
-            <label className={`gg-field${showValidation && !e2.tempoRedes ? ' gg-field--error' : ''}`}>
+            <label
+              className={`gg-field${showValidation && !e2.tempoRedes ? ' gg-field--error' : ''}`}
+            >
               Tempo em redes sociais *
-              <select value={e2.tempoRedes} onChange={(ev) => setE2({ ...e2, tempoRedes: ev.target.value })}>
+              <select
+                value={e2.tempoRedes}
+                onChange={(ev) => setE2({ ...e2, tempoRedes: ev.target.value })}
+              >
                 <option value="">Selecione</option>
                 {TEMPOS_REDES.map((o) => (
-                  <option key={o} value={o}>{o}</option>
+                  <option key={o} value={o}>
+                    {o}
+                  </option>
                 ))}
               </select>
             </label>
@@ -314,8 +361,8 @@ export function JornadaQuestionnaire({
             type="button"
             className="gg-btn-outline flex-1"
             onClick={() => {
-              setShowValidation(false)
-              setStep((s) => s - 1)
+              setShowValidation(false);
+              setStep((s) => s - 1);
             }}
           >
             <ChevronLeft size={18} aria-hidden />
@@ -333,11 +380,11 @@ export function JornadaQuestionnaire({
             className="gg-btn-primary flex-1"
             onClick={() => {
               if (!canAdvance()) {
-                setShowValidation(true)
-                return
+                setShowValidation(true);
+                return;
               }
-              setShowValidation(false)
-              handleFinish()
+              setShowValidation(false);
+              handleFinish();
             }}
           >
             Concluir jornada
@@ -345,5 +392,5 @@ export function JornadaQuestionnaire({
         )}
       </div>
     </div>
-  )
+  );
 }
