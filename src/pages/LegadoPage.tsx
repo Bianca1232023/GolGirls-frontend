@@ -10,7 +10,7 @@ interface LegadoPageProps {
 
 export function LegadoPage({ role }: LegadoPageProps) {
   return (
-    <AppShell role={role}>
+    <AppShell publicPage>
       <div style={{ padding: '1rem' }}>
         <h1 style={{ fontSize: '1.25rem', marginBottom: '0.25rem' }}>Legado Gol Girls</h1>
         <p
@@ -67,7 +67,6 @@ export function LegadoPage({ role }: LegadoPageProps) {
           ))}
         </div>
       </div>
-      <BottomNavigation role={role} />
     </AppShell>
   );
 }

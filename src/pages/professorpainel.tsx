@@ -206,12 +206,12 @@ export const ProfessorPainel = () => {
     }
     setLoading(true);
     try {
-      await api.post('/professor/chamada', {
+      await api.post("/professor/chamada", {
         turma_id: Number(chamadaTurmaId),
         data: chamadaData,
         registros: chamadaAlunos.map((a) => ({
           aluno_id: a.id,
-          presente: statusMap[a.id] === 'P',
+          presente: statusMap[a.id] === "P",
         })),
       });
       setShowChamadaModal(false);
@@ -224,9 +224,9 @@ export const ProfessorPainel = () => {
   }
 
   const chamadaResumo = {
-    p: chamadaAlunos.filter((a) => statusMap[a.id] === 'P').length,
-    f: chamadaAlunos.filter((a) => statusMap[a.id] === 'F').length,
-    t: chamadaAlunos.filter((a) => statusMap[a.id] === 'T').length,
+    p: chamadaAlunos.filter((a) => statusMap[a.id] === "P").length,
+    f: chamadaAlunos.filter((a) => statusMap[a.id] === "F").length,
+    t: chamadaAlunos.filter((a) => statusMap[a.id] === "T").length,
     pendentes: chamadaAlunos.filter((a) => !statusMap[a.id]).length,
   };
 
@@ -288,7 +288,7 @@ export const ProfessorPainel = () => {
     }
     setLoading(true);
     try {
-      await api.post('/professor/createaluno', {
+      await api.post("/professor/createaluno", {
         nome: nome.trim(),
         matricula: matricula.trim(),
         email: email.trim(),
@@ -318,6 +318,10 @@ export const ProfessorPainel = () => {
       setLoading(false);
     }
   }
+
+  const turmasDoNucleo = nucleoId
+    ? turmas.filter((turma) => String(turma.nucleo_id) === nucleoId)
+    : turmas;
 
   function aplicarFiltros() {
     void fetchAlunos();
@@ -823,6 +827,16 @@ export const ProfessorPainel = () => {
                   placeholder="Bairro"
                   required
                 />
+                <div className="input-field">
+                  <label className="input-field__label">Data Nasc. *</label>
+                  <input
+                    className="input-field__control"
+                    type="date"
+                    value={dataNasc}
+                    onChange={(e) => setDataNasc(e.target.value)}
+                    required
+                  />
+                </div>
               </div>
 
               <InputField

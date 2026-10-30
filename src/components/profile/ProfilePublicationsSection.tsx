@@ -227,6 +227,16 @@ export function ProfilePublicationsSection({
               >
                 💬 {post.comments.length}
               </button>
+              <button type="button" onClick={() => {
+                if (window.confirm('Tem certeza que deseja excluir esta publicação?')) {
+                  deletePost(post.id)
+                }
+              }} aria-label="Excluir publicação" title="Excluir publicação" style={{
+                background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+                color: '#ef4444', fontSize: '0.9rem', marginLeft: 'auto',
+              }}>
+                🗑️
+              </button>
             </div>
           </div>
         ))}
