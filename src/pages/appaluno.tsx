@@ -12,6 +12,7 @@ import { ProfilePublicationsSection } from '../components/profile/ProfilePublica
 import { EditProfileModal } from '../components/profile/EditProfileModal';
 import { AppShell } from '../components/layout/AppShell';
 import { Heart, Trophy } from '../components/icons';
+import HeaderPerfil from '../components/HeaderPerfil';
 import '../styles/apphub.scss';
 import '../styles/golgirls-design.scss';
 
@@ -22,7 +23,9 @@ interface AlunoProfile {
   nome: string;
   matricula: string;
   turma_nome?: string | null;
+  escola?: string | null;
   nucleo?: string | null;
+  foto_url?: string | null;
   bairro: string;
   telefone_aluna?: string | null;
   nome_responsavel?: string | null;
@@ -86,10 +89,20 @@ export const AppAluno = () => {
   const userId = perfil?.matricula ?? 'anon';
 
   return (
-    <AppShell role="aluno">
+    <>
+      <HeaderPerfil
+        name={perfil?.nome ?? ''}
+        matricula={perfil?.matricula ?? ''}
+        turma={perfil?.turma_nome}
+        escola={perfil?.escola}
+        polo={perfil?.nucleo}
+        photoUrl={perfil?.foto_url}
+      />
+      <AppShell role="aluno">
       <div className={`app-hub${tab === 'home' ? ' app-hub--mural' : ' gg-aluno-page'}`}>
         {tab === 'home' ? (
-          <MuralPageHeader
+          <>
+            <MuralPageHeader
             title="Mural da Aluna"
             subtitle={
               perfil?.nome
@@ -97,6 +110,7 @@ export const AppAluno = () => {
                 : 'Fique por dentro das novidades.'
             }
           />
+          </>
         ) : (
           <header className="app-hub__header">
             <h1>
@@ -420,6 +434,7 @@ export const AppAluno = () => {
 
         <BottomNavigation role="aluno" activeTab={tab} onTabChange={setActiveTab} />
       </div>
-    </AppShell>
+      </AppShell>
+    </>
   );
 };

@@ -25,9 +25,8 @@ $gg-yellow: #facc15;
 
   &__phone-wrap {
     width: 100%;
-    display: flex;
     justify-content: center;
-    padding: 0.5rem 0;
+    
 
     @media (width >= 1024px) {
       padding: 0;
